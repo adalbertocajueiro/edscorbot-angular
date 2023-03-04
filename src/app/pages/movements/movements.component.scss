@@ -1,0 +1,59 @@
+.container-trajectory {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 95%;
+
+    .trajectories {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 60%;
+        border: 1px solid rgb(148, 137, 137);
+        border-radius: 4px;
+        padding: 5px;
+
+        .trajectory-list {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+    }
+
+    .graph {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 39%;
+
+        .planned {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgb(148, 137, 137);
+            border-radius: 4px;
+        }
+
+        .executed {
+            display: block;
+            width: 100%;
+            height: 49%;
+            border: 1px solid rgb(148, 137, 137);
+            border-radius: 4px;
+        }
+    }
+}
+
+:host ::ng-deep svg-container {
+    width: 400px;
+    height: 540px;
+}
+
+.mat-tab-label-active {
+    border-bottom: 4px solid blue;
+    border-radius: 3px;
+}
+
+.mat-tab-body-wrapper {
+    height: 100%;
+}

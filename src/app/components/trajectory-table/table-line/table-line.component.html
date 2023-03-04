@@ -1,0 +1,43 @@
+<div class="table-line-container">
+    <div class="basic-info" (click)="toggleTRajectory()">
+        <div class="email">
+            {{trajectory.owner.email}}
+        </div>
+        <div class="date">
+            {{trajectory.date}}
+        </div>
+        <div class="actions">
+            <mat-icon matTooltip="Send trajectory" matTooltipPosition="left">upload</mat-icon>
+            <mat-icon matTooltip="Add points" matTooltipPosition="left">add_circle_outline</mat-icon>
+            <mat-icon matTooltip="Delete trajectory" matTooltipPosition="right">delete</mat-icon>
+        </div>
+    </div>
+    
+    <div class="points" *ngIf="trajectory.selected">
+        <div *ngFor="let point of trajectory.points" class="point">
+            <div class="refs">
+                <div class="jref">
+                    <label class="jRef">J1:</label>
+                    <input value="{{point.j1Ref}}" size="4"/>
+                </div>
+                <div class="jref">
+                    <label class="jRef">J2:</label>
+                    <input value="{{point.j2Ref}}" size="4" />
+                </div>
+                <div class="jref">
+                    <label class="jRef">J3:</label>
+                    <input value="{{point.j3Ref}}" size="4" />
+                </div>
+                <div class="jref">
+                    <label class="jRef">J4:</label>
+                    <input value="{{point.j4Ref}}" size="4" />
+                </div>
+            
+            </div>
+            <div class="actions">
+                <mat-icon matTooltip="Edit" matTooltipPosition="left">edit</mat-icon>
+                <mat-icon matTooltip="Delete point" matTooltipPosition="right">delete</mat-icon>
+            </div>
+        </div>
+    </div>
+</div>

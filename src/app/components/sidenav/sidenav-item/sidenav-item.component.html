@@ -1,0 +1,9 @@
+<div class="container" 
+    [ngClass]="item.selected == true?'selected':''" 
+    (click)="clicked()">
+    <mat-icon 
+    matTooltipClass="leda-tooltip" matTooltip="{{item.tooltip}}" matTooltipPosition="right"    
+    fontSet="material-icons-outlined" 
+        *ngIf='item.icon'>{{item.icon}}</mat-icon>
+    
+</div>

@@ -1,0 +1,16 @@
+<div class="container-settings">
+    <div class="user-servers">
+        <div class="line">
+            <label>User (e-mail): </label>
+            <input type="text" [(ngModel)]="loggedUser" size="40"/>
+        </div>
+        <div class="line">
+            <label>Java server (API) URL: </label>
+            <input type="text" [(ngModel)]="configServ!.javaApiUrl" size="40" />
+        </div>
+        <div class="line">
+            <label>Mosquitto server URL: </label>
+            <input type="text" [(ngModel)]="configServ!.brokerUrl" size="40" />
+        </div>
+    </div>
+</div>

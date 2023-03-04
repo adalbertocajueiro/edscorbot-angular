@@ -1,0 +1,41 @@
+.container-status-bar{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    .status-label{
+        width: 110px;
+    }
+
+    .FREE{
+        color: rgb(9, 152, 9);
+        width: 50px;
+    }
+    .BUSY{
+        color: rgb(198, 121, 6);
+        width: 50px;
+    }
+    .ERROR{
+        color: rgb(160, 21, 2);
+        width: 50px;
+    }
+    .YES{
+        color: rgb(9, 152, 9);
+        width: 40px;
+    }
+    .NO{
+        color: rgb(160, 21, 2);
+        width: 40px;
+    }
+    
+    .connected-label{
+        margin-left: 10px;
+        width: 90px;
+    }
+    button{
+        border-radius: 10px;
+        border-width: 1px;
+        width: 100px;
+    }
+}

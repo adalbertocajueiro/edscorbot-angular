@@ -1,0 +1,21 @@
+<div class="container-table-trajectory">
+    <div class="header">
+        <div class="email">
+            <label>User (e-mail)</label>
+        </div>
+        <div class="date">
+            <label>Date</label>
+        </div>
+        <div class="actions">
+            <label>Actions</label>
+        </div>
+    </div>
+    <div class="lines">
+        <div *ngFor="let traj of trajectories" class="line">
+            <app-table-line 
+                [trajectory]="traj"
+                (onLineClick)="changeSelectedTrajectory($event)"
+                ></app-table-line>
+        </div>
+    </div>
+</div>

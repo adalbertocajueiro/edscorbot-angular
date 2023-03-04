@@ -1,0 +1,5 @@
+<div class="container">
+    <div class="container-item">
+        <app-sidenav-item *ngFor="let i of items" [item]="i" (onClick)="changeSelected($event)"></app-sidenav-item>
+    </div>
+</div>

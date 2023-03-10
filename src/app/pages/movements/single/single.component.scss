@@ -1,0 +1,63 @@
+.container-single{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    .move-to-point{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        .point{
+            display: flex;
+            width: 100%;
+            margin-top: 10px;
+            justify-content: space-around;
+            form{
+                display: flex;
+                width: 90%;
+                flex-direction: row;
+                justify-content: space-evenly;
+                align-items: flex-end;
+
+                .joint{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+
+                    label{
+                        margin-left: 5px;
+                        margin-right: 3px;
+                    }
+                }
+
+                .buttons{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-evenly;
+                }
+            }
+        }
+    }
+}
+
+input{
+    margin-top: 3px;
+    text-align: center;
+    max-width: 30px;
+}
+
+button{
+    border-radius: 8px;
+    border-width: 1px;
+    width: 100px;
+    height: 22px;
+    margin-bottom: 5px;
+    &:active {
+        background-color: lightgray;
+    }
+}

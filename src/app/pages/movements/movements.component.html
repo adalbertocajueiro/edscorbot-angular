@@ -1,20 +1,18 @@
-<div class="container-trajectory">
-    <div class="trajectories">
-        <mat-tab-group mat-align-tabs="start" animationDuration="0ms" [dynamicHeight]="false">
-            <mat-tab-nav-bar>
-                <ng-template mat-tab-label>
-                    Single Movements
-                </ng-template>
+<div class="container-movements">
+    <div class="movements-trajectories">
+        <mat-tab-group 
+            mat-stretch-tabs="false" 
+            mat-align-tabs="start" 
+            animationDuration="0ms" 
+            [dynamicHeight]="false">
+            <mat-tab label="Single Movements">
                 <div class="container-content">
-                    Content of single movements
+                    <app-single></app-single>
                 </div>
-            </mat-tab-nav-bar>
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    Trajectories
-                </ng-template>
+            </mat-tab>
+            <mat-tab label="Trajectories">
                 <div class="container-content">
-                    Content of trajectories
+                    <app-trajectories></app-trajectories>
                 </div>
             </mat-tab>
         </mat-tab-group>

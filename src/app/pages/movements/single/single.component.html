@@ -1,0 +1,24 @@
+<div class="container-single">
+    <div class="move-to-point">
+        <label>Move to point</label>
+        <div class="point">
+            <form [formGroup]="form">
+                <div class="joint" *ngFor="let field of joints">
+                    <label>{{field}}: </label>
+                    <input 
+                        [formControlName]="field" 
+                        placeholder="0" 
+                        (ngModelChange)="jointChanged($event)"/>
+                </div>
+                <div class="buttons">
+                    <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
+                    <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'">Move</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    <div class="list-points-mmodev">
+        list of points applied
+    </div>
+</div>

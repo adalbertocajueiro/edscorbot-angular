@@ -21,13 +21,14 @@ import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { UsersComponent } from './pages/users/users.component';
 import { SettingsComponent } from './pages/settings/settings.component';
-import { TrajectoriesComponent } from './pages/trajectories/trajectories.component';
+import { TrajectoriesComponent } from './pages/movements/trajectories/trajectories.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { StatusBarComponent } from './components/status-bar/status-bar.component';
 import { TrajectoryTableComponent } from './components/trajectory-table/trajectory-table.component';
 import { TableLineComponent } from './components/trajectory-table/table-line/table-line.component';
 import { MqttModule } from 'ngx-mqtt';
 import { MovementsComponent } from './pages/movements/movements.component';
+import { SingleComponent } from './pages/movements/single/single.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -58,7 +59,8 @@ export const MQTT_SERVICE_OPTIONS = {
     StatusBarComponent,
     TrajectoryTableComponent,
     TableLineComponent,
-    MovementsComponent
+    MovementsComponent,
+    SingleComponent
   ],
   imports: [
     BrowserModule,

@@ -32,6 +32,47 @@ def direcKin(q1,q2,q3,q4):
  * 
  */
 
-function robotPointTo3D(coordinates:number[]){
-    return {x:0,y:0,z:0}
+export function robotPointTo3D(coordinates:number[]){
+    const a1 = 5.0
+    const a2 = 30
+    const a3 = 35
+    const a4 = 22
+    const d1 = 35.85
+    const d2 = -9.8
+    const d3 = 6.5
+
+    var q1 = coordinates[0]
+    var q2 = coordinates[1]
+    var q3 = coordinates[2]
+    var q4 = coordinates[3]
+
+    var x = 
+        a1 * Math.cos(q1) 
+        + a2 * Math.cos(q1) * Math.cos(q2) 
+        - a3 * Math.sin(q2) * Math.sin(q3) * Math.cos(q1) 
+        + a3 * Math.cos(q1) * Math.cos(q2) * Math.cos(q3) 
+        + a4 * (- Math.sin(q2) * Math.sin(q3) * Math.cos(q1) + Math.cos(q1) * Math.cos(q2) * Math.cos(q3)) * Math.cos(q4) 
+        + a4 * (- Math.sin(q2) * Math.cos(q1) * Math.cos(q3) - Math.sin(q3) * Math.cos(q1) * Math.cos(q2)) * Math.sin(q4) 
+        - d2 * Math.sin(q1) - d3 * Math.sin(q1)
+
+    var y = 
+        a1 * Math.sin(q1) 
+        + a2 * Math.sin(q1) * Math.cos(q2) 
+        - a3 * Math.sin(q1) * Math.sin(q2) * Math.sin(q3) 
+        + a3 * Math.sin(q1) * Math.cos(q2) * Math.cos(q3) 
+        + a4 * (-Math.sin(q1) * Math.sin(q2) * Math.sin(q3) + Math.sin(q1) * Math.cos(q2) * Math.cos(q3)) * Math.cos(q4) 
+        + a4 * (-Math.sin(q1) * Math.sin(q2) * Math.cos(q3) - Math.sin(q1) * Math.sin(q3) * Math.cos(q2)) * Math.sin(q4) 
+        + d2 * Math.cos(q1) 
+        + d3 * Math.cos(q1)
+
+    var z = 
+        - a2 * Math.sin(q2) 
+        - a3 * Math.sin(q2) * Math.cos(q3) 
+        - a3 * Math.sin(q3) * Math.cos(q2) 
+        + a4 * (Math.sin(q2) * Math.sin(q3) - Math.cos(q2) * Math.cos(q3)) * Math.sin(q4) 
+        + a4 * (-Math.sin(q2) * Math.cos(q3) - Math.sin(q3) * Math.cos(q2)) * Math.cos(q4) 
+        + d1
+
+
+    return {x:x,y:y,z:z}
 }

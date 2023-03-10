@@ -1,7 +1,7 @@
 <div class="container-status-bar">
     <label class="status-label">Server status: </label>
-    <label class="status-value {{configServ?.serverStatus}}"> {{configServ?.serverStatus}}</label>
+    <label class="status-value {{mqttServ?.serverStatus}}"> {{mqttServ?.serverStatus}}</label>
     <label class="connected-label">Connected: </label>
-    <label class="connected-value {{configServ?.connected}}"> {{configServ?.connected}}</label>
-    <button (click)="processConnection()">{{getButtonLabel()}}</button>
+    <label class="connected-value {{mqttServ?.connected}}"> {{mqttServ?.connected}}</label>
+    <button (click)="processConnection()" [disabled]="this.mqttServ?.enableButtonConnect == false">{{mqttServ?.buttonLabel}}</button>
 </div>

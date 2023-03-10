@@ -2,7 +2,7 @@
     <div class="user-servers">
         <div class="line">
             <label>User (e-mail): </label>
-            <input type="text" [(ngModel)]="loggedUser" size="40"/>
+            <input type="text" [(ngModel)]="configServ!.loggedUser.id" size="40"/>
         </div>
         <div class="line">
             <label>Java server (API) URL: </label>
@@ -12,5 +12,45 @@
             <label>Mosquitto server URL: </label>
             <input type="text" [(ngModel)]="configServ!.brokerUrl" size="40" />
         </div>
+    </div>
+    <div class="container-robots-list">
+        <div class="list-label">
+            Available controllers to connect 
+        </div>
+        <div class="robots-list">
+            
+            <mat-selection-list [multiple]="false">            
+                <mat-list-option *ngFor="let robot of this.configServ?.availableRobots"
+                    [selected]="robot.name == this.configServ?.selectedRobot?.name"
+                    (selectedChange)="toggleSelect(robot,$event)">
+                    {{robot.name}}
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
+        <div *ngIf="this.configServ?.selectedRobot" class="robot-info">
+            <div class="joint-header">
+                <label class="joint">
+                    Joint
+                </label>
+                <label class="min">
+                    Minimum Angle
+                </label>
+                <label class="max">
+                    Maximum Angle
+                </label>
+            </div>
+            <div *ngFor="let joint of this.configServ?.selectedRobot?.joints; let i = index" class="joint-info">
+                <label class="joint">
+                    {{i + 1}}
+                </label>
+                <label class="min">
+                    {{joint.minimum}}
+                </label>
+                <label class="max">
+                    {{joint.maximum}}
+                </label>
+            </div>
+        </div>
+        
     </div>
 </div>

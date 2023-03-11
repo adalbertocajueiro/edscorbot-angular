@@ -39,9 +39,9 @@ export class SingleComponent implements OnInit{
       obj[jointName + (index + 1).toString()] = control
       this.joints.push(jointName + (index + 1).toString())
     }
-    var control = new FormControl('',Validators.required)  
-    obj['Time(ms)'] = control
-    this.joints.push('Time(ms)')
+    var control = new FormControl(this.mqttService.defaultPointTime + '',Validators.required)  
+    obj['Time (ms)'] = control
+    this.joints.push('Time (ms)')
 
     return obj
   }
@@ -52,10 +52,24 @@ export class SingleComponent implements OnInit{
 
   jointChanged(event:any){
     var point = this.convertFormToArray()
-    var p = robotPointTo3D([2.177624656627297,47.594193677010445,86.1440287320137,-60.371378745794125])
-    console.log('3d point', p)
   }
 
+  moveToPoint(){
+    var point:number[] = []
+   
+    var hasInvalidValue:boolean = 
+      Object.entries(this.form.controls)
+        .map (entry => parseInt(entry[1].value))
+        .some( v => Number.isNaN(v))
+    if(hasInvalidValue){
+      // it has invalid value and cannot send to robot
+      console.log('invalid point');
+    } else {
+      var point = this.convertFormToArray()
+      console.log(point);
+    }
+    
+  }
   convertFormToArray(){
     var point:number[] = []
    

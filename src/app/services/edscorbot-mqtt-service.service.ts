@@ -11,6 +11,7 @@ import { ConfigService } from './config.service';
 })
 export class EdscorbotMqttServiceService {
 
+  defaultPointTime:number = 500 //milisseconds
   javaApiUrl:string = "http://localhost:8080"
   brokerUrl:string = "tpc://localhost:1833"
   serverStatus?: "BUSY"|"FREE"|"ERROR" = undefined

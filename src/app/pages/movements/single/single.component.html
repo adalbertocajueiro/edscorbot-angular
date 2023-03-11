@@ -7,12 +7,13 @@
                     <label>{{field}}: </label>
                     <input 
                         [formControlName]="field" 
-                        placeholder="0" 
+                        placeholder="-" 
                         (ngModelChange)="jointChanged($event)"/>
                 </div>
+                
                 <div class="buttons">
                     <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
-                    <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'">Move</button>
+                    <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'" (click)="moveToPoint()">Move</button>
                 </div>
                 
             </form>

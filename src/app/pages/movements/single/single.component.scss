@@ -8,6 +8,9 @@
         flex-direction: column;
         justify-content: flex-start;
 
+        label{
+            font-weight: 500;
+        }
         .point{
             display: flex;
             width: 100%;

@@ -11,10 +11,10 @@ import { MetaInfoObject } from 'src/app/util/matainfo';
 })
 export class SettingsComponent implements OnInit{
   
-  configServ?:EdscorbotMqttServiceService
+  mqttServ?:EdscorbotMqttServiceService
   
   constructor(private mqttService:EdscorbotMqttServiceService){
-    this.configServ = mqttService
+    this.mqttServ = mqttService
   }
   ngOnInit(): void {
     if(this.mqttService.selectedRobot == undefined){

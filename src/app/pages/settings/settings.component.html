@@ -1,16 +1,28 @@
 <div class="container-settings">
-    <div class="user-servers">
-        <div class="line">
-            <label>User (e-mail): </label>
-            <input type="text" [(ngModel)]="configServ!.loggedUser.id" size="40"/>
+    <div class="general-params">
+        <div class="list-label">
+            General Paramaters
         </div>
         <div class="line">
+            <label>Default waiting time for single movements (ms): </label>
+            <input type="text" [(ngModel)]="mqttServ!.defaultPointTime" size="10" />
+        </div>
+    </div>
+    <div class="user-servers">
+        <div class="list-label">
+            Servers
+        </div>
+        <!-- div class="line">
+            <label>User (e-mail): </label>
+            <input type="text" [(ngModel)]="mqttServ!.loggedUser.id" size="40"/>
+        </div -->
+        <div class="line">
             <label>Java server (API) URL: </label>
-            <input type="text" [(ngModel)]="configServ!.javaApiUrl" size="40" />
+            <input type="text" [(ngModel)]="mqttServ!.javaApiUrl" size="40" />
         </div>
         <div class="line">
             <label>Mosquitto server URL: </label>
-            <input type="text" [(ngModel)]="configServ!.brokerUrl" size="40" />
+            <input type="text" [(ngModel)]="mqttServ!.brokerUrl" size="40" />
         </div>
     </div>
     <div class="container-robots-list">
@@ -20,14 +32,14 @@
         <div class="robots-list">
             
             <mat-selection-list [multiple]="false">            
-                <mat-list-option *ngFor="let robot of this.configServ?.availableRobots"
-                    [selected]="robot.name == this.configServ?.selectedRobot?.name"
+                <mat-list-option *ngFor="let robot of this.mqttServ?.availableRobots"
+                    [selected]="robot.name == this.mqttServ?.selectedRobot?.name"
                     (selectedChange)="toggleSelect(robot,$event)">
                     {{robot.name}}
                 </mat-list-option>
             </mat-selection-list>
         </div>
-        <div *ngIf="this.configServ?.selectedRobot" class="robot-info">
+        <div *ngIf="this.mqttServ?.selectedRobot" class="robot-info">
             <div class="joint-header">
                 <label class="joint">
                     Joint
@@ -39,7 +51,7 @@
                     Maximum Angle
                 </label>
             </div>
-            <div *ngFor="let joint of this.configServ?.selectedRobot?.joints; let i = index" class="joint-info">
+            <div *ngFor="let joint of this.mqttServ?.selectedRobot?.joints; let i = index" class="joint-info">
                 <label class="joint">
                     {{i + 1}}
                 </label>

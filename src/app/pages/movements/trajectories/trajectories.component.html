@@ -1,8 +1,28 @@
 <div class="container-trajectory">
+    <div class="load-trajectory">
+        <label>Build a new trajectory</label>
+        <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+        <button (click)="fileInput.click()">Select File</button>
+    </div>
     <div class="trajectories">
         <label>Saved trajectories: </label>
         <div class="trajectory-list">
-            <app-trajectory-table></app-trajectory-table>
+            <app-trajectory-table
+                (onSelectedTrajectory)="showPoints($event)"
+                ></app-trajectory-table>
+        </div>
+    </div>
+    <div class="trajectory-points">
+        <label>List of points</label>
+        <div class="list-points">
+            <mat-list>
+                <mat-list-item *ngFor="let point of selectedTrajectory?.points">
+                    <div *ngFor="let field of joints;let i = index">
+                        <label>{{field}}: </label>
+                        <span>{{point[i]}}</span>
+                    </div>
+                </mat-list-item>
+            </mat-list>
         </div>
     </div>
 </div>

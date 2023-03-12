@@ -1,0 +1,21 @@
+.container {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+::ng-deep .svg-container {
+    height: 100% !important;
+    width: 100% !important;
+
+}
+
+::ng-deep .main-svg {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+::ng-deep #scene {
+    top: 5px !important;
+    height: 600px !important;
+}

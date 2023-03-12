@@ -50,7 +50,7 @@
 .container-content{
     display: block;
     margin-top: 15px;
-    font-size: .95rem;;
+    font-size: .95rem;
 }
 :host ::ng-deep svg-container {
     width: 400px;
@@ -64,6 +64,7 @@
 :host ::ng-deep .mat-mdc-tab {
     //background-color: #f5cfcf;
     font-size: .95rem!important;
+    letter-spacing: 1.5px;
 }
 
 :host ::ng-deep .mdc-tab--active .mdc-tab__text-label {

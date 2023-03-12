@@ -29,6 +29,7 @@ import { TableLineComponent } from './components/trajectory-table/table-line/tab
 import { MqttModule } from 'ngx-mqtt';
 import { MovementsComponent } from './pages/movements/movements.component';
 import { SingleComponent } from './pages/movements/single/single.component';
+import { GraphplotComponent } from './components/graphplot/graphplot.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -60,7 +61,8 @@ export const MQTT_SERVICE_OPTIONS = {
     TrajectoryTableComponent,
     TableLineComponent,
     MovementsComponent,
-    SingleComponent
+    SingleComponent,
+    GraphplotComponent
   ],
   imports: [
     BrowserModule,

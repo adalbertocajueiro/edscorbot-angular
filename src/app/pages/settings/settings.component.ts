@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfigService } from 'src/app/services/config.service';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
 import { ARM_GET_METAINFO, META_INFO_CHANNEL } from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';

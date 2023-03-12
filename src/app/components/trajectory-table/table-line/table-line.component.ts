@@ -12,7 +12,7 @@ export class TableLineComponent {
   @Output()
   onLineClick:EventEmitter<any> = new EventEmitter<any>()
 
-  toggleTRajectory(){
+  lineClicked(){
     this.trajectory.selected = !this.trajectory.selected
     this.onLineClick.emit(this.trajectory)
   }

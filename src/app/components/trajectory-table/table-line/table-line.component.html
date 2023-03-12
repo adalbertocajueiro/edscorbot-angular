@@ -1,5 +1,5 @@
 <div class="table-line-container">
-    <div class="basic-info" (click)="toggleTRajectory()">
+    <div class="basic-info" (click)="lineClicked()">
         <div class="email">
             {{trajectory.owner.email}}
         </div>
@@ -13,7 +13,7 @@
         </div>
     </div>
     
-    <div class="points" *ngIf="trajectory.selected">
+    <!-- div class="points" *ngIf="trajectory.selected">
         <div *ngFor="let point of trajectory.points" class="point">
             <div class="refs">
                 <div class="jref">
@@ -39,5 +39,5 @@
                 <mat-icon matTooltip="Delete point" matTooltipPosition="right">delete</mat-icon>
             </div>
         </div>
-    </div>
+    </div -->
 </div>

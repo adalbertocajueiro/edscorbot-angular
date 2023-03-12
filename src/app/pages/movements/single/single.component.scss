@@ -13,16 +13,36 @@
         }
         .point{
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             width: 100%;
+            height: 65px;
             margin-top: 10px;
-            justify-content: space-around;
+            margin-bottom: 10px;
+            
+            .empty-robot{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                font-weight: 600;
+                color: rgb(130, 128, 128);
+                label{
+                    margin-left: 5px;
+                    margin-right: 5px;
+                }
+            }
             form{
                 display: flex;
-                width: 90%;
+                width: 95%;
+                height: 100%;
                 flex-direction: row;
                 justify-content: space-evenly;
                 align-items: flex-end;
-
+                overflow-x: auto;
+                
                 .joint{
                     display: flex;
                     flex-direction: column;
@@ -46,6 +66,22 @@
             }
         }
     }
+    .list-points-moved{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 200px;
+        margin-top: 15px;
+        label {
+            font-weight: 500;
+        }
+        .list-points{
+            display: block;
+            width: 99%;
+            height: 100%;
+            overflow-y: auto;
+        }
+    }
 }
 
 input{
@@ -63,4 +99,35 @@ button{
     &:active {
         background-color: lightgray;
     }
+}
+
+mat-list{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+mat-list-item{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 30px!important;
+    div{
+        display: flex;
+        justify-content: space-between;
+        label{
+            font-size: 0.8em;
+            font-weight: 300!important;
+        }
+        span{
+            font-size: 0.8em;
+            font-weight: 400;
+        }
+    }
+}
+
+:host ::ng-deep .mdc-list-item__primary-text{
+    display: flex;
+    justify-content: space-between;
+
 }

@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ConfigService } from 'src/app/services/config.service';
+import { Component} from '@angular/core';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
-import { ARM_CHECK_STATUS, ARM_CONNECT, ARM_DISCONNECT, COMMANDS_CHANNEL } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-status-bar',

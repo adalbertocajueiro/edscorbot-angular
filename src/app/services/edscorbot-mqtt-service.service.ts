@@ -4,7 +4,6 @@ import { Subject, Subscription } from 'rxjs';
 import { ARM_CHECK_STATUS, ARM_CONNECT, ARM_CONNECTED, ARM_DISCONNECT, ARM_DISCONNECTED, ARM_METAINFO, ARM_STATUS, BUSY, COMMANDS_CHANNEL, ERROR, FREE, META_INFO_CHANNEL, MOVED_CHANNEL } from '../util/constants';
 import { MetaInfoObject } from '../util/matainfo';
 import { Client } from '../util/models';
-import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +35,7 @@ export class EdscorbotMqttServiceService {
   robotSelectedSubject:Subject<any> = new Subject<any>()
   updateStatusBar:Subject<string> = new Subject<string>()
 
-  constructor(private _mqttService: MqttService, private configService:ConfigService){
+  constructor(private _mqttService: MqttService){
     this.client = _mqttService
     this.createConnection()
     this.subscribeMetainfo()

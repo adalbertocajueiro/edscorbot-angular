@@ -2,6 +2,11 @@
     <div class="move-to-point">
         <label>Move to point</label>
         <div class="point">
+            <div class="empty-robot" *ngIf="!this.mqttServ?.selectedRobot">
+                <label>Select one robot using icon </label>
+                <mat-icon fontSet="material-icons-outlined" >settings</mat-icon>
+                <label> in the left bar</label>
+            </div>
             <form [formGroup]="form">
                 <div class="joint" *ngFor="let field of joints">
                     <label>{{field}}: </label>
@@ -9,17 +14,29 @@
                         [formControlName]="field" 
                         placeholder="-" 
                         (ngModelChange)="jointChanged($event)"/>
+                    
                 </div>
                 
                 <div class="buttons">
                     <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
-                    <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'" (click)="moveToPoint()">Move</button>
+                    <button *ngIf="numberOfJoints > 0" (click)="moveToPoint()">Move</button>
+                    <!-- button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'" (click)="moveToPoint()">Move</button -->
                 </div>
                 
             </form>
         </div>
     </div>
-    <div class="list-points-mmodev">
-        list of points applied
+    <div class="list-points-moved">
+        <label>List of points applied</label>
+        <div class="list-points">
+            <mat-list>
+                <mat-list-item *ngFor="let point of appliedPoints">
+                    <div *ngFor="let field of joints;let i = index">
+                        <label>{{field}}: </label>
+                        <span>{{point[i]}}</span>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </div>
     </div>
 </div>

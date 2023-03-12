@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-trajectory-table',
@@ -14,23 +14,12 @@ export class TrajectoryTableComponent {
         email:"adalberto.cajueiro@gmail.com"
       },
       date: "2023-02-20",
-      selected:false,
       points:[
-        {
-          j1Ref:4, j2Ref: 4, j3Ref: 4, j4Ref: 4
-        },
-        {
-          j1Ref:5, j2Ref: 5, j3Ref: 5, j4Ref: 5
-        },  
-        {
-          j1Ref:6, j2Ref: 6, j3Ref: 6, j4Ref: 6
-        },
-        {
-          j1Ref:7, j2Ref: 7, j3Ref: 7, j4Ref: 7
-        },
-        {
-          j1Ref:8, j2Ref: 8, j3Ref: 8, j4Ref: 8
-        }
+        [4,4,4,4,4,4],
+        [5,5,5,5,5,5],  
+        [6,6,6,6,6,6],
+        [7,7,7,7,7,7],
+        [8,8,8,8,8,8]
       ]
     },
     {
@@ -38,32 +27,24 @@ export class TrajectoryTableComponent {
         email:"adalberto.cajueiro@gmail.com"
       },
       date: "2023-02-21",
-      selected:false,
       points:[
-        {
-          j1Ref:4, j2Ref: 4, j3Ref: 4, j4Ref: 4
-        },
-        {
-          j1Ref:5, j2Ref: 5, j3Ref: 5, j4Ref: 5
-        },
-{
-          j1Ref:6, j2Ref: 6, j3Ref: 6, j4Ref: 6
-        },
-        {
-          j1Ref:7, j2Ref: 7, j3Ref: 7, j4Ref: 7
-        },
-        {
-          j1Ref:8, j2Ref: 8, j3Ref: 8, j4Ref: 8
-        }
+        [14,14,14,14,14,14],
+        [15,15,15,15,15,15],  
+        [16,16,16,16,16,16],
+        [17,17,17,17,17,17],
+        [18,18,18,18,18,18]
       ]
     }
   ]
 
   selectedTrajectory?:any
 
+  @Output()
+  onSelectedTrajectory: EventEmitter<any> = new EventEmitter<any>()
+
   changeSelectedTrajectory(event:any){
-    this.trajectories.filter(t => t.date !== event.date).forEach (t => t.selected = false)
-    console.log('trajectories',this.trajectories)
+    this.selectedTrajectory = event
+    this.onSelectedTrajectory.emit(this.selectedTrajectory)
   }
 
 }

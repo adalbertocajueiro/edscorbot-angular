@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
+import { GraphService } from 'src/app/services/graph.service';
 import { robotPointTo3D } from 'src/app/util/util';
 
 @Component({
@@ -13,9 +14,12 @@ export class SingleComponent implements OnInit{
   form:FormGroup = new FormGroup({})
   numberOfJoints:number = 0
   joints:string[] = []
+  appliedPoints:number[][] = []
   mqttServ?:EdscorbotMqttServiceService
 
-  constructor(private formBuilder: FormBuilder, private mqttService:EdscorbotMqttServiceService){
+  constructor(private formBuilder: FormBuilder, 
+              private mqttService:EdscorbotMqttServiceService,
+              private graphService:GraphService){
     this.mqttServ = this.mqttService
   }
   ngOnInit(): void {
@@ -26,12 +30,12 @@ export class SingleComponent implements OnInit{
     if(this.mqttService.selectedRobot){
       this.numberOfJoints = this.mqttService.selectedRobot?.joints.length
       this.form = this.formBuilder.group(
-        this.mountControls(this.numberOfJoints)
+        this.mountControls()
       );
     }
   }
 
-  mountControls(amount:number){
+  mountControls(){
     var obj:any = {}
     var jointName = "J"
     for (let index = 0; index < this.numberOfJoints; index++) {
@@ -66,7 +70,8 @@ export class SingleComponent implements OnInit{
       console.log('invalid point');
     } else {
       var point = this.convertFormToArray()
-      console.log(point);
+      this.appliedPoints.push(point)
+      this.graphService.buildPoints(this.appliedPoints)
     }
     
   }

@@ -19,7 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule} from '@angular/material/select';
+import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { UsersComponent } from './pages/users/users.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { TrajectoriesComponent } from './pages/movements/trajectories/trajectories.component';
@@ -81,6 +82,7 @@ export const MQTT_SERVICE_OPTIONS = {
     MatListModule,
     MatDialogModule,
     MatSelectModule,
+    MatSnackBarModule,
     PlotlyModule,
     MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
   ],

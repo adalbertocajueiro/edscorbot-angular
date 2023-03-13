@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
 import { GraphService } from 'src/app/services/graph.service';
 import { ARM_GET_METAINFO, META_INFO_CHANNEL } from 'src/app/util/constants';
@@ -15,12 +16,16 @@ export class SingleComponent implements OnInit{
   numberOfJoints:number = 0
   selectedTrajectory:any
   joints:string[] = []
+  selectedFile?: File
   appliedPoints:number[][] = []
   mqttServ?:EdscorbotMqttServiceService
 
+  @ViewChild("fileInput") fileInput?: any
+
   constructor(private formBuilder: FormBuilder, 
               private mqttService:EdscorbotMqttServiceService,
-              private graphService:GraphService){
+              private graphService:GraphService,
+              private snackBar: MatSnackBar){
     this.mqttServ = this.mqttService
   }
   ngOnInit(): void {
@@ -124,4 +129,52 @@ export class SingleComponent implements OnInit{
     this.appliedPoints = trajectory.points
     this.graphService.buildPoints(this.appliedPoints)
   }
+
+  onFileChanged(event:any) {
+      this.selectedFile = event.target.files[0];
+      const fileReader = new FileReader();
+      if(this.selectedFile){
+        fileReader.readAsText(this.selectedFile, "UTF-8");
+        
+        fileReader.onload = () => {
+          if(fileReader.result){
+            var points:any[][] = JSON.parse(fileReader.result.toString())
+            
+              if(points.length > 0){
+                var newTrajectory:any = {}
+                if (this.mqttService.selectedRobot?.joints.length == points[0].length){
+                  //points have not time coordinate. using the default
+                  var newpoints:number[][] = []
+                  points.map( p => p.push(this.mqttService.defaultPointTime))
+                  points.forEach( p =>  newpoints.push(p))
+                  this.graphService.buildPoints(newpoints)
+                } else {
+                  this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
+                }
+              } else{
+                //file has no points
+                this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
+              }
+            
+            
+          }
+          
+        }
+        fileReader.onerror = (error) => {
+          console.log(error);
+        } 
+      }
+    
+    
+  }
+
+  verifyConditions(event:any){
+    if(!this.mqttService.selectedRobot){
+      this.snackBar.open("Robot is not selected", "Close",{duration:5000,verticalPosition:"top"})
+      return false
+    } else {
+      return true
+    }
+  }
+  nothing(){ }
 }

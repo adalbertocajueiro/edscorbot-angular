@@ -30,7 +30,6 @@
             Available controllers to connect 
         </div>
         <div class="robots-list">
-            
             <mat-selection-list [multiple]="false">            
                 <mat-list-option *ngFor="let robot of this.mqttServ?.availableRobots"
                     [selected]="robot.name == this.mqttServ?.selectedRobot?.name"

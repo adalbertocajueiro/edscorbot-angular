@@ -39,7 +39,7 @@ export class SidenavComponent {
       }) 
     } else {
       this.items.map( (i) => {
-        if(i.path != 'student'){
+        if(i.path != 'settings'){
           i.selected = false;
         } else {
           i.selected = true;
@@ -47,6 +47,7 @@ export class SidenavComponent {
       })
     }
   }
+
   changeSelected(item:SidenavItem){
     this.items.map( (i) => {
       if(i.path != item.path){

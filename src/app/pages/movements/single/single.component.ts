@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
 import { GraphService } from 'src/app/services/graph.service';
-import { robotPointTo3D } from 'src/app/util/util';
+import { ARM_GET_METAINFO, META_INFO_CHANNEL } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-single',
@@ -13,6 +13,7 @@ export class SingleComponent implements OnInit{
   
   form:FormGroup = new FormGroup({})
   numberOfJoints:number = 0
+  selectedTrajectory:any
   joints:string[] = []
   appliedPoints:number[][] = []
   mqttServ?:EdscorbotMqttServiceService
@@ -23,6 +24,17 @@ export class SingleComponent implements OnInit{
     this.mqttServ = this.mqttService
   }
   ngOnInit(): void {
+    if(this.mqttService.selectedRobot == undefined){
+      const content = {
+        signal: ARM_GET_METAINFO
+      }
+      const publish = {
+        topic: META_INFO_CHANNEL,
+        qos: 0,
+        payload: JSON.stringify(content)
+      }
+      this.mqttService.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    } 
     this.buildForm()
   }
 
@@ -58,6 +70,11 @@ export class SingleComponent implements OnInit{
     var point = this.convertFormToArray()
   }
 
+  robotSelected(event:any){
+    this.mqttService.selectRobotByName(event.value)
+    this.buildForm()
+  }
+
   moveToPoint(){
     var point:number[] = []
    
@@ -72,6 +89,7 @@ export class SingleComponent implements OnInit{
       var point = this.convertFormToArray()
       this.appliedPoints.push(point)
       this.graphService.buildPoints(this.appliedPoints)
+      console.log(this.appliedPoints)
     }
     
   }
@@ -90,5 +108,20 @@ export class SingleComponent implements OnInit{
       }
     )
     return point
+  }
+
+  deletePoint(point:any[]){
+    this.appliedPoints = this.appliedPoints.filter (p => p != point)
+    this.graphService.buildPoints(this.appliedPoints)
+  }
+
+  clearPointList(){
+    this.appliedPoints = []
+    this.graphService.buildPoints(this.appliedPoints)
+  }
+
+  selectTrajectory(trajectory:any){
+    this.appliedPoints = trajectory.points
+    this.graphService.buildPoints(this.appliedPoints)
   }
 }

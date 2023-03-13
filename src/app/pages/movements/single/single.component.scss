@@ -1,17 +1,18 @@
-.container-single{
+.container-single {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 
-    .move-to-point{
+    .move-to-point {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
 
-        label{
+        label {
             font-weight: 500;
         }
-        .point{
+
+        .point {
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -20,21 +21,28 @@
             height: 65px;
             margin-top: 10px;
             margin-bottom: 10px;
-            
-            .empty-robot{
+
+            .empty-robot {
                 display: flex;
+                width: 100%;
                 align-items: center;
                 justify-content: center;
                 text-transform: uppercase;
                 letter-spacing: 2px;
                 font-weight: 600;
                 color: rgb(130, 128, 128);
-                label{
+
+                label {
                     margin-left: 5px;
                     margin-right: 5px;
                 }
+
+                mat-form-field {
+                    min-width: 100% !important;
+                }
             }
-            form{
+
+            form {
                 display: flex;
                 width: 95%;
                 height: 100%;
@@ -42,8 +50,8 @@
                 justify-content: space-evenly;
                 align-items: flex-end;
                 overflow-x: auto;
-                
-                .joint{
+
+                .joint {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -51,13 +59,13 @@
                     font-size: 0.85rem;
                     font-weight: 500;
 
-                    label{
+                    label {
                         margin-left: 5px;
                         margin-right: 3px;
                     }
                 }
 
-                .buttons{
+                .buttons {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -66,68 +74,143 @@
             }
         }
     }
-    .list-points-moved{
+
+    .list-points-moved {
         display: flex;
         flex-direction: column;
         width: 100%;
         height: 200px;
         margin-top: 15px;
-        label {
-            font-weight: 500;
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            label {
+                font-weight: 500;
+            }
+
+            .header-buttons {
+                color: rgb(104, 105, 105);
+
+                mat-icon {
+                    font-size: 1.2rem;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
         }
-        .list-points{
+
+        .list-points {
             display: block;
             width: 99%;
             height: 100%;
             overflow-y: auto;
         }
     }
+
+    .trajectories {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 99%;
+        height: 200px;
+        label {
+                font-weight: 500;
+        }
+        .trajectory-list {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+    }
 }
 
-input{
+input {
     margin-top: 3px;
     text-align: center;
     max-width: 30px;
 }
 
-button{
+button {
     border-radius: 8px;
     border-width: 1px;
     width: 100px;
     height: 22px;
     margin-bottom: 5px;
+
     &:active {
         background-color: lightgray;
     }
 }
 
-mat-list{
+
+mat-list {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     width: 100%;
     height: 100%;
-}
-mat-list-item{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 30px!important;
-    div{
+
+    mat-list-item {
         display: flex;
+        flex-direction: row;
+        align-items: center;
         justify-content: space-between;
-        label{
-            font-size: 0.8em;
-            font-weight: 300!important;
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: lightgray;
         }
-        span{
-            font-size: 0.8em;
-            font-weight: 400;
+
+        div {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 300;
+
+            label {
+                margin-left: 5px;
+                font-weight: 400;
+            }
+
+            mat-icon {
+                font-size: 1.1rem;
+                height: 100%;
+                width: 100%;
+
+            }
         }
+
     }
 }
 
-:host ::ng-deep .mdc-list-item__primary-text{
+
+mat-option {
+    color: rgb(86, 85, 85);
+    min-height: 38px !important;
+}
+
+:host ::ng-deep .mdc-menu-surface--open {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+:host ::ng-deep .mdc-list-item__content {
+    display: flex;
+    width: 100%;
+}
+
+:host ::ng-deep .mat-mdc-list-item-unscoped-content {
     display: flex;
     justify-content: space-between;
-
+    align-items: center;
+    width: 100%;
 }

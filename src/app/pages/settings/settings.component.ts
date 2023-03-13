@@ -31,7 +31,6 @@ export class SettingsComponent implements OnInit{
 
   toggleSelect(robot:any,selected:boolean){
     if(selected){
-      console.log('selecting robot')
       this.mqttService.selectRobot(robot)
     }
   }

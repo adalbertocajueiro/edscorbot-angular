@@ -112,26 +112,35 @@ export class EdscorbotMqttServiceService {
       }
     } 
   }
-  selectRobot(robot:MetaInfoObject){
-    this.selectedRobot = robot
-    //unsubscribe on all other robots
-    this.availableRobots.forEach( r => {
-      if (r.name != this.selectedRobot?.name){
-        this.unsubscribeCommands()
-        this.unsubscribeMoved()
+  selectRobot(robot:MetaInfoObject | undefined){
+    if(!robot){
+      this.selectedRobot = undefined
+    } else {
+      this.selectedRobot = robot
+      //unsubscribe on all other robots
+      this.availableRobots.forEach( r => {
+        if (r.name != this.selectedRobot?.name){
+          this.unsubscribeCommands()
+          this.unsubscribeMoved()
+        }
+      })
+      this.subscribeCommands(robot.name)
+      const content = {
+        signal: ARM_CHECK_STATUS
       }
-    })
-    this.subscribeCommands(robot.name)
-    const content = {
-      signal: ARM_CHECK_STATUS
-    }
 
-    const publish = {
-      topic: this.selectedRobot.name + "/" + COMMANDS_CHANNEL,
-      qos: 0,
-      payload: JSON.stringify(content)
+      const publish = {
+        topic: this.selectedRobot.name + "/" + COMMANDS_CHANNEL,
+        qos: 0,
+        payload: JSON.stringify(content)
+      }
+      this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
     }
-    this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+  }
+
+  selectRobotByName(name:string){
+    var found = this.availableRobots.find( r => r.name === name)
+    this.selectRobot(found)
   }
 
   processCommand(commandObj:any){

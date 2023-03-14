@@ -2,17 +2,7 @@
     
     <div class="move-to-point">
         <label>Move to point</label>
-        <div class="point">
-            <!-- div class="empty-robot" *ngIf="!this.selectedRobot">
-                <mat-form-field appearance="fill">
-                    <mat-label>Select an arm to connect</mat-label>
-                    <mat-select (selectionChange)="robotSelected($event)">
-                        <mat-option>None</mat-option>
-                        <mat-option *ngFor="let robot of this.mqttServ?.availableRobots" value="{{robot.name}}">{{robot.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div -->
-            
+        <div class="point">            
             <form [formGroup]="form">
                 <div class="joint" *ngFor="let field of joints">
                     <label>{{field}}: </label>
@@ -44,7 +34,7 @@
         </div>
         <div class="list-points">
             <mat-list>
-                <mat-list-item *ngFor="let point of appliedPoints" lines="6">
+                <mat-list-item *ngFor="let point of appliedPoints" >
                     <div *ngFor="let field of joints;let i = index">
                         <span>{{field}}: </span>
                         <label matTooltip="{{point[i]}}" matTooltipPosition="above">{{point[i].toFixed(2)}}</label>

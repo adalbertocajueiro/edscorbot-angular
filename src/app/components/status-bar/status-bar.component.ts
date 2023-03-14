@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import { Component, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
@@ -10,7 +10,7 @@ import { MetaInfoObject } from 'src/app/util/matainfo';
   templateUrl: './status-bar.component.html',
   styleUrls: ['./status-bar.component.scss']
 })
-export class StatusBarComponent implements OnChanges{
+export class StatusBarComponent {
 
   status?:number
   selectedRobot?:MetaInfoObject
@@ -20,11 +20,6 @@ export class StatusBarComponent implements OnChanges{
   constructor(private mqttService:EdscorbotMqttServiceService){
 
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('event', changes)
-    this.getRobotInfo()
-  }
-
   ngOnInit(): void {
     
     this.getRobotInfo()
@@ -42,7 +37,6 @@ export class StatusBarComponent implements OnChanges{
           if(commandObj.signal == ARM_DISCONNECTED){
             
             this.selectedRobot = this.mqttService.selectedRobot
-            console.log('dom object', this.select)
             this.select?.options.forEach((item: MatOption) => item.deselect());
             this.getRobotInfo()
           }

@@ -39,10 +39,13 @@ export class SingleComponent implements OnInit{
           if(commandObj.signal == ARM_STATUS
               || commandObj.signal == ARM_CONNECTED
               || commandObj.signal == ARM_DISCONNECTED){
-            
-                console.log('command received', commandObj)
+
               this.selectedRobot = this.mqttService.selectedRobot
               this.buildForm()
+              if(commandObj.signal == ARM_DISCONNECTED){
+                this.appliedPoints = []
+                this.graphService.buildPoints(this.appliedPoints)
+              }
           }
         },
         error: (err) => { console.log('error',err)}
@@ -53,10 +56,13 @@ export class SingleComponent implements OnInit{
   public buildForm() {
     if(this.mqttService.selectedRobot){
       this.numberOfJoints = this.mqttService.selectedRobot?.joints.length
-      this.form = this.formBuilder.group(
-        this.mountControls()
-      );
+      
+    } else {
+      this.numberOfJoints = 0
     }
+    this.form = this.formBuilder.group(
+        this.mountControls()
+    );
   }
 
   mountControls(){
@@ -68,9 +74,11 @@ export class SingleComponent implements OnInit{
       obj[jointName + (index + 1).toString()] = control
       this.joints.push(jointName + (index + 1).toString())
     }
-    var control = new FormControl(this.mqttService.defaultPointTime + '',Validators.required)  
-    obj['Time (ms)'] = control
-    this.joints.push('Time (ms)')
+    if(this.numberOfJoints > 0){
+      var control = new FormControl(this.mqttService.defaultPointTime + '',Validators.required)  
+      obj['Time (ms)'] = control
+      this.joints.push('Time (ms)')
+    }
 
     return obj
   }
@@ -102,7 +110,6 @@ export class SingleComponent implements OnInit{
       var point = this.convertFormToArray()
       this.appliedPoints.push(point)
       this.graphService.buildPoints(this.appliedPoints)
-      console.log(this.appliedPoints)
     }
     
   }

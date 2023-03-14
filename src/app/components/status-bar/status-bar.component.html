@@ -1,7 +1,10 @@
 <div class="container-status-bar">
-    <label class="status-label">Server status: </label>
-    <label class="status-value {{mqttServ?.serverStatus}}"> {{mqttServ?.serverStatus}}</label>
-    <label class="connected-label">Connected: </label>
-    <label class="connected-value {{mqttServ?.connected}}"> {{mqttServ?.connected}}</label>
-    <button (click)="processConnection()" [disabled]="this.mqttServ?.enableButtonConnect == false">{{mqttServ?.buttonLabel}}</button>
+    <mat-form-field appearance="fill">
+        <mat-label>Select an arm to connect</mat-label>
+        <mat-select #selectRobot (selectionChange)="robotSelected($event)">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let robot of this.availableRobots" value="{{robot.name}}">{{robot.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+   <app-connect-button (click)="processConnection()"></app-connect-button>
 </div>

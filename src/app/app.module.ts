@@ -32,6 +32,7 @@ import { MqttModule } from 'ngx-mqtt';
 import { MovementsComponent } from './pages/movements/movements.component';
 import { SingleComponent } from './pages/movements/single/single.component';
 import { GraphplotComponent } from './components/graphplot/graphplot.component';
+import { ConnectButtonComponent } from './components/connect-button/connect-button.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -64,7 +65,8 @@ export const MQTT_SERVICE_OPTIONS = {
     TableLineComponent,
     MovementsComponent,
     SingleComponent,
-    GraphplotComponent
+    GraphplotComponent,
+    ConnectButtonComponent
   ],
   imports: [
     BrowserModule,

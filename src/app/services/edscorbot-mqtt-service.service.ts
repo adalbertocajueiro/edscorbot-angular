@@ -13,8 +13,8 @@ export class EdscorbotMqttServiceService {
   defaultPointTime:number = 500 //milisseconds
   javaApiUrl:string = "http://localhost:8080"
   brokerUrl:string = "tpc://localhost:1833"
-  serverStatus?: "BUSY"|"FREE"|"ERROR" = undefined
-  connected:"NO"|"YES" = 'NO'
+  serverStatus?: number
+  connected: boolean = false
   buttonLabel:string = "Connect"
   enableButtonConnect:boolean = false
   availableRobots:MetaInfoObject[] = []
@@ -54,7 +54,25 @@ export class EdscorbotMqttServiceService {
     });
     this.client?.onMessage.subscribe((packet: any) => {
       console.log(`Received message ${packet.payload} from topic ${packet.topic}`)
+      this.notifyClients(packet)
     })
+  }
+
+  notifyClients(packet:any){
+    var payloadObj = JSON.parse(packet.payload.toString())
+    if(packet.topic.toString().includes(META_INFO_CHANNEL)){
+      this.metaInfoSubject.next(payloadObj)
+    } else if (packet.topic.toString().includes(COMMANDS_CHANNEL)){
+      if(payloadObj.signal == ARM_CONNECTED 
+          || payloadObj.signal == ARM_STATUS
+          || payloadObj.signal == ARM_DISCONNECTED){
+
+            this.commandsSubject.next(payloadObj)
+          }
+      
+    } else if (packet.topic.toString().includes(MOVED_CHANNEL)) {
+      this.movedSubject.next(payloadObj)
+    }
   }
 
   subscribeMetainfo(){
@@ -144,47 +162,45 @@ export class EdscorbotMqttServiceService {
   }
 
   processCommand(commandObj:any){
-    switch(commandObj.signal){
-      case ARM_STATUS:
-        this.updateStatusAndEnableButton(commandObj)
-        this.updateConnected(commandObj)
-        break
-      case ARM_CONNECTED:
-        this.updateConnected(commandObj)
-        break
-      case ARM_DISCONNECTED:
-        this.updateStatusAndEnableButton(commandObj)
-        this.updateConnected(commandObj)
-        break
-    }
-  }
-  updateStatusAndEnableButton(commandObj:any){
-    if(commandObj.error){
-      this.serverStatus = "ERROR"
-    } else if (commandObj.client) {
-      this.serverStatus = "BUSY"
+    if(commandObj.error) {
+      this.serverStatus = ERROR
+      this.enableButtonConnect = false
+      this.buttonLabel = 'Wait'
+      this.connected = false
     } else {
-      this.serverStatus = "FREE"
-      this.buttonLabel = 'Connect'
-      this.enableButtonConnect = true
+      if(commandObj.signal == ARM_STATUS){
+        if(commandObj.client){
+          this.serverStatus = BUSY
+        } else {
+          this.serverStatus = FREE
+          this.buttonLabel = 'Connect'
+          this.enableButtonConnect = true
+        }
+      }
     }
-  }
-
-  updateConnected(commandObj:any){
-    if(commandObj.client){
-      if(commandObj.client?.id == this.loggedUser?.id){
+    
+    if(commandObj.signal == ARM_CONNECTED){
+      if(commandObj.client.id == this.loggedUser.id){
         this.buttonLabel = 'Disconnect'
-        this.connected = "YES"
-        this.serverStatus = "BUSY"
+        this.connected = true
+        this.enableButtonConnect = true
+        this.serverStatus = BUSY
       } else {
         this.enableButtonConnect = false;
-        this.connected = "NO"
-      }
-    } else {
-      this.connected = "NO"
+        this.buttonLabel = 'Wait'
+        this.connected = false
+      } 
+    }
+
+    if(commandObj.signal == ARM_DISCONNECTED){
+      this.serverStatus = FREE
+      this.connected = false
+      this.enableButtonConnect = true
+      this.buttonLabel = 'Connect'
+      this.selectRobot(undefined)
     }
   }
-
+  
   sendConnectMessage(){
     const content = {
       signal: ARM_CONNECT,

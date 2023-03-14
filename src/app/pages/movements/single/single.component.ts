@@ -3,7 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
 import { GraphService } from 'src/app/services/graph.service';
-import { ARM_GET_METAINFO, META_INFO_CHANNEL } from 'src/app/util/constants';
+import { ARM_CONNECTED, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_METAINFO, ARM_STATUS, META_INFO_CHANNEL } from 'src/app/util/constants';
+import { MetaInfoObject } from 'src/app/util/matainfo';
 
 @Component({
   selector: 'app-single',
@@ -20,6 +21,8 @@ export class SingleComponent implements OnInit{
   appliedPoints:number[][] = []
   mqttServ?:EdscorbotMqttServiceService
 
+  selectedRobot?:MetaInfoObject
+
   @ViewChild("fileInput") fileInput?: any
 
   constructor(private formBuilder: FormBuilder, 
@@ -29,18 +32,22 @@ export class SingleComponent implements OnInit{
     this.mqttServ = this.mqttService
   }
   ngOnInit(): void {
-    if(this.mqttService.selectedRobot == undefined){
-      const content = {
-        signal: ARM_GET_METAINFO
+    this.mqttService.commandsSubject.subscribe(
+      {
+        next: (commandObj) => {
+          
+          if(commandObj.signal == ARM_STATUS
+              || commandObj.signal == ARM_CONNECTED
+              || commandObj.signal == ARM_DISCONNECTED){
+            
+                console.log('command received', commandObj)
+              this.selectedRobot = this.mqttService.selectedRobot
+              this.buildForm()
+          }
+        },
+        error: (err) => { console.log('error',err)}
       }
-      const publish = {
-        topic: META_INFO_CHANNEL,
-        qos: 0,
-        payload: JSON.stringify(content)
-      }
-      this.mqttService.client.unsafePublish(publish.topic,publish.payload,publish.qos)
-    } 
-    this.buildForm()
+    )
   }
 
   public buildForm() {
@@ -53,6 +60,7 @@ export class SingleComponent implements OnInit{
   }
 
   mountControls(){
+    this.joints = []
     var obj:any = {}
     var jointName = "J"
     for (let index = 0; index < this.numberOfJoints; index++) {

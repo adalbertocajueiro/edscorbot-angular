@@ -27,9 +27,11 @@
     </div>
     <div class="container-robots-list">
         <div class="list-label">
-            Available controllers to connect 
+            <label>Available controllers to connect</label>
+            <mat-icon fontSet="material-icons-outlined" matTooltip="Refresh list" matTooltipPosition="above"
+               (click)="refresh()" >refresh</mat-icon>
         </div>
-        <div class="robots-list">
+        <div *ngIf="this.mqttServ?.availableRobots!.length > 0" class="robots-list">
             <mat-selection-list [multiple]="false">            
                 <mat-list-option *ngFor="let robot of this.mqttServ?.availableRobots"
                     [selected]="robot.name == this.mqttServ?.selectedRobot?.name"

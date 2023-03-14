@@ -138,25 +138,28 @@ export class SingleComponent implements OnInit{
         
         fileReader.onload = () => {
           if(fileReader.result){
-            var points:any[][] = JSON.parse(fileReader.result.toString())
-            
-              if(points.length > 0){
-                var newTrajectory:any = {}
-                if (this.mqttService.selectedRobot?.joints.length == points[0].length){
-                  //points have not time coordinate. using the default
-                  var newpoints:number[][] = []
-                  points.map( p => p.push(this.mqttService.defaultPointTime))
-                  points.forEach( p =>  newpoints.push(p))
-                  this.graphService.buildPoints(newpoints)
-                } else {
-                  this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
+            var points:any[][] = []
+            try{
+                points = JSON.parse(fileReader.result.toString())
+                if(points.length > 0){
+                  
+                  if (this.mqttService.selectedRobot?.joints.length == points[0].length){
+                    //points have not time coordinate. using the default
+                    
+                    points.map( p => p.push(this.mqttService.defaultPointTime))
+                    points.forEach( p =>  this.appliedPoints.push(p))
+                    this.graphService.buildPoints(this.appliedPoints)
+                  } else {
+                    this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
+                  }
+                } else{
+                    //file has no points
+                    this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
                 }
-              } else{
-                //file has no points
-                this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
-              }
-            
-            
+            } catch(err){ //try to load as csv
+              console.log('trying to load as csv')
+              this.loadFromCsv(fileReader.result)
+            }
           }
           
         }
@@ -164,8 +167,22 @@ export class SingleComponent implements OnInit{
           console.log(error);
         } 
       }
-    
-    
+  }
+
+  loadFromCsv(csvContent:string | ArrayBuffer){
+
+    var lines = csvContent.toString().split('\r')
+    lines.shift()
+    lines.forEach( l => {
+      var row = l.replaceAll('\n','')
+                  .trim()
+                  .split('\t')
+                  .map ( n => n.replaceAll(',','.'))
+                  .map ( n => parseFloat(n))
+      this.appliedPoints.push(row)
+    })
+
+    this.graphService.buildPoints(this.appliedPoints)
   }
 
   verifyConditions(event:any){

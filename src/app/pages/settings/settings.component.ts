@@ -16,6 +16,16 @@ export class SettingsComponent implements OnInit{
     this.mqttServ = mqttService
   }
   ngOnInit(): void {
+    this.requestList()
+  }
+
+  toggleSelect(robot:any,selected:boolean){
+    if(selected){
+      this.mqttService.selectRobot(robot)
+    }
+  }
+
+  requestList(){
     if(this.mqttService.selectedRobot == undefined){
       const content = {
         signal: ARM_GET_METAINFO
@@ -28,11 +38,8 @@ export class SettingsComponent implements OnInit{
       this.mqttService.client.unsafePublish(publish.topic,publish.payload,publish.qos)
     } 
   }
-
-  toggleSelect(robot:any,selected:boolean){
-    if(selected){
-      this.mqttService.selectRobot(robot)
-    }
+  refresh(){
+    this.requestList()
   }
   
 }

@@ -33,6 +33,9 @@ import { MovementsComponent } from './pages/movements/movements.component';
 import { SingleComponent } from './pages/movements/single/single.component';
 import { GraphplotComponent } from './components/graphplot/graphplot.component';
 import { ConnectButtonComponent } from './components/connect-button/connect-button.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
+import { ToogleButtonComponent } from './components/toogle-button/toogle-button.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -66,7 +69,10 @@ export const MQTT_SERVICE_OPTIONS = {
     MovementsComponent,
     SingleComponent,
     GraphplotComponent,
-    ConnectButtonComponent
+    ConnectButtonComponent,
+    DialogComponent,
+    InfoDialogComponent,
+    ToogleButtonComponent
   ],
   imports: [
     BrowserModule,

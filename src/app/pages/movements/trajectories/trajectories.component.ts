@@ -59,7 +59,7 @@ export class TrajectoriesComponent {
       this.joints.push('Time (ms)')
     }
     
-    this.graphService.buildPoints(this.selectedTrajectory.points)
+    this.graphService.buildGraph(this.selectedTrajectory.points)
   }
 
 }

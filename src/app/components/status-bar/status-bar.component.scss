@@ -5,6 +5,14 @@
     margin-bottom: 10px;
     font-weight: bold;
 
+    mat-icon{
+        color:rgb(133, 131, 131);
+        margin-right: 10px;
+        font-size: 1.6rem;
+        &:hover{
+            cursor: pointer;
+        }
+    }
     
     .status-label{
         width: 110px;

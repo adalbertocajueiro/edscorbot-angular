@@ -1,7 +1,15 @@
 <div class="container-status-bar">
+    <mat-icon *ngIf="this.selectedRobot" fontSet="material-icons-outlined" 
+        matTooltip="Click to see info about the arm" 
+        matTooltipPosition="above" 
+        (click)="openInfoDialog()">info</mat-icon>
+    <mat-icon fontSet="material-icons-outlined" matTooltip="Link to the broker"
+        matTooltipPosition="above">link_add</mat-icon>
     <mat-form-field appearance="fill">
         <mat-label>Select an arm to connect</mat-label>
-        <mat-select #selectRobot (selectionChange)="robotSelected($event)">
+        <mat-select #selectRobot 
+            (selectionChange)="robotSelected($event)"
+            [disabled]="this.connected">
             <mat-option>None</mat-option>
             <mat-option *ngFor="let robot of this.availableRobots" value="{{robot.name}}">{{robot.name}}</mat-option>
         </mat-select>

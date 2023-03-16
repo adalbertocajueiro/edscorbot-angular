@@ -1,0 +1,73 @@
+.tittle{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    letter-spacing: 2px;
+    background-color: lightgray;
+}
+
+form {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+
+    .joint {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 500;
+        max-width: 80px;
+        margin-left: 2px;
+        margin-right: 2px;
+
+        label {
+            width: 100%;
+            text-align: center;
+        }
+        input{
+            width: 60%;
+            text-align: center;
+        }
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+}
+
+:host ::ng-deep .mdc-button__label{
+    color: rgb(74, 74, 74);
+}
+
+:host ::ng-deep .mat-mdc-button{
+    &:hover{
+        border: 1px solid lightgray;
+        border-radius: 10px;
+    }
+}
+
+:host ::ng-deep .mat-mdc-dialog-actions{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+}
+
+:host ::ng-deep .mat-mdc-dialog-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}

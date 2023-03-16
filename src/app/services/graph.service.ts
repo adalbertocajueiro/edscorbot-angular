@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { robotPointTo3D } from '../util/util';
+import { cinematicFunctions} from '../util/util';
+import { EdscorbotMqttServiceService } from './edscorbot-mqtt-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ import { robotPointTo3D } from '../util/util';
 
 export class GraphService {
 
+  /*
   graph:any = {
     data: [
       { x: [0], 
@@ -27,25 +29,68 @@ export class GraphService {
     ],
     layout: {}
   }
+  */
 
-  constructor() { }
+  constructor( private mqttService:EdscorbotMqttServiceService) { }
 
-  buildPoints(pointList:number[][]){
-    console.log('building points')
-    this.graph.data[0].x = []
-    this.graph.data[0].y = []
-    this.graph.data[0].z = []
+  buildGraph(pointList:number[][]){
+
+    var graph:any = {
+      data: [
+        { x: [0], 
+          y: [0], 
+          z: [0],
+          mode: 'markers',
+          marker: {
+              size: 5,
+              color: [-20],
+              colorscale: 'Viridis',
+              cmin: -20,
+              cmax: 50,
+              showscale:true
+          },
+          type: 'scatter3d'
+        }
+      ],
+      layout: {}
+    }
+
+    graph.data[0].x = []
+    graph.data[0].y = []
+    graph.data[0].z = []
 
     var range = pointList.length
     var color = -20
     pointList.forEach( point => {
-      var {x,y,z} = robotPointTo3D(point)
-      this.graph.data[0].x.push(x)
-      this.graph.data[0].y.push(y)
-      this.graph.data[0].z.push(z)
-      this.graph.data[0].marker.color.push(color)
-      color = color + 70/range
+      var robotName = this.mqttService.selectedRobot?.name
+      if(robotName){
+        var cinematicFunction = cinematicFunctions.get(robotName)
+        if(cinematicFunction){
+          var {x,y,z} = cinematicFunction(point)
+          graph.data[0].x.push(x)
+          graph.data[0].y.push(y)
+          graph.data[0].z.push(z)
+          graph.data[0].marker.color.push(color)
+          color = color + 70/range
+        }
+      }   
     })
-    
+  
+    return graph
+  }
+
+  addPoint(graph:any, point:number[]){
+    var lastColor = [...graph.data[0].marker.color].pop() + 0.1
+    var robotName = this.mqttService.selectedRobot?.name
+      if(robotName){
+        var cinematicFunction = cinematicFunctions.get(robotName)
+        if(cinematicFunction){
+          var {x,y,z} = cinematicFunction(point)
+          graph.data[0].x.push(x)
+          graph.data[0].y.push(y)
+          graph.data[0].z.push(z)
+          graph.data[0].marker.color.push(lastColor)
+        }
+      } 
   }
 }

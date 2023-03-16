@@ -1,6 +1,6 @@
 <div class="container-single">
     
-    <div class="move-to-point">
+    <!-- div class="move-to-point">
         <label>Move to point</label>
         <div class="point">            
             <form [formGroup]="form">
@@ -15,20 +15,31 @@
                 <div class="buttons">
                     <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
                     <button *ngIf="numberOfJoints > 0" (click)="moveToPoint()">Send to arm</button>
-                    <!-- button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'" (click)="moveToPoint()">Move</button -->
+                    <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'" (click)="moveToPoint()">Move</button>
                 </div>
                 
             </form>
         </div>
-    </div>
+    </div -->
     <div class="list-points-moved">
         <div class="list-header">
-            <label>List of points ({{appliedPoints.length}})</label>
+            <label>Trajectory {{appliedPoints.length > 0 ? '(' + appliedPoints.length +')' : ''}}</label>
             <div class="header-buttons" >
-                <mat-icon fontSet="material-icons-outlined" matTooltip="Clear list" matTooltipPosition="above" (click)="clearPointList()">clear_all</mat-icon>
-                <mat-icon fontSet="material-icons-outlined" matTooltip="Save as trajectory" matTooltipPosition="above" [ngClass]="this.mqttServ?.selectedRobot?'':'icon-disabled'">save</mat-icon>
-                <mat-icon fontSet="material-icons-outlined" matTooltip="Upload points from file" matTooltipPosition="above" 
-                    [ngClass]="this.mqttServ?.selectedRobot?'':'icon-disabled'" (click)="verifyConditions($event)?fileInput.click():nothing()" >upload</mat-icon>
+                <mat-icon fontSet="material-icons-outlined" matTooltip="Add one point" matTooltipPosition="above"
+                    [ngClass]="this.selectedRobot?'':'icon-disabled'"
+                    (click)="openPointDialog()">add</mat-icon>
+                <mat-icon fontSet="material-icons-outlined" matTooltip="Load points from file" matTooltipPosition="above"
+                    [ngClass]="this.selectedRobot?'':'icon-disabled'"
+                    (click)="verifyConditions($event)?fileInput.click():nothing()">upload</mat-icon>
+                <mat-icon fontSet="material-icons-outlined" matTooltip="Clear list" matTooltipPosition="above" 
+                    [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'"
+                    (click)="clearPointList()">clear_all</mat-icon>
+                <mat-icon fontSet="material-icons-outlined" matTooltip="Save as trajectory" matTooltipPosition="above" 
+                    [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'">save</mat-icon>
+                <mat-icon fontSet="material-icons-outlined" matTooltip="Send trajectory to arm" matTooltipPosition="above"
+                    [ngClass]="this.appliedPoints.length > 0 && this.connected?'':'icon-disabled'"
+                    (click)="sendTrajectoryToArm()">send</mat-icon>
+                
                 <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
             </div>
         </div>

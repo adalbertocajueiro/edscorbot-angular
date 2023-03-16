@@ -32,7 +32,20 @@ def direcKin(q1,q2,q3,q4):
  * 
  */
 
-export function robotPointTo3D(coordinates:number[]){
+export type CinematicFunction = (coordinates: number[]) => {x:number,y:number,z:number}
+
+export const cinematicFunctions:Map<string,CinematicFunction> = new Map<string,CinematicFunction>(
+    [
+        ['EDScorbot',robotPointTo3D],
+        ['EDScorbot2',robotPointTo3D2]
+    ]
+)
+
+function robotPointTo3D2(coordinates:number[]){
+    return { x: 10, y: 10, z: 10}
+}
+
+function robotPointTo3D(coordinates:number[]){
     const a1 = 5.0
     const a2 = 30
     const a3 = 35

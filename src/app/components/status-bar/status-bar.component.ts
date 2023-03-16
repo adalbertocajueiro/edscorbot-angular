@@ -1,9 +1,11 @@
-import { Component, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import { Component, ViewChild} from '@angular/core';
 import { MatOption } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
 import { ARM_CONNECTED, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_METAINFO, ARM_STATUS, FREE, META_INFO_CHANNEL } from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
+import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 
 @Component({
   selector: 'app-status-bar',
@@ -15,9 +17,12 @@ export class StatusBarComponent {
   status?:number
   selectedRobot?:MetaInfoObject
   availableRobots:MetaInfoObject[] = []
+  connected:boolean = false
+
   @ViewChild("selectRobot") select?:  MatSelect
   
-  constructor(private mqttService:EdscorbotMqttServiceService){
+  constructor(private mqttService:EdscorbotMqttServiceService,
+              private dialog:MatDialog){
 
   }
   ngOnInit(): void {
@@ -33,11 +38,13 @@ export class StatusBarComponent {
               this.status = this.mqttService.serverStatus
               this.selectedRobot = this.mqttService.selectedRobot
               this.availableRobots = this.mqttService.availableRobots
+              this.connected = this.mqttService.connected
           }
           if(commandObj.signal == ARM_DISCONNECTED){
             
             this.selectedRobot = this.mqttService.selectedRobot
             this.select?.options.forEach((item: MatOption) => item.deselect());
+            this.connected = this.mqttService.connected
             this.getRobotInfo()
           }
         },
@@ -83,6 +90,16 @@ export class StatusBarComponent {
   }
 
   robotSelected(event:any){
+    
     this.mqttService.selectRobotByName(event.value)
+  }
+
+  openInfoDialog() {
+    this.dialog.open(InfoDialogComponent, 
+      {
+        data: {
+          selectedRobot:this.selectedRobot
+        },
+      })
   }
 }

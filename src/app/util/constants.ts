@@ -16,8 +16,9 @@ export const ARM_CONNECTED = 6;
 export const ARM_MOVE_TO_POINT = 7;
 export const ARM_APPLY_TRAJECTORY = 8;
 export const ARM_CANCEL_TRAJECTORY = 9;
-export const ARM_DISCONNECT = 10;
-export const ARM_DISCONNECTED = 11;
+export const ARM_CANCELED_TRAJECTORY = 10;
+export const ARM_DISCONNECT = 11;
+export const ARM_DISCONNECTED = 12;
 export const COMMANDS_CHANNEL = "commands"
 
 //moved values

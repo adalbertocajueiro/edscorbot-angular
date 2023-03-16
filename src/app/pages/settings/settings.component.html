@@ -12,10 +12,10 @@
         <div class="list-label">
             Servers
         </div>
-        <!-- div class="line">
+        <div class="line">
             <label>User (e-mail): </label>
             <input type="text" [(ngModel)]="mqttServ!.loggedUser.id" size="40"/>
-        </div -->
+        </div>
         <div class="line">
             <label>Java server (API) URL: </label>
             <input type="text" [(ngModel)]="mqttServ!.javaApiUrl" size="40" />
@@ -40,7 +40,7 @@
                 </mat-list-option>
             </mat-selection-list>
         </div>
-        <div *ngIf="this.mqttServ?.selectedRobot" class="robot-info">
+        <!-- div *ngIf="this.mqttServ?.selectedRobot" class="robot-info">
             <div class="joint-header">
                 <label class="joint">
                     Joint
@@ -63,7 +63,7 @@
                     {{joint.maximum}}
                 </label>
             </div>
-        </div>
+        </div -->
         
     </div>
 </div>

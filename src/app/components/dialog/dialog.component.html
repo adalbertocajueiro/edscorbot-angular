@@ -1,0 +1,27 @@
+<div class="tittle">
+    <label>New point</label>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="joint" *ngFor="let field of joints">
+            <label>{{field}}: </label>
+            <input [formControlName]="field" placeholder="-" 
+                [matTooltip]="getRangeForJoint(field)" matTooltipPosition="above"
+                (ngModelChange)="checkCoordinate(field)"/>
+        </div>
+
+        <!-- div class="buttons">
+            <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
+            <button *ngIf="numberOfJoints > 0" (click)="moveToPoint()">Send to arm</button>
+            <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'"
+                (click)="moveToPoint()">Move</button>
+        </div -->
+        
+    </form>
+    
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="">Cancel</button>
+    <button mat-button [mat-dialog-close]="buildPoint()" cdkFocusInitial>Ok</button>
+</div>

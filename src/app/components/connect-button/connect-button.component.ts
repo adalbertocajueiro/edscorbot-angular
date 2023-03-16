@@ -7,7 +7,7 @@ import { FREE, BUSY, ERROR, ARM_STATUS, ARM_CONNECTED, ARM_DISCONNECTED } from '
   templateUrl: './connect-button.component.html',
   styleUrls: ['./connect-button.component.scss']
 })
-export class ConnectButtonComponent implements OnDestroy{
+export class ConnectButtonComponent implements OnInit{
 
   @Output()
   click:EventEmitter<any> = new EventEmitter<any>()
@@ -15,12 +15,17 @@ export class ConnectButtonComponent implements OnDestroy{
   status?:number
   className:string = 'disconnected'
   iconName:string = ''
+  tooltip:string = ''
   buttonLabel:string = 'Robot not selected'
   enableButtonConnect:boolean = false
 
   constructor(private mqttService:EdscorbotMqttServiceService){
     this.status = this.mqttService.serverStatus
 
+    
+
+  }
+  ngOnInit(): void {
     this.mqttService.commandsSubject.subscribe(
       {
         next: (commandObj) => {
@@ -32,11 +37,22 @@ export class ConnectButtonComponent implements OnDestroy{
               this.status = this.mqttService.serverStatus
               this.iconName = this.getIconName(this.status)
               this.className = this.getClassName(this.status)
+              this.tooltip = this.getTooltip(this.status, commandObj.client)
               this.buttonLabel = this.mqttService.buttonLabel
               this.enableButtonConnect = this.mqttService.enableButtonConnect
           }
         },
         error: (err) => { console.log('error',err)}
+      }
+    )
+    this.mqttService.selectedRobotSubject.subscribe(
+      {
+        next: (res) => {
+          console.log('selected robot', res)
+          this.className = 'disconnected'
+          this.buttonLabel = 'Robot not selected'
+          this.enableButtonConnect = this.mqttService.enableButtonConnect
+        }
       }
     )
   }
@@ -50,7 +66,7 @@ export class ConnectButtonComponent implements OnDestroy{
           if(this.mqttService.connected){
             return 'link_off'
           } else {
-            return ''
+            return 'sentiment_dissatisfied'
           }
           
         case ERROR:
@@ -79,9 +95,25 @@ export class ConnectButtonComponent implements OnDestroy{
       return ''
     }
   }
-  ngOnDestroy(): void {
-    this.mqttService.commandsSubject.unsubscribe()
+
+  getTooltip(status?:number, client?:any){
+    if(status != undefined){
+      switch(status){
+        case FREE:
+          return 'Connect to the arm'
+        case BUSY:
+          if(client?.id == this.mqttService.loggedUser.id){
+            return 'You are connected'
+          } else {
+            return 'Arm is busy'
+          }   
+        case ERROR:
+          return 'Internal error in the arm'
+        default:
+          return ''
+      }
+    } else {
+      return ''
+    }
   }
-
-
 }

@@ -1,10 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
-import { GraphService } from 'src/app/services/graph.service';
-import { ARM_CONNECTED, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_METAINFO, ARM_STATUS, META_INFO_CHANNEL } from 'src/app/util/constants';
+import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_STATUS} from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
+import { Point, Trajectory } from 'src/app/util/models';
 
 @Component({
   selector: 'app-single',
@@ -19,19 +21,40 @@ export class SingleComponent implements OnInit{
   joints:string[] = []
   selectedFile?: File
   appliedPoints:number[][] = []
-  mqttServ?:EdscorbotMqttServiceService
+
+  simulationGraph:any
+  realGraph:any
+
+  @Output()
+  onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
 
   selectedRobot?:MetaInfoObject
+  connected:boolean = false
 
   @ViewChild("fileInput") fileInput?: any
 
   constructor(private formBuilder: FormBuilder, 
               private mqttService:EdscorbotMqttServiceService,
-              private graphService:GraphService,
-              private snackBar: MatSnackBar){
-    this.mqttServ = this.mqttService
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog){
+    
   }
   ngOnInit(): void {
+    this.selectedRobot = this.mqttService.selectedRobot
+    this.connected = this.mqttService.connected
+    this.buildForm()
+    this.mqttService.selectedRobotSubject.subscribe(
+      {
+        next: (res) => {
+          this.selectedRobot = this.mqttService.selectedRobot
+          this.buildForm()
+          this.appliedPoints = []
+          this.onSimulationPointsChanged.emit(this.appliedPoints)    
+        },
+        error: (err) => { console.log('error',err)}
+      }
+    )
+
     this.mqttService.commandsSubject.subscribe(
       {
         next: (commandObj) => {
@@ -41,11 +64,16 @@ export class SingleComponent implements OnInit{
               || commandObj.signal == ARM_DISCONNECTED){
 
               this.selectedRobot = this.mqttService.selectedRobot
+              this.connected = this.mqttService.connected
               this.buildForm()
               if(commandObj.signal == ARM_DISCONNECTED){
                 this.appliedPoints = []
-                this.graphService.buildPoints(this.appliedPoints)
+                this.onSimulationPointsChanged.emit(this.appliedPoints)
               }
+          }
+
+          if(commandObj.signal == ARM_CANCELED_TRAJECTORY){
+            console.log('stopping trajectory execution')
           }
         },
         error: (err) => { console.log('error',err)}
@@ -54,9 +82,8 @@ export class SingleComponent implements OnInit{
   }
 
   public buildForm() {
-    if(this.mqttService.selectedRobot){
-      this.numberOfJoints = this.mqttService.selectedRobot?.joints.length
-      
+    if(this.selectedRobot){
+      this.numberOfJoints = this.selectedRobot.joints.length
     } else {
       this.numberOfJoints = 0
     }
@@ -70,7 +97,7 @@ export class SingleComponent implements OnInit{
     var obj:any = {}
     var jointName = "J"
     for (let index = 0; index < this.numberOfJoints; index++) {
-      var control = new FormControl('',[Validators.required, Validators.pattern('[0-9]*')])  
+      var control = new FormControl('',[Validators.required, Validators.pattern('[-]?[0-9]*'), Validators.min(this.selectedRobot!.joints[index].minimum),Validators.max(this.selectedRobot!.joints[index].maximum)])  
       obj[jointName + (index + 1).toString()] = control
       this.joints.push(jointName + (index + 1).toString())
     }
@@ -83,6 +110,7 @@ export class SingleComponent implements OnInit{
     return obj
   }
 
+  /*
   clear(){
     this.form.reset()
   }
@@ -90,11 +118,13 @@ export class SingleComponent implements OnInit{
   jointChanged(event:any){
     var point = this.convertFormToArray()
   }
+  
 
   robotSelected(event:any){
     this.mqttService.selectRobotByName(event.value)
     this.buildForm()
   }
+  
 
   moveToPoint(){
     var point:number[] = []
@@ -113,6 +143,7 @@ export class SingleComponent implements OnInit{
     }
     
   }
+  
   convertFormToArray(){
     var point:number[] = []
    
@@ -129,20 +160,23 @@ export class SingleComponent implements OnInit{
     )
     return point
   }
-
+  */
   deletePoint(point:any[]){
     this.appliedPoints = this.appliedPoints.filter (p => p != point)
-    this.graphService.buildPoints(this.appliedPoints)
+    //this.graphService.buildGraph(this.appliedPoints)
+    this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   clearPointList(){
     this.appliedPoints = []
-    this.graphService.buildPoints(this.appliedPoints)
+    //this.graphService.buildGraph(this.appliedPoints)
+    this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   selectTrajectory(trajectory:any){
     this.appliedPoints = trajectory.points
-    this.graphService.buildPoints(this.appliedPoints)
+    //this.graphService.buildGraph(this.appliedPoints)
+    this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   onFileChanged(event:any) {
@@ -163,7 +197,8 @@ export class SingleComponent implements OnInit{
                     
                     points.map( p => p.push(this.mqttService.defaultPointTime))
                     points.forEach( p =>  this.appliedPoints.push(p))
-                    this.graphService.buildPoints(this.appliedPoints)
+                    //this.graphService.buildGraph(this.appliedPoints)
+                    this.onSimulationPointsChanged.emit(this.appliedPoints)
                   } else {
                     this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
                   }
@@ -197,7 +232,8 @@ export class SingleComponent implements OnInit{
       this.appliedPoints.push(row)
     })
 
-    this.graphService.buildPoints(this.appliedPoints)
+    //this.graphService.buildGraph(this.appliedPoints)
+    this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   verifyConditions(event:any){
@@ -209,4 +245,37 @@ export class SingleComponent implements OnInit{
     }
   }
   nothing(){ }
+
+  sendTrajectoryToArm(){
+    
+    var trajectory:Trajectory = {
+      points: []
+    }
+    this.appliedPoints.forEach ( p => {
+      var point:Point = {
+        coordinates: p
+      }
+      trajectory.points.push(point)
+    })
+    this.mqttService.sendTrajectoryMessage(trajectory)
+  }
+
+  openPointDialog() {
+    const dialogRef = this.dialog.open(DialogComponent, 
+      {
+        data: {
+          form: this.form,
+          joints: this.joints,
+          selectedRobot:this.selectedRobot
+        },
+      })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.appliedPoints.push(result)
+        //var simGraph = this.graphService.buildGraph(this.appliedPoints)
+        this.onSimulationPointsChanged.emit(this.appliedPoints)
+      }
+    });
+  }
 }

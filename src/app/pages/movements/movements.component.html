@@ -1,14 +1,23 @@
 <div class="container-movements">
     <div class="movements-trajectories">
-        <app-single></app-single>
+        <app-single
+            (onSimulationPointsChanged)="updateSimulationGraph($event)"></app-single>
     </div>
     <div class="graph">
-        <div class="planned">
-            <app-graphplot></app-graphplot>
+        <div class="toggle">
+            <app-toogle-button
+                (onToggleChanged)="switchGraph($event)"></app-toogle-button>
         </div>
-        <!-- div class="executed">
-            <app-graph></app-graph>
-        </div  -->
+        <div class="graphs">
+            <div class="planned" [ngClass]="!toogleChecked?'visible':'invisible'">
+                <app-graphplot [graphSubject]="simGraphSubject"></app-graphplot>
+            </div>
+            <div class="planned" [ngClass]="toogleChecked?'visible':'invisible'">
+                <app-graphplot 
+                    [graphSubject]="realGraphSubject"></app-graphplot>
+            </div>
+        </div>
+        
     </div>
 </div>
 

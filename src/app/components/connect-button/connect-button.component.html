@@ -1,6 +1,7 @@
 <button mat-fab extended 
+    matTooltip="{{tooltip}}" matTooltipPosition="above"
     [ngClass]="className"
-    [disabled]="this.enableButtonConnect == false"
+    [disabled]="enableButtonConnect == false"
     (click)="this.click.emit($event)">
     <mat-icon *ngIf="iconName.length > 0">{{iconName}}</mat-icon>
     {{buttonLabel}}

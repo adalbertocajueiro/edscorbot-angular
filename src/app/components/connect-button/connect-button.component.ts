@@ -20,7 +20,7 @@ export class ConnectButtonComponent implements OnInit {
   enableButtonConnect:boolean = false
 
   constructor(private mqttService:EdscorbotMqttServiceService){
-    this.status = this.mqttService.serverStatus
+    //this.status = this.mqttService.serverStatus
   }
 
 

@@ -13,10 +13,6 @@ export class EdscorbotMqttServiceService {
   defaultPointTime:number = 500 //milisseconds
   javaApiUrl:string = "http://localhost:8080"
   brokerUrl:string = "tpc://localhost:1833"
-  serverStatus?: number
-  //connected: boolean = false
-  //buttonLabel:string = 'Robot not selected'
-  //enableButtonConnect:boolean = false
   serverError:boolean = false
   availableRobots:MetaInfoObject[] = []
   selectedRobot?:MetaInfoObject
@@ -167,10 +163,6 @@ export class EdscorbotMqttServiceService {
         this.unsubscribeMoved()
       }
       this.selectedRobot = undefined
-      //this.enableButtonConnect = false
-      this.serverStatus = undefined
-      //this.connected = false
-      //this.buttonLabel = 'Robot not selected'
       this.selectedRobotSubject.next(this.selectedRobot)
     } else {
       this.selectedRobot = robot
@@ -182,20 +174,9 @@ export class EdscorbotMqttServiceService {
         }
       })
       this.subscribeCommands(robot.name)
-      this.subscribeMoved(robot.name)
-
-      const content = {
-        signal: ARM_CHECK_STATUS
-      }
-
-      const publish = {
-        topic: this.selectedRobot.name + "/" + COMMANDS_CHANNEL,
-        qos: 0,
-        payload: JSON.stringify(content)
-      }
-      this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+      console.log('robot selected', robot.name)
+      this.sendRequestStatusMessage()
     }
-    //this.selectedRobotSubject.next(this.selectedRobot)
   }
 
   selectRobotByName(name:string){
@@ -210,24 +191,15 @@ export class EdscorbotMqttServiceService {
         || commandObj.signal == ARM_DISCONNECTED){
 
           if(commandObj.error) {
-            this.serverStatus = ERROR
+            this.serverError = true
           } else {
             if(commandObj.signal == ARM_STATUS){
-              if(commandObj.client){
-                this.serverStatus = BUSY
-              } else {
-                this.serverStatus = FREE
-              }
+              this.owner = commandObj.client
             }
             if(commandObj.signal == ARM_CONNECTED){
               this.owner = commandObj.client
-              this.serverStatus = BUSY
             }
             if(commandObj.signal == ARM_DISCONNECTED){
-              this.serverStatus = FREE
-              if(this.owner?.id == this.loggedUser.id){
-                this.selectRobot(undefined)
-              }
               this.owner = undefined
             }
           }
@@ -274,6 +246,8 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
+
+    this.subscribeMoved(this.selectRobot.name)
     this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
   }
 

@@ -42,14 +42,17 @@ export class GraphService {
           z: [0],
           mode: 'markers',
           marker: {
-              size: 5,
-              color: [-20],
-              colorscale: 'Viridis',
-              cmin: -20,
-              cmax: 50,
-              showscale:true
+              size: 8,
+              color: [127],
+              symbol: 'circle-open',
+              colorscale: 'Blues',
+              sizemode: 'diameter',
+              
+              opacity: 0.6
+              
           },
-          type: 'scatter3d'
+          type: 'scatter3d',
+          
         }
       ],
       layout: {}
@@ -60,7 +63,7 @@ export class GraphService {
     graph.data[0].z = []
 
     var range = pointList.length
-    var color = -20
+    var color = graph.data[0].marker.color[0]
     pointList.forEach( point => {
       var robotName = this.mqttService.selectedRobot?.name
       if(robotName){
@@ -71,7 +74,6 @@ export class GraphService {
           graph.data[0].y.push(y)
           graph.data[0].z.push(z)
           graph.data[0].marker.color.push(color)
-          color = color + 70/range
         }
       }   
     })

@@ -26,12 +26,18 @@ export class StatusBarComponent {
   }
   ngOnInit(): void {
     this.mqttService.sendRequestMetaInfo()
+    this.mqttService.sendRequestStatusMessage()
     this.mqttService.commandsSubject.subscribe(
       {
         next: (commandObj) => {
           if(commandObj.signal == ARM_STATUS){
+              //console.log('status received', commandObj, this)
               this.selectedRobot = this.mqttService.selectedRobot
               this.availableRobots = this.mqttService.availableRobots
+              if(this.mqttService.owner){
+                this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
+              }
+              
           }
           if(commandObj.signal == ARM_CONNECTED){
               this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
@@ -41,7 +47,7 @@ export class StatusBarComponent {
           if(commandObj.signal == ARM_DISCONNECTED){
             this.selectedRobot = this.mqttService.selectedRobot
             if(this.mqttService.loggedUser.id == commandObj.client.id){
-              this.connected = false
+              this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
               // this.select?.options.forEach((item: MatOption) => item.deselect());
             } 
             //this.mqttService.sendRequestMetaInfo()

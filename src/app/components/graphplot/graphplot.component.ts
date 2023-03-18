@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs';
 import { GraphService } from 'src/app/services/graph.service';
 
@@ -7,7 +7,7 @@ import { GraphService } from 'src/app/services/graph.service';
   templateUrl: './graphplot.component.html',
   styleUrls: ['./graphplot.component.scss']
 })
-export class GraphplotComponent implements  OnInit{
+export class GraphplotComponent implements  OnInit, DoCheck{
 
   @Input()
   graphSubject?: Subject<any>
@@ -16,6 +16,9 @@ export class GraphplotComponent implements  OnInit{
 
   constructor( private graphService:GraphService){
 
+  }
+  ngDoCheck(): void {
+    console.log('do check executed')
   }
   
   ngOnInit(): void {

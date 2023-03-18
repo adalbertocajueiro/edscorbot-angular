@@ -41,7 +41,7 @@ export class SingleComponent implements OnInit{
   }
   ngOnInit(): void {
     this.selectedRobot = this.mqttService.selectedRobot
-    this.connected = this.mqttService.connected
+    //this.connected = this.mqttService.connected
     this.buildForm()
     this.mqttService.selectedRobotSubject.subscribe(
       {
@@ -64,7 +64,7 @@ export class SingleComponent implements OnInit{
               || commandObj.signal == ARM_DISCONNECTED){
 
               this.selectedRobot = this.mqttService.selectedRobot
-              this.connected = this.mqttService.connected
+              //this.connected = this.mqttService.connected
               this.buildForm()
               if(commandObj.signal == ARM_DISCONNECTED){
                 this.appliedPoints = []

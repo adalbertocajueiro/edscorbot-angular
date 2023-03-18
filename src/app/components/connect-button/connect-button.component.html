@@ -3,6 +3,6 @@
     [ngClass]="className"
     [disabled]="enableButtonConnect == false"
     (click)="this.click.emit($event)">
-    <mat-icon *ngIf="iconName.length > 0">{{iconName}}</mat-icon>
+    <mat-icon *ngIf="iconName.length > 0">{{this.iconName}}</mat-icon>
     {{buttonLabel}}
 </button>

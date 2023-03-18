@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
-import { FREE, BUSY, ERROR, ARM_STATUS, ARM_CONNECTED, ARM_DISCONNECTED } from 'src/app/util/constants';
+import { FREE, BUSY, ERROR } from 'src/app/util/constants';
 
 @Component({
   selector: 'app-connect-button',
   templateUrl: './connect-button.component.html',
   styleUrls: ['./connect-button.component.scss']
 })
-export class ConnectButtonComponent implements OnInit{
+export class ConnectButtonComponent implements OnInit {
 
   @Output()
   click:EventEmitter<any> = new EventEmitter<any>()
@@ -21,26 +21,14 @@ export class ConnectButtonComponent implements OnInit{
 
   constructor(private mqttService:EdscorbotMqttServiceService){
     this.status = this.mqttService.serverStatus
-
-    
-
   }
+
+
   ngOnInit(): void {
     this.mqttService.commandsSubject.subscribe(
       {
         next: (commandObj) => {
-          
-          if(commandObj.signal == ARM_STATUS
-              || commandObj.signal == ARM_CONNECTED
-              || commandObj.signal == ARM_DISCONNECTED){
-            
-              this.status = this.mqttService.serverStatus
-              this.iconName = this.getIconName(this.status)
-              this.className = this.getClassName(this.status)
-              this.tooltip = this.getTooltip(this.status, commandObj.client)
-              this.buttonLabel = this.mqttService.buttonLabel
-              this.enableButtonConnect = this.mqttService.enableButtonConnect
-          }
+          this.updateFields()
         },
         error: (err) => { console.log('error',err)}
       }
@@ -49,21 +37,41 @@ export class ConnectButtonComponent implements OnInit{
       {
         next: (res) => {
           console.log('selected robot', res)
-          this.className = 'disconnected'
-          this.buttonLabel = 'Robot not selected'
-          this.enableButtonConnect = this.mqttService.enableButtonConnect
+          this.updateFields()
         }
       }
     )
   }
 
-  getIconName(status?:number){
-    if(status != undefined){
-      switch(status){
+  updateFields(){
+    this.status = this.getStatus()
+    this.iconName = this.getIconName()
+    this.className = this.getClassName()
+    this.tooltip = this.getTooltip()
+    this.buttonLabel = this.getButtonLabel()
+    this.enableButtonConnect = this.getEnableButtonConnect()
+    
+  }
+
+  getStatus(){
+    if (this.mqttService.serverError){
+      return ERROR
+    } else if (this.mqttService.owner == undefined){
+      return FREE
+    } else if (this.mqttService.owner != undefined){
+      return BUSY
+    }
+    return undefined
+  }
+  getIconName(){
+    
+    if(this.status != undefined){
+      switch(this.status){
         case FREE:
           return 'link'
         case BUSY:
-          if(this.mqttService.connected){
+          //if logged user is equals to the owner then disconnect
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
             return 'link_off'
           } else {
             return 'sentiment_dissatisfied'
@@ -79,9 +87,9 @@ export class ConnectButtonComponent implements OnInit{
     }
   }
 
-  getClassName(status?:number){
-    if(status != undefined){
-      switch(status){
+  getClassName(){
+    if(this.status != undefined){
+      switch(this.status){
         case FREE:
           return 'free'
         case BUSY:
@@ -92,18 +100,18 @@ export class ConnectButtonComponent implements OnInit{
           return ''
       }
     } else {
-      return ''
+      return 'disabled'
     }
   }
 
-  getTooltip(status?:number, client?:any){
-    if(status != undefined){
-      switch(status){
+  getTooltip(){
+    if(this.status != undefined){
+      switch(this.status){
         case FREE:
           return 'Connect to the arm'
         case BUSY:
-          if(client?.id == this.mqttService.loggedUser.id){
-            return 'You are connected'
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+            return 'Disconnect from the arm'
           } else {
             return 'Arm is busy'
           }   
@@ -113,7 +121,49 @@ export class ConnectButtonComponent implements OnInit{
           return ''
       }
     } else {
-      return ''
+      return 'Choose one arm'
+    }
+  }
+
+  getButtonLabel(){
+    if(this.status != undefined){
+      switch(this.status){
+        case FREE:
+          return 'Connect'
+        case BUSY:
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+            return 'Disconnect'
+          } else {
+            return 'Wait'
+          }   
+        case ERROR:
+          return 'Wait'
+        default:
+          return ''
+      }
+    } else {
+      return 'Robot not selected'
+    }
+  }
+
+  getEnableButtonConnect(){
+    if(this.status != undefined){
+      switch(this.status){
+        case FREE:
+          return true
+        case BUSY:
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+            return true
+          } else {
+            return false
+          } 
+        case ERROR:
+          return false
+        default:
+          return false
+      }
+    } else {
+      return false
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subject, Subscription } from 'rxjs';
-import { ARM_APPLY_TRAJECTORY, ARM_CANCEL_TRAJECTORY, ARM_CHECK_STATUS, ARM_CONNECT, ARM_CONNECTED, ARM_DISCONNECT, ARM_DISCONNECTED, ARM_METAINFO, ARM_MOVE_TO_POINT, ARM_STATUS, BUSY, COMMANDS_CHANNEL, ERROR, FREE, META_INFO_CHANNEL, MOVED_CHANNEL } from '../util/constants';
+import { ARM_APPLY_TRAJECTORY, ARM_CANCELED_TRAJECTORY, ARM_CANCEL_TRAJECTORY, ARM_CHECK_STATUS, ARM_CONNECT, ARM_CONNECTED, ARM_DISCONNECT, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_METAINFO, ARM_MOVE_TO_POINT, ARM_STATUS, BUSY, COMMANDS_CHANNEL, ERROR, FREE, META_INFO_CHANNEL, MOVED_CHANNEL } from '../util/constants';
 import { MetaInfoObject } from '../util/matainfo';
 import { Client, Point, Trajectory } from '../util/models';
 
@@ -14,26 +14,29 @@ export class EdscorbotMqttServiceService {
   javaApiUrl:string = "http://localhost:8080"
   brokerUrl:string = "tpc://localhost:1833"
   serverStatus?: number
-  connected: boolean = false
-  buttonLabel:string = 'Robot not selected'
-  enableButtonConnect:boolean = false
+  //connected: boolean = false
+  //buttonLabel:string = 'Robot not selected'
+  //enableButtonConnect:boolean = false
+  serverError:boolean = false
   availableRobots:MetaInfoObject[] = []
   selectedRobot?:MetaInfoObject
   loggedUser:Client = {
     id: "adalberto@computacao.ufcg.edu.br"
   }
 
+  owner?:Client
+
   private MQTT_SERVICE_OPTIONS1 = {
-  hostname: 'localhost',
-   port: 8080,
-   //path: '/mqtt',
-   clean: true, // Retain session
-   connectTimeout: 4000, // Timeout period
-   reconnectPeriod: 4000, // Reconnect period
-   // Authentication information
-   clientId: 'mqttx_597046f4',
-   //protocol: 'ws',
-}
+    hostname: 'localhost',
+    port: 8080,
+    //path: '/mqtt',
+    clean: true, // Retain session
+    connectTimeout: 4000, // Timeout period
+    reconnectPeriod: 4000, // Reconnect period
+    // Authentication information
+    clientId: 'mqttx_597046f4',
+    //protocol: 'ws',
+  }
 
   client:any
   private subscriptionMetainfo: Subscription | undefined;
@@ -70,25 +73,31 @@ export class EdscorbotMqttServiceService {
     });
     this.client?.onMessage.subscribe((packet: any) => {
       console.log(`Received message ${packet.payload} from topic ${packet.topic}`)
-      this.notifyClients(packet)
+      //this.notifyClients(packet)
     })
   }
 
   notifyClients(packet:any){
-    var payloadObj = JSON.parse(packet.payload.toString())
+    console.log('packet', packet)
     if(packet.topic.toString().includes(META_INFO_CHANNEL)){
-      if(payloadObj.signal == ARM_METAINFO){
-        this.metaInfoSubject.next(payloadObj)
-      }    
+      //if(payloadObj.signal == ARM_METAINFO){
+      this.metaInfoSubject.next(this.availableRobots)
+      //}    
     } else if (packet.topic.toString().includes(COMMANDS_CHANNEL)){
+      
       if(payloadObj.signal == ARM_CONNECTED 
           || payloadObj.signal == ARM_STATUS
-          || payloadObj.signal == ARM_DISCONNECTED){
-
-            this.commandsSubject.next(payloadObj)
+          || payloadObj.signal == ARM_DISCONNECTED
+          || payloadObj.signal == ARM_CANCELED_TRAJECTORY){
+            if(packet.payload){
+              var payloadObj = JSON.parse(packet.payload.toString())
+              this.commandsSubject.next(payloadObj)
+            }
+            
           }
       
     } else if (packet.topic.toString().includes(MOVED_CHANNEL)) {
+      var payloadObj = JSON.parse(packet.payload.toString())
       this.movedSubject.next(payloadObj)
     }
   }
@@ -101,8 +110,11 @@ export class EdscorbotMqttServiceService {
 
     this.subscriptionMetainfo = this.client?.observe(subscriptionMetainfo.topic, subscriptionMetainfo.qos)
       .subscribe((message: IMqttMessage) => {
-        var payload = JSON.parse(message.payload.toString())
-        this.addRobot(payload)
+        var metainfo = JSON.parse(message.payload.toString())
+        if(metainfo.signal == ARM_METAINFO){
+          this.addRobot(metainfo)
+          this.metaInfoSubject.next(this.availableRobots)
+        }
       })
   }
 
@@ -144,11 +156,9 @@ export class EdscorbotMqttServiceService {
   }
 
   addRobot(metainfo:MetaInfoObject){
-    if(metainfo.signal == ARM_METAINFO){
-      if (this.availableRobots.filter(mi => mi.name === metainfo.name).length == 0){
-        this.availableRobots.push(metainfo)
-      }
-    } 
+    if (this.availableRobots.filter(mi => mi.name === metainfo.name).length == 0){
+      this.availableRobots.push(metainfo)
+    }
   }
   selectRobot(robot:MetaInfoObject | undefined){
     if(!robot){
@@ -157,11 +167,11 @@ export class EdscorbotMqttServiceService {
         this.unsubscribeMoved()
       }
       this.selectedRobot = undefined
-      this.enableButtonConnect = false
+      //this.enableButtonConnect = false
       this.serverStatus = undefined
-      this.connected = false
-      this.buttonLabel = 'Robot not selected'
-
+      //this.connected = false
+      //this.buttonLabel = 'Robot not selected'
+      this.selectedRobotSubject.next(this.selectedRobot)
     } else {
       this.selectedRobot = robot
       //unsubscribe on all other robots
@@ -185,7 +195,7 @@ export class EdscorbotMqttServiceService {
       }
       this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
     }
-    this.selectedRobotSubject.next(this.selectedRobot)
+    //this.selectedRobotSubject.next(this.selectedRobot)
   }
 
   selectRobotByName(name:string){
@@ -194,56 +204,49 @@ export class EdscorbotMqttServiceService {
   }
 
   processCommand(commandObj:any){
-    if(commandObj.error) {
-      this.serverStatus = ERROR
-      this.enableButtonConnect = false
-      this.buttonLabel = 'Wait'
-      this.connected = false
-    } else {
-      if(commandObj.signal == ARM_STATUS){
-        if(commandObj.client){
-          this.serverStatus = BUSY
-          if(commandObj.client.id == this.loggedUser.id){
-            this.buttonLabel = 'Disconnect'
-            this.connected = true
-            this.enableButtonConnect = true
-          } else {
-            this.buttonLabel = 'Wait'
-            this.connected = false
-            this.enableButtonConnect = false
-          }
-        } else {
-          this.serverStatus = FREE
-          this.enableButtonConnect = true
-          if(this.selectedRobot){
-            this.buttonLabel = 'Connect'
-          } else {
-            this.buttonLabel = 'Robot not selected'
-          }
-        }
-      }
-    }
-    
-    if(commandObj.signal == ARM_CONNECTED){
-      if(commandObj.client.id == this.loggedUser.id){
-        this.buttonLabel = 'Disconnect'
-        this.connected = true
-        this.enableButtonConnect = true
-        this.serverStatus = BUSY
-      } else {
-        this.enableButtonConnect = false;
-        this.buttonLabel = 'Wait'
-        this.connected = false
-      } 
-    }
+    if(commandObj.signal == ARM_STATUS
+        || commandObj.signal == ARM_CONNECTED
+        || commandObj.signal == ARM_CANCELED_TRAJECTORY
+        || commandObj.signal == ARM_DISCONNECTED){
 
-    if(commandObj.signal == ARM_DISCONNECTED){
-      this.serverStatus = FREE
-      this.connected = false
-      this.enableButtonConnect = true
-      this.buttonLabel = 'Connect'
-      this.selectRobot(undefined)
+          if(commandObj.error) {
+            this.serverStatus = ERROR
+          } else {
+            if(commandObj.signal == ARM_STATUS){
+              if(commandObj.client){
+                this.serverStatus = BUSY
+              } else {
+                this.serverStatus = FREE
+              }
+            }
+            if(commandObj.signal == ARM_CONNECTED){
+              this.owner = commandObj.client
+              this.serverStatus = BUSY
+            }
+            if(commandObj.signal == ARM_DISCONNECTED){
+              this.serverStatus = FREE
+              if(this.owner?.id == this.loggedUser.id){
+                this.selectRobot(undefined)
+              }
+              this.owner = undefined
+            }
+          }
+          this.commandsSubject.next(commandObj)
     }
+  }
+
+  sendRequestMetaInfo(){
+    if(this.selectedRobot == undefined){
+      const content = {
+        signal: ARM_GET_METAINFO
+      }
+      const publish = {
+        topic: META_INFO_CHANNEL,
+        qos: 0,
+        payload: JSON.stringify(content)
+      }
+      this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    } 
   }
   
   sendRequestStatusMessage(){

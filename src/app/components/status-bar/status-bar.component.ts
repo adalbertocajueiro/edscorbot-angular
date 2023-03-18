@@ -1,4 +1,4 @@
-import { Component, ViewChild} from '@angular/core';
+import { Component, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import { MatOption } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
@@ -14,7 +14,6 @@ import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 })
 export class StatusBarComponent {
 
-  status?:number
   selectedRobot?:MetaInfoObject
   availableRobots:MetaInfoObject[] = []
   connected:boolean = false
@@ -26,26 +25,26 @@ export class StatusBarComponent {
 
   }
   ngOnInit(): void {
-    
-    this.getRobotInfo()
+    this.mqttService.sendRequestMetaInfo()
     this.mqttService.commandsSubject.subscribe(
       {
         next: (commandObj) => {
-          
-          if(commandObj.signal == ARM_STATUS
-              || commandObj.signal == ARM_CONNECTED){
-            
-              this.status = this.mqttService.serverStatus
+          if(commandObj.signal == ARM_STATUS){
               this.selectedRobot = this.mqttService.selectedRobot
               this.availableRobots = this.mqttService.availableRobots
-              this.connected = this.mqttService.connected
+          }
+          if(commandObj.signal == ARM_CONNECTED){
+              this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
+              this.selectedRobot = this.mqttService.selectedRobot
+              this.availableRobots = this.mqttService.availableRobots
           }
           if(commandObj.signal == ARM_DISCONNECTED){
-            
             this.selectedRobot = this.mqttService.selectedRobot
-            this.select?.options.forEach((item: MatOption) => item.deselect());
-            this.connected = this.mqttService.connected
-            this.getRobotInfo()
+            if(this.mqttService.loggedUser.id == commandObj.client.id){
+              this.connected = false
+              // this.select?.options.forEach((item: MatOption) => item.deselect());
+            } 
+            //this.mqttService.sendRequestMetaInfo()
           }
         },
         error: (err) => { console.log('error',err)}
@@ -53,44 +52,24 @@ export class StatusBarComponent {
     )
     this.mqttService.metaInfoSubject.subscribe(
       {
-        next: (commandObj) => {
-          
-          if(commandObj.signal == ARM_METAINFO){
-              this.status = this.mqttService.serverStatus
-              this.selectedRobot = this.mqttService.selectedRobot
-              this.availableRobots = this.mqttService.availableRobots
-          }
+        next: (res) => {
+          this.availableRobots = this.mqttService.availableRobots
         },
         error: (err) => { console.log('error',err)}
       }
     )
   }
 
-  getRobotInfo(){
-    if(this.mqttService.selectedRobot == undefined){
-      const content = {
-        signal: ARM_GET_METAINFO
-      }
-      const publish = {
-        topic: META_INFO_CHANNEL,
-        qos: 0,
-        payload: JSON.stringify(content)
-      }
-      this.mqttService.client.unsafePublish(publish.topic,publish.payload,publish.qos)
-    } 
-  }
+  
   processConnection(){
-    if (this.mqttService.connected){
+    if (this.connected){
       this.mqttService.sendDisconnectMessage()
     } else {
-      if(this.mqttService.serverStatus == FREE){
-        this.mqttService.sendConnectMessage()
-      }
+      this.mqttService.sendConnectMessage()
     }
   }
 
   robotSelected(event:any){
-    
     this.mqttService.selectRobotByName(event.value)
   }
 

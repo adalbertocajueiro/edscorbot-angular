@@ -22,8 +22,6 @@ export class SingleComponent implements OnInit{
   selectedFile?: File
   appliedPoints:number[][] = []
 
-  simulationGraph:any
-  realGraph:any
 
   @Output()
   onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
@@ -64,7 +62,7 @@ export class SingleComponent implements OnInit{
               || commandObj.signal == ARM_DISCONNECTED){
 
               this.selectedRobot = this.mqttService.selectedRobot
-              //this.connected = this.mqttService.connected
+              this.connected = this.mqttService.owner?.id == this.mqttService.loggedUser.id
               this.buildForm()
               if(commandObj.signal == ARM_DISCONNECTED){
                 this.appliedPoints = []
@@ -110,57 +108,7 @@ export class SingleComponent implements OnInit{
     return obj
   }
 
-  /*
-  clear(){
-    this.form.reset()
-  }
-
-  jointChanged(event:any){
-    var point = this.convertFormToArray()
-  }
   
-
-  robotSelected(event:any){
-    this.mqttService.selectRobotByName(event.value)
-    this.buildForm()
-  }
-  
-
-  moveToPoint(){
-    var point:number[] = []
-   
-    var hasInvalidValue:boolean = 
-      Object.entries(this.form.controls)
-        .map (entry => parseInt(entry[1].value))
-        .some( v => Number.isNaN(v))
-    if(hasInvalidValue){
-      // it has invalid value and cannot send to robot
-      console.log('invalid point');
-    } else {
-      var point = this.convertFormToArray()
-      this.appliedPoints.push(point)
-      this.graphService.buildPoints(this.appliedPoints)
-    }
-    
-  }
-  
-  convertFormToArray(){
-    var point:number[] = []
-   
-    Object.entries(this.form.controls).forEach (
-      entry => {
-        var value = parseInt(entry[1].value)
-        if(entry[1].value != ''){  
-          if(Number.isNaN(value)){
-            entry[1].setValue('')
-          }
-        }
-        point.push(value)
-      }
-    )
-    return point
-  }
-  */
   deletePoint(point:any[]){
     this.appliedPoints = this.appliedPoints.filter (p => p != point)
     //this.graphService.buildGraph(this.appliedPoints)
@@ -169,13 +117,11 @@ export class SingleComponent implements OnInit{
 
   clearPointList(){
     this.appliedPoints = []
-    //this.graphService.buildGraph(this.appliedPoints)
     this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   selectTrajectory(trajectory:any){
     this.appliedPoints = trajectory.points
-    //this.graphService.buildGraph(this.appliedPoints)
     this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 

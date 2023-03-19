@@ -25,12 +25,11 @@ export class MovementsComponent implements OnInit{
     this.mqttService.movedSubject.subscribe(
       {
         next: (res) => {
-          console.log('received message', res)
+          //console.log('received message', res)
           
           var errorState = res.errorState
           if(!errorState){
             var content = res.content
-            console.log('received point', content.coordinates)
             this.realPoints.push(content.coordinates)
             this.realGraphSubject.next(this.realPoints)
           }

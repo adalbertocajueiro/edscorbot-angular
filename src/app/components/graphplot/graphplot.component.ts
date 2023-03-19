@@ -7,26 +7,39 @@ import { GraphService } from 'src/app/services/graph.service';
   templateUrl: './graphplot.component.html',
   styleUrls: ['./graphplot.component.scss']
 })
-export class GraphplotComponent implements  OnInit, DoCheck{
+export class GraphplotComponent implements  OnInit {
 
   @Input()
-  graphSubject?: Subject<any>
+  simGraphSubject?: Subject<any>
+  simPoints:number[][] = []
+
+  @Input()
+  realGraphSubject?: Subject<any>
+  realPoints:number[][] = []
 
   graph?: any
 
   constructor( private graphService:GraphService){
 
   }
-  ngDoCheck(): void {
-    console.log('do check executed')
-  }
   
   ngOnInit(): void {
-
-    this.graphSubject?.subscribe(
+    var canvas = document.getElementsByTagName('canvas')
+    this.simGraphSubject?.subscribe(
       {
         next:(res) => {
+          this.simPoints = res
           this.graph = this.graphService.buildGraph(res)
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
+    this.realGraphSubject?.subscribe(
+      {
+        next:(res) => {
+          this.realPoints = res
+          this.graph = this.graphService.addPointToRealTrace(this.simPoints, this.realPoints)
+
         },
         error: (err) => {console.log('error',err)}
       }

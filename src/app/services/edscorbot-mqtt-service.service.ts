@@ -74,7 +74,6 @@ export class EdscorbotMqttServiceService {
   }
 
   notifyClients(packet:any){
-    console.log('packet', packet)
     if(packet.topic.toString().includes(META_INFO_CHANNEL)){
       //if(payloadObj.signal == ARM_METAINFO){
       this.metaInfoSubject.next(this.availableRobots)
@@ -128,16 +127,15 @@ export class EdscorbotMqttServiceService {
   }
 
   subscribeMoved(robotName:string){
-   const subscriptionMoved = {
+    const subscriptionMoved = {
         topic: robotName + "/" + MOVED_CHANNEL,
         qos: 0
-      }
-      this.subscriptionMoved = this.client?.observe(subscriptionMoved.topic, subscriptionMoved.qos)
+    }
+    
+    this.subscriptionMoved = this.client?.observe(subscriptionMoved.topic, subscriptionMoved.qos)
       .subscribe((message: IMqttMessage) => {
-        if(payload){
-          var payload = JSON.parse(payload.toString())
-          this.movedSubject.next(payload);
-        }
+        var payload = JSON.parse(message.payload.toString())
+        this.movedSubject.next(payload);
       })
   }
 
@@ -174,7 +172,6 @@ export class EdscorbotMqttServiceService {
         }
       })
       this.subscribeCommands(robot.name)
-      console.log('robot selected', robot.name)
       this.sendRequestStatusMessage()
     }
   }
@@ -198,6 +195,9 @@ export class EdscorbotMqttServiceService {
             }
             if(commandObj.signal == ARM_CONNECTED){
               this.owner = commandObj.client
+              if(this.owner?.id == this.loggedUser.id){
+                this.subscribeMoved(this.selectedRobot!.name)
+              }
             }
             if(commandObj.signal == ARM_DISCONNECTED){
               this.owner = undefined
@@ -246,8 +246,7 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-
-    this.subscribeMoved(this.selectRobot.name)
+    console.log('sending connect message', content.signal)
     this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
   }
 

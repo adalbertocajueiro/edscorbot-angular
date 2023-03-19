@@ -36,6 +36,7 @@ import { ConnectButtonComponent } from './components/connect-button/connect-butt
 import { DialogComponent } from './components/dialog/dialog.component';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 import { ToogleButtonComponent } from './components/toogle-button/toogle-button.component';
+import { PlotlyComponent } from './components/plotly/plotly.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -72,7 +73,8 @@ export const MQTT_SERVICE_OPTIONS = {
     ConnectButtonComponent,
     DialogComponent,
     InfoDialogComponent,
-    ToogleButtonComponent
+    ToogleButtonComponent,
+    PlotlyComponent
   ],
   imports: [
     BrowserModule,

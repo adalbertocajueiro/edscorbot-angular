@@ -24,12 +24,14 @@ export class GraphplotComponent implements  OnInit {
   }
   
   ngOnInit(): void {
-    var canvas = document.getElementsByTagName('canvas')
+    
     this.simGraphSubject?.subscribe(
       {
         next:(res) => {
           this.simPoints = res
           this.graph = this.graphService.buildGraph(res)
+          var canvas = document.getElementById('plotly-graph')
+    console.log('plotly-graph', canvas)
         },
         error: (err) => {console.log('error',err)}
       }

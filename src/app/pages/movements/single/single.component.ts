@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
-import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_STATUS} from 'src/app/util/constants';
+import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, ARM_STATUS} from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 import { Point, Trajectory } from 'src/app/util/models';
 
@@ -21,6 +21,7 @@ export class SingleComponent implements OnInit{
   joints:string[] = []
   selectedFile?: File
   appliedPoints:number[][] = []
+  searchingHome:boolean = false
 
 
   @Output()
@@ -59,14 +60,28 @@ export class SingleComponent implements OnInit{
           
           if(commandObj.signal == ARM_STATUS
               || commandObj.signal == ARM_CONNECTED
-              || commandObj.signal == ARM_DISCONNECTED){
+              || commandObj.signal == ARM_DISCONNECTED
+              || commandObj.signal == ARM_HOME_SEARCHED){
 
               this.selectedRobot = this.mqttService.selectedRobot
-              this.connected = this.mqttService.owner?.id == this.mqttService.loggedUser.id
+              if(this.mqttService.owner){
+                this.connected = this.mqttService.owner?.id == this.mqttService.loggedUser.id
+              } else {
+                this.connected = false
+              }
+              
               this.buildForm()
+
+              if(commandObj.signal == ARM_CONNECTED){
+                this.searchingHome = true
+              }
+
               if(commandObj.signal == ARM_DISCONNECTED){
-                this.appliedPoints = []
-                this.onSimulationPointsChanged.emit(this.appliedPoints)
+                //this.onSimulationPointsChanged.emit(this.appliedPoints)
+              }
+
+              if(commandObj.signal == ARM_HOME_SEARCHED){
+                this.searchingHome = false
               }
           }
 
@@ -153,7 +168,7 @@ export class SingleComponent implements OnInit{
                     this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
                 }
             } catch(err){ //try to load as csv
-              console.log('trying to load as csv')
+              //console.log('trying to load as csv')
               this.loadFromCsv(fileReader.result)
             }
           }

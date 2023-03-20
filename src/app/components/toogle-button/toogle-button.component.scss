@@ -1,27 +1,31 @@
+:root{
+    --toogle-button-color:rgb(214, 211, 211);
+}
+
 *,
 *:before,
 *:after {
     box-sizing: border-box;
 }
 
-body {
-    font-family: -apple-system, ".SFNSText-Regular", "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
-}
-
 .toggle {
     cursor: pointer;
-    display: inline-block;
+    background-color: transparent;
 }
 
 .toggle-switch {
-    display: inline-block;
-    background: #f4b7b7;
+    display: flex;
+    align-items: center;
+    background-color: var(--toogle-button-color);
     border-radius: 16px;
     width: 60px;
     height: 26px;
     position: relative;
     vertical-align: middle;
-    transition: background 0.25s;
+    transition: background-color 0.25s;
+    app-spinner{
+        transform: translateX(4px)!important;
+    }
 }
 
 .toggle-switch:before,
@@ -42,13 +46,15 @@ body {
     transition: left 0.25s;
 }
 
+
 .toggle:hover .toggle-switch:before {
-    background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+    background-color: linear-gradient(to bottom, #fff 0%, #fff 100%);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+    //pointer-events: inherit !important
 }
 
 .toggle-checkbox:checked+.toggle-switch {
-    background: #56c080;
+    //background: #56c080;
 }
 
 .toggle-checkbox:checked+.toggle-switch:before {
@@ -58,6 +64,7 @@ body {
 .toggle-checkbox {
     position: absolute;
     visibility: hidden;
+    //pointer-events: inherit !important
 }
 
 .toggle-label {
@@ -66,4 +73,25 @@ body {
     top: 2px;
     font-weight: 300;
     font-size: 1.0rem;
+}
+
+.free {
+    background-color: rgb(107, 219, 107);
+}
+
+.busy {
+    background-color: rgb(235, 160, 48);
+}
+
+.error {
+    background-color: rgb(160, 21, 2);
+}
+
+.no-robot {
+    color: rgb(94, 93, 93);
+}
+
+.unavailable {
+    color: rgb(94, 93, 93);
+    pointer-events: none !important;
 }

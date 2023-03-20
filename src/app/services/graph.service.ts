@@ -82,8 +82,8 @@ export class GraphService {
   }
 
   addPointToRealTrace(simPointList:number[][], realPointList:number[][]){
-    console.log('sim points', simPointList)
-    console.log('real points', realPointList)
+    //console.log('sim points', simPointList)
+    //console.log('real points', realPointList)
     var graph:any = {
       data: [
         { x: [0], 

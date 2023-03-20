@@ -1,0 +1,11 @@
+.graph-container{
+    display: block;
+    width: 90%;
+    height: 90%;
+    border: 2px dotted blue;
+
+    div {
+            display: block;
+            border: 1px dotted purple;
+        }
+}

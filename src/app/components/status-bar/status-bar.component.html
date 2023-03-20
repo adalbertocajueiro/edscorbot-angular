@@ -12,5 +12,13 @@
             <mat-option *ngFor="let robot of this.availableRobots" value="{{robot.name}}">{{robot.name}}</mat-option>
         </mat-select>
     </mat-form-field>
-   <app-connect-button (click)="processConnection()"></app-connect-button>
+    <app-toogle-button
+        [className]="className"
+        [connected]="connected"
+        [enableClass]="enableClassName"
+        [searchingHome]="searchingHome"
+        [tooltip]="tooltip"
+        (onToggleChanged)="processConnectionToogle($event)"></app-toogle-button>
+    
+   <!-- app-connect-button (click)="processConnection()"></app-connect-button -->
 </div>

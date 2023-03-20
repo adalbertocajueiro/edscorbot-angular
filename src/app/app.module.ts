@@ -37,6 +37,10 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 import { ToogleButtonComponent } from './components/toogle-button/toogle-button.component';
 import { PlotlyComponent } from './components/plotly/plotly.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { HighchartComponent } from './components/highchart/highchart.component';
+
+import { HighchartsChartModule } from 'highcharts-angular';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -74,7 +78,9 @@ export const MQTT_SERVICE_OPTIONS = {
     DialogComponent,
     InfoDialogComponent,
     ToogleButtonComponent,
-    PlotlyComponent
+    PlotlyComponent,
+    SpinnerComponent,
+    HighchartComponent
   ],
   imports: [
     BrowserModule,
@@ -95,6 +101,7 @@ export const MQTT_SERVICE_OPTIONS = {
     MatSnackBarModule,
     PlotlyModule,
     MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
+    HighchartsChartModule
   ],
   providers: [],
   bootstrap: [AppComponent]

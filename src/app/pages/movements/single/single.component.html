@@ -37,7 +37,7 @@
                 <mat-icon fontSet="material-icons-outlined" matTooltip="Save as trajectory" matTooltipPosition="above" 
                     [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'">save</mat-icon>
                 <mat-icon fontSet="material-icons-outlined" matTooltip="Send trajectory to arm" matTooltipPosition="above"
-                    [ngClass]="this.appliedPoints.length > 0 && this.connected?'':'icon-disabled'"
+                    [ngClass]="this.appliedPoints.length > 0 && this.connected && !searchingHome?'':'icon-disabled'"
                     (click)="sendTrajectoryToArm()">send</mat-icon>
                 
                 <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>

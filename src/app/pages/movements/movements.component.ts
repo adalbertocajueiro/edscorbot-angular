@@ -18,7 +18,7 @@ export class MovementsComponent implements OnInit{
   toogleChecked:boolean = false
 
   constructor(private mqttService:EdscorbotMqttServiceService){
-    console.log('service', this.mqttService)
+    
   }
   ngOnInit(): void {
     
@@ -50,6 +50,7 @@ export class MovementsComponent implements OnInit{
   }
 
   updateSimulationGraph(event:any){
+    //console.log('simulaiton points changed', event)
     this.simulationPoints = event
     this.simGraphSubject.next(this.simulationPoints)
   }

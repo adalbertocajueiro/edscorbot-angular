@@ -36,7 +36,7 @@ export class ConnectButtonComponent implements OnInit {
     this.mqttService.selectedRobotSubject.subscribe(
       {
         next: (res) => {
-          console.log('selected robot', res)
+          //console.log('selected robot', res)
           this.updateFields()
         }
       }

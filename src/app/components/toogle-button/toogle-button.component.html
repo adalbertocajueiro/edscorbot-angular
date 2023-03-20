@@ -1,6 +1,12 @@
-<label class="toggle">
-    <input class="toggle-checkbox" type="checkbox"
-        (change)="toggleChanged($event)">
-    <div class="toggle-switch"></div>
-    <span class="toggle-label">{{label}}</span>
+<label class="toggle" matTooltip="{{tooltip}}" matTooltipPosition="above" [ngClass]="enableClass">
+    
+    <input #inputToogle class="toggle-checkbox" 
+            type="checkbox" 
+            (change)="toggleChanged($event)" 
+            [checked]="connected" />
+    <div class="toggle-switch">
+        <app-spinner *ngIf="searchingHome"></app-spinner>
+    </div>
+    
+    <!-- span class="toggle-label">{{label}}</span -->
 </label>

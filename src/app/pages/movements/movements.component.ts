@@ -11,9 +11,11 @@ export class MovementsComponent implements OnInit{
 
   simulationPoints:number[][] = []
   simGraphSubject:Subject<any> = new Subject<any>()
+  simPointSubject:Subject<any> = new Subject<any>()
 
   realPoints:number[][] = []
   realGraphSubject:Subject<any> = new Subject<any>()
+  realPointSubject:Subject<any> = new Subject<any>()
 
   toogleChecked:boolean = false
 
@@ -30,8 +32,11 @@ export class MovementsComponent implements OnInit{
           var errorState = res.errorState
           if(!errorState){
             var content = res.content
+            var returnedPoint = res.content.coordinates
             this.realPoints.push(content.coordinates)
             this.realGraphSubject.next(this.realPoints)
+            this.realPointSubject.next(returnedPoint)
+            this.realPointSubject.next(returnedPoint)
           }
         },
         error: (err) => { console.log('error',err)}
@@ -49,6 +54,9 @@ export class MovementsComponent implements OnInit{
     )
   }
 
+  addSimulationPoint(event:any){
+    this.simPointSubject.next(event)
+  }
   updateSimulationGraph(event:any){
     //console.log('simulaiton points changed', event)
     this.simulationPoints = event

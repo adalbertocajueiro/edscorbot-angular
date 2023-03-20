@@ -1,6 +1,8 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as Plotly from 'plotly.js-dist-min'
-import { GraphService } from 'src/app/services/graph.service';
+import { Subject } from 'rxjs';
+import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
+import { cinematicFunctions } from 'src/app/util/util';
 
 @Component({
   selector: 'app-plotly',
@@ -9,118 +11,158 @@ import { GraphService } from 'src/app/services/graph.service';
 })
 export class PlotlyComponent implements OnInit{
   
-  graph3d?:any
-
   data:Plotly.Data[] = []
+  showLegend:boolean = true
+  simulatedTrace:Plotly.Data = {}
+  realTrace:Plotly.Data = {}
 
-  constructor(private graphService:GraphService){
-    this.graph3d = this.graphService.buildGraph([])
+  @Input()
+  simPointSubject?:Subject<any>
+
+  @Input()
+  realPointSubject?:Subject<any>
+
+  constructor(private mqttService:EdscorbotMqttServiceService){
+
   }
   ngOnInit(): void {
-    var xArray:number[] = [0];
-    var yArray:number[] = [0];
-    var zArray:number[] = [0];
-
-    // Define Data
-    this.data = [ 
+    this.createInitialGraph()
+    this.simPointSubject?.subscribe(
       {
-        x:xArray,
-        y:yArray,
-        z:zArray,
+        next: (point) => {
+          this.addSimPoint(point)
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
+
+    this.realPointSubject?.subscribe(
+      {
+        next: (point) => {
+          this.addRealPoint(point)
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
+
+   
+  }
+
+  createInitialSimulatedTrace(){
+    this.simulatedTrace = 
+      {
+        x:[0],
+        y:[0],
+        z:[0],
         mode:"markers",
         marker: {
-                    size: 1,
-                    color: 'gray',
-                    symbol: 'circle-open',
-                    colorscale: 'Blues',
-                    sizemode: 'diameter',
-                    
-                    opacity: 0.8
-                    
+          size: 1,
+          color: 'gray',
+          symbol: 'circle-open',
+          colorscale: 'Blues',
+          sizemode: 'diameter',
+          opacity: 0.8
         },
         type: 'scatter3d',
         name:'Simulated',
-        showlegend: true
+        showlegend: this.showLegend,
+        width: 100
       }
-    ];
+  }
+
+  createInitialRealTrace(){
+    this.realTrace = 
+      {
+        x:[0],
+        y:[0],
+        z:[0],
+        mode:"markers",
+        marker: {
+          size: 1,
+          color: 'gray',
+          symbol: 'circle',
+          sizemode: 'diameter',
+          opacity: 0.8
+        },
+        type: 'scatter3d',
+        name:'Real',
+        showlegend: this.showLegend
+      }
+  }
+  createInitialGraph(){
+    this.createInitialSimulatedTrace()
+    this.createInitialRealTrace();
+
+    this.data.push(this.simulatedTrace)
+    this.data.push(this.realTrace)
 
     // Define Layout
     var layout = {
       //xaxis: {range: [40, 210], title: "Square Meters"},
       //yaxis: {range: [5, 20], title: "Price in Millions"}, 
       //zaxis: {range: [0, 20], title: "Months"}, 
-      title: "Simulated points x Real points"
+      // title: "Simulated points x Real points",
+      legend: {
+        x: 0.0, 
+        y: 1.2,
+        yAnchor: 'bottom',
+        with: 100,
+      }
     };
-
     Plotly.newPlot("myPlot", this.data, layout);
   }
-  
-  create(){
-    var xArray = [50,60,70,80,90,100,110,120,130,140,150];
-    var yArray = [7,8,8,9,9,9,10,11,14,14,15];
-    var zArray = [3,3,3,3,3,3, 3, 3, 3, 3, 3];
 
-    xArray.forEach( x => {
-      (this.data[0] as {[key: string] : number[]})['x'].push(x);
-    }); 
-    (this.data[0] as {[key: string] : number[]})['x'].shift()
+  addSimPoint(point:number[]){
     
-    yArray.forEach( y => {
-      (this.data[0] as {[key: string] : number[]})['y'].push(y);
-    }); 
-    (this.data[0] as {[key: string] : number[]})['y'].shift()
-
-    zArray.forEach( z => {
-      (this.data[0] as {[key: string] : number[]})['z'].push(z);
-    }); 
-    (this.data[0] as {[key: string] : number[]})['z'].shift()
-
-    var update = {
+    var robotName = this.mqttService.selectedRobot?.name
+    if(robotName){
+      var cinematicFunction = cinematicFunctions.get(robotName)
+      if(cinematicFunction){
+          var {x,y,z} = cinematicFunction(point);
+          (this.simulatedTrace as {[key: string] : number[]})['x'].push(x);
+          (this.simulatedTrace as {[key: string] : number[]})['y'].push(y);
+          (this.simulatedTrace as {[key: string] : number[]})['z'].push(z);
+          var size = (this.simulatedTrace as {[key: string] : any})['marker'].size
+          if(size == 1){
+            (this.simulatedTrace as {[key: string] : number[]})['x'].shift();
+            (this.simulatedTrace as {[key: string] : number[]})['y'].shift();
+            (this.simulatedTrace as {[key: string] : number[]})['z'].shift();
+            (this.realTrace as {[key: string] : number[]})['x'].shift();
+            (this.realTrace as {[key: string] : number[]})['y'].shift();
+            (this.realTrace as {[key: string] : number[]})['z'].shift();
+          }
+      }
+      var update = {
         'marker.size':8,
-            'marker.opacity': 0.6,
-            'marker.color':'blue'
-    };
-    var graphDiv = document.getElementById('myPlot');
-    Plotly.restyle(graphDiv!, update,0)
+        'marker.opacity': 0.6,
+        'marker.color':'blue'
+      }
+      var graphDiv = document.getElementById('myPlot');
+        Plotly.restyle(graphDiv!, update,0)
+      }
     
   }
 
-  addPoint(){
-    var graphDiv = document.getElementById('myPlot');
-    
-    //(this.data[0] as {[key: string] : number[]})['x'].push(200);
-    //(this.data[0] as {[key: string] : number[]})['y'].push(20);
-    //(this.data[0] as {[key: string] : number[]})['z'].push(10);
-    
-
-    var xArray = [50,60,70,80,90,100,110];
-    var yArray = [7,8,8,9,9,9,10];
-    var zArray = [3,3,3,3,3,3, 3];
-
-    var trace2:Plotly.Data = 
-    {
-        x:xArray,
-        y:yArray,
-        z:zArray,
-        mode:"markers",
-        marker: {
-                    size: 8,
-                    color: [127,127,127,127,127,127,127],
-                    symbol: 'circle',
-                    colorscale: 'Blues',
-                    sizemode: 'diameter',
-                    
-                    opacity: 0.8
-                    
-        },
-        type: 'scatter3d',
-        name:'Real',
-        showlegend: true
+  addRealPoint(point:any){
+    console.log('add new real point', point)
+    var robotName = this.mqttService.selectedRobot?.name
+    if(robotName){
+      var cinematicFunction = cinematicFunctions.get(robotName)
+      if(cinematicFunction){
+          var {x,y,z} = cinematicFunction(point);
+          (this.realTrace as {[key: string] : number[]})['x'].push(x);
+          (this.realTrace as {[key: string] : number[]})['y'].push(y);
+          (this.realTrace as {[key: string] : number[]})['z'].push(z);
+          
       }
-      this.data.push(trace2)
-        var update = {
-            'marker.opacity': 0.7
-        };
-        Plotly.restyle(graphDiv!, update,0)
-    }
+      var update = {
+        'marker.size':8,
+        'marker.opacity': 0.6,
+        'marker.color':'blue',
+        'marker.symbol':'circle'
+      }
+      var graphDiv = document.getElementById('myPlot');
+        Plotly.restyle(graphDiv!, update,1)
+      }
+  }
 }

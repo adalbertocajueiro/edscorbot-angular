@@ -4,9 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { GraphComponent } from './pages/graph/graph.component';
-import { PlotlyModule } from 'angular-plotly.js';
-import * as PlotlyJS from 'plotly.js-dist-min';
 import { HeaderComponent } from './components/header/header.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { SidenavItemComponent } from './components/sidenav/sidenav-item/sidenav-item.component';
@@ -40,11 +37,6 @@ import { PlotlyComponent } from './components/plotly/plotly.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { HighchartComponent } from './components/highchart/highchart.component';
 
-import { HighchartsChartModule } from 'highcharts-angular';
-
-
-PlotlyModule.plotlyjs = PlotlyJS;
-
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
    port: 8080,
@@ -60,7 +52,6 @@ export const MQTT_SERVICE_OPTIONS = {
 @NgModule({
   declarations: [
     AppComponent,
-    GraphComponent,
     HeaderComponent,
     SidenavComponent,
     SidenavItemComponent,
@@ -99,9 +90,7 @@ export const MQTT_SERVICE_OPTIONS = {
     MatDialogModule,
     MatSelectModule,
     MatSnackBarModule,
-    PlotlyModule,
-    MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
-    HighchartsChartModule
+    MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
   ],
   providers: [],
   bootstrap: [AppComponent]

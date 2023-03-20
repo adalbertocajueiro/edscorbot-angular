@@ -1,17 +1,13 @@
 <div class="container-movements">
     <div class="movements-trajectories">
         <app-single
-            (onSimulationPointsChanged)="updateSimulationGraph($event)"></app-single>
+            (onSimulationPointAdded)="addSimulationPoint($event)"></app-single>
     </div>
     <div class="graph">
-        <div class="graphs">
-            <div class="planned" [ngClass]="!toogleChecked?'visible':'invisible'">
-                <app-graphplot 
-                    [simGraphSubject]="simGraphSubject"
-                    [realGraphSubject]="realGraphSubject"></app-graphplot>
-            </div>
-        </div>
-        
+        <app-plotly
+            [simPointSubject]="simPointSubject"
+            [realPointSubject]="realPointSubject">
+        </app-plotly>
     </div>
 </div>
 

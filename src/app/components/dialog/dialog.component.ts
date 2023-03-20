@@ -49,10 +49,10 @@ export class DialogComponent{
     if(this.form.valid){
       var point:number[] = []
       
-      var currentJoint = 0
+      
       Object.entries(this.form.controls).forEach (
         entry => {
-          var value = parseInt(entry[1].value)
+          var value = parseFloat(entry[1].value)
           point.push(value)
         }
       )

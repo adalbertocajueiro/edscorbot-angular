@@ -1,3 +1,4 @@
+import { emitDistinctChangesOnlyDefaultValue } from '@angular/compiler';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,6 +27,9 @@ export class SingleComponent implements OnInit{
 
   @Output()
   onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
+
+  @Output()
+  onSimulationPointAdded:EventEmitter<any> = new EventEmitter<any>()
 
   selectedRobot?:MetaInfoObject
   connected:boolean = false
@@ -110,7 +114,7 @@ export class SingleComponent implements OnInit{
     var obj:any = {}
     var jointName = "J"
     for (let index = 0; index < this.numberOfJoints; index++) {
-      var control = new FormControl('',[Validators.required, Validators.pattern('[-]?[0-9]*'), Validators.min(this.selectedRobot!.joints[index].minimum),Validators.max(this.selectedRobot!.joints[index].maximum)])  
+      var control = new FormControl('',[Validators.required, Validators.pattern('[-]?[0-9]*[.]?[0-9]*'), Validators.min(this.selectedRobot!.joints[index].minimum),Validators.max(this.selectedRobot!.joints[index].maximum)])  
       obj[jointName + (index + 1).toString()] = control
       this.joints.push(jointName + (index + 1).toString())
     }
@@ -151,15 +155,20 @@ export class SingleComponent implements OnInit{
             var points:any[][] = []
             try{
                 points = JSON.parse(fileReader.result.toString())
+                
                 if(points.length > 0){
                   
                   if (this.mqttService.selectedRobot?.joints.length == points[0].length){
                     //points have not time coordinate. using the default
                     
                     points.map( p => p.push(this.mqttService.defaultPointTime))
-                    points.forEach( p =>  this.appliedPoints.push(p))
+                    points.forEach( p =>  {
+                      this.appliedPoints.push(p)
+                      this.onSimulationPointAdded.emit(p)
+                    })
                     //this.graphService.buildGraph(this.appliedPoints)
                     this.onSimulationPointsChanged.emit(this.appliedPoints)
+
                   } else {
                     this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
                   }
@@ -191,6 +200,7 @@ export class SingleComponent implements OnInit{
                   .map ( n => n.replaceAll(',','.'))
                   .map ( n => parseFloat(n))
       this.appliedPoints.push(row)
+      this.onSimulationPointAdded.emit(row)
     })
 
     //this.graphService.buildGraph(this.appliedPoints)
@@ -236,6 +246,7 @@ export class SingleComponent implements OnInit{
         this.appliedPoints.push(result)
         //var simGraph = this.graphService.buildGraph(this.appliedPoints)
         this.onSimulationPointsChanged.emit(this.appliedPoints)
+        this.onSimulationPointAdded.emit(result)
       }
     });
   }

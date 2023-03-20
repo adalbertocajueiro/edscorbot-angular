@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GraphService } from 'src/app/services/graph.service';
 
 @Component({
   selector: 'app-trajectories',
@@ -13,7 +12,7 @@ export class TrajectoriesComponent {
   numberOfJoints?:number = 0
   joints:string[] = []
 
-  constructor(private graphService:GraphService){
+  constructor(){
     
   }
 
@@ -58,8 +57,6 @@ export class TrajectoriesComponent {
       }
       this.joints.push('Time (ms)')
     }
-    
-    this.graphService.buildGraph(this.selectedTrajectory.points)
   }
 
 }

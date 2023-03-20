@@ -28,14 +28,11 @@ import { TableLineComponent } from './components/trajectory-table/table-line/tab
 import { MqttModule } from 'ngx-mqtt';
 import { MovementsComponent } from './pages/movements/movements.component';
 import { SingleComponent } from './pages/movements/single/single.component';
-import { GraphplotComponent } from './components/graphplot/graphplot.component';
-import { ConnectButtonComponent } from './components/connect-button/connect-button.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 import { ToogleButtonComponent } from './components/toogle-button/toogle-button.component';
 import { PlotlyComponent } from './components/plotly/plotly.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
-import { HighchartComponent } from './components/highchart/highchart.component';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
@@ -64,14 +61,11 @@ export const MQTT_SERVICE_OPTIONS = {
     TableLineComponent,
     MovementsComponent,
     SingleComponent,
-    GraphplotComponent,
-    ConnectButtonComponent,
     DialogComponent,
     InfoDialogComponent,
     ToogleButtonComponent,
     PlotlyComponent,
-    SpinnerComponent,
-    HighchartComponent
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

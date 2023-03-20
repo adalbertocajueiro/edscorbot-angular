@@ -9,12 +9,8 @@ import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-ser
 })
 export class MovementsComponent implements OnInit{
 
-  simulationPoints:number[][] = []
-  simGraphSubject:Subject<any> = new Subject<any>()
   simPointSubject:Subject<any> = new Subject<any>()
 
-  realPoints:number[][] = []
-  realGraphSubject:Subject<any> = new Subject<any>()
   realPointSubject:Subject<any> = new Subject<any>()
 
   toogleChecked:boolean = false
@@ -27,15 +23,9 @@ export class MovementsComponent implements OnInit{
     this.mqttService.movedSubject.subscribe(
       {
         next: (res) => {
-          //console.log('received message', res)
-          
           var errorState = res.errorState
           if(!errorState){
-            var content = res.content
             var returnedPoint = res.content.coordinates
-            this.realPoints.push(content.coordinates)
-            this.realGraphSubject.next(this.realPoints)
-            this.realPointSubject.next(returnedPoint)
             this.realPointSubject.next(returnedPoint)
           }
         },
@@ -46,8 +36,7 @@ export class MovementsComponent implements OnInit{
     this.mqttService.selectedRobotSubject.subscribe(
       {
         next: (res) => {
-          this.realPoints = []
-          this.realGraphSubject.next(this.realPoints)
+          //TODO some action with real points
         },
         error: (err) => { console.log('error',err)}
       }
@@ -56,15 +45,5 @@ export class MovementsComponent implements OnInit{
 
   addSimulationPoint(event:any){
     this.simPointSubject.next(event)
-  }
-  updateSimulationGraph(event:any){
-    //console.log('simulaiton points changed', event)
-    this.simulationPoints = event
-    this.simGraphSubject.next(this.simulationPoints)
-  }
-
-  switchGraph(event:boolean){
-    //false shows the simulated, true shows the real
-    this.toogleChecked = event
   }
 }

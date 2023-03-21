@@ -1,4 +1,3 @@
-import { emitDistinctChangesOnlyDefaultValue } from '@angular/compiler';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,13 +22,21 @@ export class SingleComponent implements OnInit{
   selectedFile?: File
   appliedPoints:number[][] = []
   searchingHome:boolean = false
+  executingTrajectory:boolean = false
 
+  timeoutTrajectory?:NodeJS.Timeout
 
-  @Output()
-  onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
+  //@Output()
+  //onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
 
   @Output()
   onSimulationPointAdded:EventEmitter<any> = new EventEmitter<any>()
+
+  @Output()
+  onSimulationPointDeleted:EventEmitter<number> = new EventEmitter<number>()
+
+  @Output()
+  onSimulationPointListClear:EventEmitter<void> = new EventEmitter<void>()
 
   selectedRobot?:MetaInfoObject
   connected:boolean = false
@@ -44,7 +51,6 @@ export class SingleComponent implements OnInit{
   }
   ngOnInit(): void {
     this.selectedRobot = this.mqttService.selectedRobot
-    //this.connected = this.mqttService.connected
     this.buildForm()
     this.mqttService.selectedRobotSubject.subscribe(
       {
@@ -52,7 +58,7 @@ export class SingleComponent implements OnInit{
           this.selectedRobot = this.mqttService.selectedRobot
           this.buildForm()
           this.appliedPoints = []
-          this.onSimulationPointsChanged.emit(this.appliedPoints)    
+          //this.onSimulationPointsChanged.emit(this.appliedPoints)    
         },
         error: (err) => { console.log('error',err)}
       }
@@ -91,7 +97,23 @@ export class SingleComponent implements OnInit{
 
           if(commandObj.signal == ARM_CANCELED_TRAJECTORY){
             console.log('stopping trajectory execution')
+            clearTimeout(this.timeoutTrajectory)
+            this.executingTrajectory = false
           }
+        },
+        error: (err) => { console.log('error',err)}
+      }
+    )
+
+    this.mqttService.movedSubject.subscribe(
+      {
+        next: (res) => {
+          var errorState = res.errorState
+          this.executingTrajectory = true
+          clearTimeout(this.timeoutTrajectory)
+          if(!errorState){
+            this.timeoutTrajectory = this.createTimeout()
+          } 
         },
         error: (err) => { console.log('error',err)}
       }
@@ -127,21 +149,31 @@ export class SingleComponent implements OnInit{
     return obj
   }
 
+  createTimeout(){
+    var timer = setTimeout(() => {
+      this.executingTrajectory = false
+    },2000)
+
+    return timer
+  }
   
-  deletePoint(point:any[]){
-    this.appliedPoints = this.appliedPoints.filter (p => p != point)
+  deletePoint(index:number){
+    this.appliedPoints.splice(index,1)
     //this.graphService.buildGraph(this.appliedPoints)
-    this.onSimulationPointsChanged.emit(this.appliedPoints)
+    //this.onSimulationPointsChanged.emit(this.appliedPoints)
+    this.onSimulationPointDeleted.emit(index)
   }
 
   clearPointList(){
+    //console.log('clear list')
     this.appliedPoints = []
-    this.onSimulationPointsChanged.emit(this.appliedPoints)
+    //this.onSimulationPointsChanged.emit(this.appliedPoints)
+    this.onSimulationPointListClear.emit()
   }
 
   selectTrajectory(trajectory:any){
     this.appliedPoints = trajectory.points
-    this.onSimulationPointsChanged.emit(this.appliedPoints)
+    //this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   onFileChanged(event:any) {
@@ -167,7 +199,7 @@ export class SingleComponent implements OnInit{
                       this.onSimulationPointAdded.emit(p)
                     })
                     //this.graphService.buildGraph(this.appliedPoints)
-                    this.onSimulationPointsChanged.emit(this.appliedPoints)
+                    //this.onSimulationPointsChanged.emit(this.appliedPoints)
 
                   } else {
                     this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
@@ -204,7 +236,7 @@ export class SingleComponent implements OnInit{
     })
 
     //this.graphService.buildGraph(this.appliedPoints)
-    this.onSimulationPointsChanged.emit(this.appliedPoints)
+    //this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   verifyConditions(event:any){
@@ -229,6 +261,15 @@ export class SingleComponent implements OnInit{
       trajectory.points.push(point)
     })
     this.mqttService.sendTrajectoryMessage(trajectory)
+    this.executingTrajectory = true
+    this.timeoutTrajectory = this.createTimeout()
+  }
+
+  sendCancelTrajectory(){
+    console.log('cancelling trajectory')
+    this.mqttService.sendCancelTrajectoryMessage()
+    this.executingTrajectory = false
+    clearTimeout(this.timeoutTrajectory)
   }
 
   openPointDialog() {
@@ -245,7 +286,7 @@ export class SingleComponent implements OnInit{
       if(result){
         this.appliedPoints.push(result)
         //var simGraph = this.graphService.buildGraph(this.appliedPoints)
-        this.onSimulationPointsChanged.emit(this.appliedPoints)
+        //this.onSimulationPointsChanged.emit(this.appliedPoints)
         this.onSimulationPointAdded.emit(result)
       }
     });

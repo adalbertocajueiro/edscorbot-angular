@@ -1,11 +1,15 @@
 <div class="container-movements">
     <div class="movements-trajectories">
         <app-single
-            (onSimulationPointAdded)="addSimulationPoint($event)"></app-single>
+            (onSimulationPointAdded)="addSimulationPoint($event)"
+            (onSimulationPointListClear)="clearSimulationPoints()"
+            (onSimulationPointDeleted)="deleteSimulationPoint($event)"></app-single>
     </div>
     <div class="graph">
         <app-plotly
             [simPointSubject]="simPointSubject"
+            [simPointDeletedSubject]="simPointDeletedSubject"
+            [simListSubject]="simListSubject"
             [realPointSubject]="realPointSubject">
         </app-plotly>
     </div>

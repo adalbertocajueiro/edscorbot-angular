@@ -1,26 +1,4 @@
 <div class="container-single">
-    
-    <!-- div class="move-to-point">
-        <label>Move to point</label>
-        <div class="point">            
-            <form [formGroup]="form">
-                <div class="joint" *ngFor="let field of joints">
-                    <label>{{field}}: </label>
-                    <input 
-                        [formControlName]="field" 
-                        placeholder="-" 
-                        (ngModelChange)="jointChanged($event)"/>
-                </div>
-                
-                <div class="buttons">
-                    <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
-                    <button *ngIf="numberOfJoints > 0" (click)="moveToPoint()">Send to arm</button>
-                    <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'" (click)="moveToPoint()">Move</button>
-                </div>
-                
-            </form>
-        </div>
-    </div -->
     <div class="list-points-moved">
         <div class="list-header">
             <label>Trajectory {{appliedPoints.length > 0 ? '(' + appliedPoints.length +')' : ''}}</label>
@@ -36,21 +14,24 @@
                     (click)="clearPointList()">clear_all</mat-icon>
                 <mat-icon fontSet="material-icons-outlined" matTooltip="Save as trajectory" matTooltipPosition="above" 
                     [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'">save</mat-icon>
-                <mat-icon fontSet="material-icons-outlined" matTooltip="Send trajectory to arm" matTooltipPosition="above"
+                <mat-icon *ngIf="!executingTrajectory" fontSet="material-icons-outlined" matTooltip="Send trajectory to arm" matTooltipPosition="above"
                     [ngClass]="this.appliedPoints.length > 0 && this.connected && !searchingHome?'':'icon-disabled'"
-                    (click)="sendTrajectoryToArm()">send</mat-icon>
+                    (click)="sendTrajectoryToArm()">play_arrow</mat-icon>
+                <mat-icon *ngIf="executingTrajectory" fontSet="material-icons-outlined" matTooltip="Cancel trajectory execution" matTooltipPosition="above"
+                    [ngClass]="this.appliedPoints.length > 0 && this.connected && !searchingHome?'':'icon-disabled'"
+                    (click)="sendCancelTrajectory()">stop</mat-icon>
                 
                 <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
             </div>
         </div>
         <div class="list-points">
             <mat-list>
-                <mat-list-item *ngFor="let point of appliedPoints" >
+                <mat-list-item *ngFor="let point of appliedPoints;let count = index" >
                     <div *ngFor="let field of joints;let i = index">
                         <span>{{field}}: </span>
                         <label matTooltip="{{point[i]}}" matTooltipPosition="above">{{point[i].toFixed(2)}}</label>
                     </div>
-                    <div (click)="deletePoint(point)">
+                    <div (click)="deletePoint(count)">
                         <mat-icon fontSet="material-icons-outlined" >delete</mat-icon>
                     </div>
                     

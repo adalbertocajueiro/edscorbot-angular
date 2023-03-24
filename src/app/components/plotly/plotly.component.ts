@@ -28,8 +28,11 @@ export class PlotlyComponent implements OnInit{
   @Input()
   simListSubject?:Subject<void>
 
-  constructor(private mqttService:EdscorbotMqttServiceService){
+   @Input()
+  realListSubject?:Subject<void>
 
+  constructor(private mqttService:EdscorbotMqttServiceService){
+    
   }
   ngOnInit(): void {
     this.createInitialGraph()
@@ -52,6 +55,17 @@ export class PlotlyComponent implements OnInit{
     )
 
     this.simListSubject?.subscribe(
+      {
+        next: () => {
+          //console.log('rebuilding graphs')
+          this.data = []
+          this.createInitialGraph()
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
+
+    this.realListSubject?.subscribe(
       {
         next: () => {
           //console.log('rebuilding graphs')

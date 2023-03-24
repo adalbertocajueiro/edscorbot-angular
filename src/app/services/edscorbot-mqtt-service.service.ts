@@ -255,7 +255,7 @@ export class EdscorbotMqttServiceService {
     const content = {
       signal: ARM_APPLY_TRAJECTORY,
       client: this.loggedUser,
-      content: trajectory
+      trajectory: trajectory
     }
     const publish = {
       topic: this.selectedRobot!.name + "/" + COMMANDS_CHANNEL,
@@ -269,7 +269,7 @@ export class EdscorbotMqttServiceService {
     const content = {
       signal: ARM_MOVE_TO_POINT,
       client: this.loggedUser,
-      content: point
+      point: point
     }
     const publish = {
       topic: this.selectedRobot!.name + "/" + COMMANDS_CHANNEL,

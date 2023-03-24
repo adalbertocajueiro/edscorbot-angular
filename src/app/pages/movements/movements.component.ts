@@ -15,6 +15,8 @@ export class MovementsComponent implements OnInit{
 
   simPointDeletedSubject:Subject<number> = new Subject<number>()
 
+  realListSubject:Subject<void> = new Subject<void>()
+
   realPointSubject:Subject<any> = new Subject<any>()
 
   toogleChecked:boolean = false
@@ -41,6 +43,7 @@ export class MovementsComponent implements OnInit{
       {
         next: (res) => {
           //TODO some action with real points
+          this.realListSubject.next();
         },
         error: (err) => { console.log('error',err)}
       }
@@ -56,7 +59,6 @@ export class MovementsComponent implements OnInit{
   }
 
   clearSimulationPoints(){
-    //console.log('clearing sim list')
     this.simListSubject.next()
   }
 }

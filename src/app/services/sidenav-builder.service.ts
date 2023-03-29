@@ -23,6 +23,9 @@ export class SidenavBuilderService {
       {enabled:true,path:'movements',icon:'timeline',selected:false,tooltip:'Movements'}
     )
     
+    sidenavItems.push(
+      {enabled:true,path:'login',icon:'login',selected:false,tooltip:'Login'}
+    )
 
 
     return sidenavItems

@@ -1,5 +1,5 @@
-import { Component, Inject, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { AbstractControl, FormGroup, MaxValidator, Validator, ValidatorFn } from '@angular/forms';
+import { Component, Inject} from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 

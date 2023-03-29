@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -20,17 +20,17 @@
     "@angular/platform-browser": "^15.1.0",
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
-    "angular-plotly.js": "^4.0.4",
-    "highcharts": "^10.3.3",
-    "highcharts-angular": "^3.1.2",
+    "@petamoriken/float16": "^3.8.0",
     "material-icons": "^1.13.2",
-    "mqtt": "^4.3.7",
     "mqtt-browser": "^4.3.7",
     "ngx-mqtt": "^9.0.5",
+    "npyjs": "^0.4.0",
+    "npyz": "^0.4.2",
     "plotly": "^1.0.6",
     "plotly.js-dist-min": "^2.20.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xtend": "^4.0.2",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {

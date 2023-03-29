@@ -7,6 +7,8 @@ import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-ser
 import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, ARM_STATUS} from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 import { Point, Trajectory } from 'src/app/util/models';
+import npyjs from 'src/app/util/npy';
+import { npyz } from 'src/app/util/numpy';
 
 @Component({
   selector: 'app-single',
@@ -136,7 +138,9 @@ export class SingleComponent implements OnInit{
     var obj:any = {}
     var jointName = "J"
     for (let index = 0; index < this.numberOfJoints; index++) {
-      var control = new FormControl('',[Validators.required, Validators.pattern('[-]?[0-9]*[.]?[0-9]*'), Validators.min(this.selectedRobot!.joints[index].minimum),Validators.max(this.selectedRobot!.joints[index].maximum)])  
+      var control = new FormControl('',[Validators.required, Validators.pattern('[-]?[0-9]*[.]?[0-9]*'), 
+                Validators.min(Math.min(this.selectedRobot!.joints[index].minimum,this.selectedRobot!.joints[index].maximum)),
+                Validators.max(Math.max(this.selectedRobot!.joints[index].minimum,this.selectedRobot!.joints[index].maximum))])  
       obj[jointName + (index + 1).toString()] = control
       this.joints.push(jointName + (index + 1).toString())
     }
@@ -180,17 +184,24 @@ export class SingleComponent implements OnInit{
       this.selectedFile = event.target.files[0];
       const fileReader = new FileReader();
       if(this.selectedFile){
+        //////
+        if(this.selectedFile.name.endsWith(".npy")){
+          fileReader.readAsDataURL(this.selectedFile)
+          npyz.read(fileReader.result).then(
+            (res:any) => console.log(npyz.pJSON(res)),
+          );
+        }
+        //////
         fileReader.readAsText(this.selectedFile, "UTF-8");
         
         fileReader.onload = () => {
+          console.log('file result',this.selectedFile)
           if(fileReader.result){
             var points:any[][] = []
-            try{
-                points = JSON.parse(fileReader.result.toString())
-                
-                if(points.length > 0){
-                  
-                  if (this.mqttService.selectedRobot?.joints.length == points[0].length){
+            if(this.selectedFile?.name.endsWith(".json")){
+              points = JSON.parse(fileReader.result.toString())
+              if(points.length > 0){
+                if (this.mqttService.selectedRobot?.joints.length == points[0].length){
                     //points have not time coordinate. using the default
                     
                     points.map( p => p.push(this.mqttService.defaultPointTime))
@@ -198,20 +209,27 @@ export class SingleComponent implements OnInit{
                       this.appliedPoints.push(p)
                       this.onSimulationPointAdded.emit(p)
                     })
-                    //this.graphService.buildGraph(this.appliedPoints)
-                    //this.onSimulationPointsChanged.emit(this.appliedPoints)
-
-                  } else {
-                    this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
-                  }
-                } else{
-                    //file has no points
-                    this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
+                } else {
+                  this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
                 }
-            } catch(err){ //try to load as csv
+              } else{
+                  //file has no points
+                  this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
+              }
+              
+            } else if (this.selectedFile?.name.endsWith(".tsv")){
               //console.log('trying to load as csv')
               this.loadFromCsv(fileReader.result)
+            } else if (this.selectedFile?.name.endsWith(".npy")){
+              //format is npy
+              console.log("file:", this.selectedFile.webkitRelativePath)
+              var path = this.selectedFile.name
+              
+              //fileReader.readAsArrayBuffer(this.selectedFile)
+              //this.loadFromNpy(fileReader.result as ArrayBuffer)
+              //console.log("content",fileReader.result)
             }
+            
           }
           
         }
@@ -239,6 +257,17 @@ export class SingleComponent implements OnInit{
     //this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
+
+  loadFromNpy(buf:ArrayBufferLike){
+    var loader = new npyjs(undefined)
+    //var dec = this.asciiDecode(buf.slice(0,6))
+    //console.log("decode",dec)
+    //console.log('buffer',buf)
+    //var obj = loader.parse(buf);
+    //console.log('parsed',obj)
+  }
+
+  
   verifyConditions(event:any){
     if(!this.mqttService.selectedRobot){
       this.snackBar.open("Robot is not selected", "Close",{duration:5000,verticalPosition:"top"})
@@ -250,19 +279,26 @@ export class SingleComponent implements OnInit{
   nothing(){ }
 
   sendTrajectoryToArm(){
-    
-    var trajectory:Trajectory = {
-      points: []
-    }
-    this.appliedPoints.forEach ( p => {
-      var point:Point = {
-        coordinates: p
+    if(this.appliedPoints.length == 1){
+      var p = {
+        coordinates: this.appliedPoints[0]
       }
-      trajectory.points.push(point)
-    })
-    this.mqttService.sendTrajectoryMessage(trajectory)
-    this.executingTrajectory = true
-    this.timeoutTrajectory = this.createTimeout()
+      this.mqttService.sendMoveToPointMessage(p);
+    } else {
+      var trajectory:Trajectory = {
+        points: []
+      }
+      this.appliedPoints.forEach ( p => {
+        var point:Point = {
+          coordinates: p
+        }
+        trajectory.points.push(point)
+      })
+      this.mqttService.sendTrajectoryMessage(trajectory)
+      this.executingTrajectory = true
+      this.timeoutTrajectory = this.createTimeout()
+    }
+    
   }
 
   sendCancelTrajectory(){
@@ -291,4 +327,66 @@ export class SingleComponent implements OnInit{
       }
     });
   }
+
+  
+  
+  ///load numpy
+  asciiDecode(buf:any) {
+    var array = new Uint8Array(buf);
+    return String.fromCharCode.apply(null, (array as any) as number[]);
+  }
+  /*
+  readUint16LE(buffer:ArrayBuffer) {
+        var view = new DataView(buffer);
+        var val = view.getUint8(0);
+        val |= view.getUint8(1) << 8;
+        return val;
+  }
+
+  fromArrayBuffer(buf:ArrayBuffer) {
+    var offsetBytes = 0;
+      // Check the magic number
+    var magic = this.asciiDecode(buf.slice(0,6));
+      if (magic.slice(1,6) != 'NUMPY') {
+          throw new Error('unknown file type');
+      }
+
+      var version = new Uint8Array(buf.slice(6,8)),
+          headerLength = this.readUint16LE(buf.slice(8,10)),
+          headerStr = this.asciiDecode(buf.slice(10, 10+headerLength));
+          offsetBytes = 10 + headerLength;
+          //rest = buf.slice(10+headerLength);  XXX -- This makes a copy!!! https://www.khronos.org/registry/typedarray/specs/latest/#5
+
+      // Hacky conversion of dict literal string to JS Object
+      eval("var info = " + headerStr.toLowerCase().replace('(','[').replace('),',']'));
+    
+      // Intepret the bytes according to the specified dtype
+      var data;
+      if (info.descr === "|u1") {
+          data = new Uint8Array(buf, offsetBytes);
+      } else if (info.descr === "|i1") {
+          data = new Int8Array(buf, offsetBytes);
+      } else if (info.descr === "<u2") {
+          data = new Uint16Array(buf, offsetBytes);
+      } else if (info.descr === "<i2") {
+          data = new Int16Array(buf, offsetBytes);
+      } else if (info.descr === "<u4") {
+          data = new Uint32Array(buf, offsetBytes);
+      } else if (info.descr === "<i4") {
+          data = new Int32Array(buf, offsetBytes);
+      } else if (info.descr === "<f4") {
+          data = new Float32Array(buf, offsetBytes);
+      } else if (info.descr === "<f8") {
+          data = new Float64Array(buf, offsetBytes);
+      } else {
+          throw new Error('unknown numeric dtype')
+      }
+
+      return {
+          shape: info.shape,
+          fortran_order: info.fortran_order,
+          data: data
+      };
+    }
+    */
 }

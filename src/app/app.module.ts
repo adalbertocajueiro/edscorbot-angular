@@ -33,6 +33,9 @@ import { InfoDialogComponent } from './components/info-dialog/info-dialog.compon
 import { ToogleButtonComponent } from './components/toogle-button/toogle-button.component';
 import { PlotlyComponent } from './components/plotly/plotly.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { LoginComponent } from './pages/login/login.component';
+import { HttpClientModule } from '@angular/common/http';
+import { LoginDialogComponent } from './pages/login/login-dialog/login-dialog.component';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
@@ -65,12 +68,15 @@ export const MQTT_SERVICE_OPTIONS = {
     InfoDialogComponent,
     ToogleButtonComponent,
     PlotlyComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    LoginComponent,
+    LoginDialogComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatIconModule,

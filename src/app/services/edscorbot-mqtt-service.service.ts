@@ -23,8 +23,10 @@ export class EdscorbotMqttServiceService {
   owner?:Client
 
   private MQTT_SERVICE_OPTIONS1 = {
+
     hostname: 'localhost',
-    //hostname: '192.168.64.3',
+    //hostname: '192.168.1.104',
+    //hostname: '10.0.2.15',
     port: 8080,
     //path: '/mqtt',
     clean: true, // Retain session

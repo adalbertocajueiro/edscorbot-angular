@@ -1,0 +1,32 @@
+<div class="tittle">
+    <label>Login</label>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="credentials">
+            <div class="field">
+                <label>Username: </label>
+                <input type="text" size="36" 
+                    [formControlName]="'username'" 
+                    placeholder="Enter your username" />
+            </div>
+            <div class="field">
+                <label>Password: </label>
+                <mat-icon *ngIf="!passVisible" class="eye" (click)="toggleVisibility()">visibility</mat-icon>
+                <mat-icon *ngIf="passVisible" class="eye" (click)="toggleVisibility()">visibility_off</mat-icon>
+                <input [type]="passVisible?'text':'password'" size="36"
+                    placeholder="Enter your password" 
+                    [formControlName]="'password'" />
+        
+                <!-- mat-icon class="eye">visibility-off</mat-icon -->
+            </div>
+        </div>
+    </form>
+    
+    
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="resetForm()">Cancel</button>
+    <button mat-button [mat-dialog-close]="sendCredentials()" cdkFocusInitial>Ok</button>
+</div>

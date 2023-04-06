@@ -75,7 +75,7 @@ export class SingleComponent implements OnInit{
 
               this.selectedRobot = this.mqttService.selectedRobot
               if(this.mqttService.owner){
-                this.connected = this.mqttService.owner?.id == this.mqttService.loggedUser.id
+                this.connected = this.mqttService.owner?.id == this.mqttService.loggedUser?.id
               } else {
                 this.connected = false
               }

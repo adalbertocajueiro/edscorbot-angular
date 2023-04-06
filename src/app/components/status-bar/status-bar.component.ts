@@ -2,9 +2,8 @@ import { Component, ViewChild} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
-import { ARM_CONNECTED, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_HOME_SEARCHED, ARM_METAINFO, ARM_STATUS, BUSY, ERROR, FREE, META_INFO_CHANNEL } from 'src/app/util/constants';
+import { ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, BUSY, ERROR, FREE, ARM_STATUS } from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
-import { npyz } from 'src/app/util/numpy';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 
 @Component({
@@ -46,20 +45,20 @@ export class StatusBarComponent {
               this.selectedRobot = this.mqttService.selectedRobot
               this.availableRobots = this.mqttService.availableRobots
               if(this.mqttService.owner){
-                this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
+                this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
               }
               
               
           }
           if(commandObj.signal == ARM_CONNECTED){
-              this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
+              this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
               this.selectedRobot = this.mqttService.selectedRobot
               this.availableRobots = this.mqttService.availableRobots
           }
           if(commandObj.signal == ARM_DISCONNECTED){
             this.selectedRobot = this.mqttService.selectedRobot
-            if(this.mqttService.loggedUser.id == commandObj.client.id){
-              this.connected = this.mqttService.loggedUser.id == this.mqttService.owner?.id
+            if(this.mqttService.loggedUser?.id == commandObj.client.id){
+              this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
               // this.select?.options.forEach((item: MatOption) => item.deselect());
             } 
             //this.mqttService.sendRequestMetaInfo()
@@ -180,7 +179,7 @@ export class StatusBarComponent {
           return 'link'
         case BUSY:
           //if logged user is equals to the owner then disconnect
-          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
             return 'link_off'
           } else {
             return 'sentiment_dissatisfied'
@@ -199,7 +198,7 @@ export class StatusBarComponent {
   getEnableClass(){
     if(this.mqttService.selectedRobot){
       if(this.mqttService.owner){
-        if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+        if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
           return ''
         } else{
           return 'unavailable'
@@ -237,7 +236,7 @@ export class StatusBarComponent {
         case FREE:
           return 'Connect to the arm'
         case BUSY:
-          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
             if(this.searchingHome){
               return 'Arm is searching home position'
             } else {
@@ -266,7 +265,7 @@ export class StatusBarComponent {
         case FREE:
           return 'Connect'
         case BUSY:
-          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
             return 'Disconnect'
           } else {
             return 'Wait'
@@ -287,7 +286,7 @@ export class StatusBarComponent {
         case FREE:
           return true
         case BUSY:
-          if(this.mqttService.owner?.id == this.mqttService.loggedUser.id){
+          if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
             return true
           } else {
             return false

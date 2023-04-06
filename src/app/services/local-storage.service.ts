@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -10,6 +10,9 @@ export class LocalStorageService {
   USERFULLNAME_KEY:string = 'userfullname'
   USERTOKEN_KEY:string = 'usertoken'
   USERROLE_KEY:string = 'userrole'
+  loggedUser:any
+
+  userChanged:EventEmitter<any> = new EventEmitter<any>()
 
   constructor() { }
 
@@ -18,6 +21,8 @@ export class LocalStorageService {
     localStorage.setItem(this.USERFULLNAME_KEY,user.name)
     localStorage.setItem(this.USERTOKEN_KEY,user.token)
     localStorage.setItem(this.USERROLE_KEY,user.role)
+    this.loggedUser = this.getLoggedUser()
+    this.userChanged.emit(this.loggedUser)
   }
 
   public clearLoggedUser(){
@@ -25,6 +30,8 @@ export class LocalStorageService {
     localStorage.removeItem(this.USERFULLNAME_KEY)
     localStorage.removeItem(this.USERTOKEN_KEY)
     localStorage.removeItem(this.USERROLE_KEY)
+    this.loggedUser = undefined
+    this.userChanged.emit(this.loggedUser)
   }
 
   public getLoggedUser(){

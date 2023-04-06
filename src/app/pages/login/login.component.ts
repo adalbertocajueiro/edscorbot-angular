@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit{
     this.javaService.authenticate(username,password).subscribe(
       {
         next:(res) => {
-          console.log('login sucess',res)
+          //console.log('login sucess',res)
           //store information in local storage
           this.localStorageService.saveLoggedUser(res)
           this.router.navigate(["/"])

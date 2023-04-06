@@ -4,6 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 import { ARM_APPLY_TRAJECTORY, ARM_CANCELED_TRAJECTORY, ARM_CANCEL_TRAJECTORY, ARM_CHECK_STATUS, ARM_CONNECT, ARM_CONNECTED, ARM_DISCONNECT, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_METAINFO, ARM_MOVE_TO_POINT, ARM_STATUS, BUSY, COMMANDS_CHANNEL, ERROR, FREE, META_INFO_CHANNEL, MOVED_CHANNEL } from '../util/constants';
 import { MetaInfoObject } from '../util/matainfo';
 import { Client, Point, Trajectory } from '../util/models';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,7 @@ export class EdscorbotMqttServiceService {
   serverError:boolean = false
   availableRobots:MetaInfoObject[] = []
   selectedRobot?:MetaInfoObject
-  loggedUser:Client = {
-    id: "adalberto@computacao.ufcg.edu.br"
-  }
+  loggedUser?:Client
 
   owner?:Client
 
@@ -50,7 +49,22 @@ export class EdscorbotMqttServiceService {
 
   _mqttService: MqttService
 
-  constructor(){
+  constructor(private localStorageService:LocalStorageService){
+
+    this.localStorageService.userChanged.subscribe({
+      next: (res:any) => {
+        //console.log('user changed',res)
+        if(res == undefined){
+          this.loggedUser = undefined
+        } else {
+          this.loggedUser = {
+            id: res.username
+          }
+        }
+      },
+      error: (err:any) => {console.log('error', err)}
+    })
+
     var mqttClientId = new Date().toLocaleString()
     this.MQTT_SERVICE_OPTIONS1.clientId = mqttClientId
     this._mqttService = new MqttService(this.MQTT_SERVICE_OPTIONS1)
@@ -198,7 +212,7 @@ export class EdscorbotMqttServiceService {
             }
             if(commandObj.signal == ARM_CONNECTED){
               this.owner = commandObj.client
-              if(this.owner?.id == this.loggedUser.id){
+              if(this.owner?.id == this.loggedUser?.id){
                 this.subscribeMoved(this.selectedRobot!.name)
               }
             }
@@ -249,7 +263,7 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    console.log('sending connect message', content.signal)
+    //console.log('sending connect message', content.signal)
     this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
   }
 

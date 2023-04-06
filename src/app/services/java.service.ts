@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,29 @@ export class JavaService {
 
   authenticate(username:string,password:string){
 
-    var formData:FormData = new FormData();
     var body = {
-        username:"root",
-        password:"edscorbot"
+        username:username,
+        password:password
     }
-    formData.set('username', username)
-    formData.set('password',password)
-    return this.httpClient.post("/api/authent", formData)
+
+    return this.httpClient.post<Object>("/api/authenticate", body)
+  }
+
+  signup(form:FormGroup){
+
+    var body = {
+        username:form.controls['username'].value,
+        password:form.controls['password'].value,
+        email:form.controls['email'].value,
+        name:form.controls['name'].value,
+        enabled:form.controls['enabled'].value,
+        role:form.controls['role'].value
+    }
+    
+    return this.httpClient.post<Object>("/api/signup", body)
+  }
+
+  getUsers(){
+    return this.httpClient.get("/api/users")
   }
 }

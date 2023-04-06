@@ -1,1 +1,8 @@
-<p>users works!</p>
+<div class="container-users">
+    <div *ngIf="this.loggedUser.role == 'ADMIN'">
+        User is admin
+    </div>
+    <div *ngIf="this.loggedUser.role == 'USER'">
+        User is not admin
+    </div>
+</div>

@@ -34,8 +34,9 @@ import { ToogleButtonComponent } from './components/toogle-button/toogle-button.
 import { PlotlyComponent } from './components/plotly/plotly.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { LoginComponent } from './pages/login/login.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LoginDialogComponent } from './pages/login/login-dialog/login-dialog.component';
+import { AuthInterceptor } from './util/auth.interceptor';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
@@ -92,7 +93,13 @@ export const MQTT_SERVICE_OPTIONS = {
     MatSnackBarModule,
     MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
   ],
-  providers: [],
+  providers: [
+    {
+       provide: HTTP_INTERCEPTORS,
+       useClass: AuthInterceptor,
+       multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

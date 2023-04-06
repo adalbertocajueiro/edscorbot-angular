@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, DoCheck, Inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component,Inject} from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -13,6 +13,8 @@ export class LoginDialogComponent{
   username?:string
   password?:string
   passVisible:boolean = false
+  
+  signup:boolean = false
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any){
     this.form = data.form
@@ -24,15 +26,14 @@ export class LoginDialogComponent{
     this.sendCredentials()
   }
   sendCredentials(){
-    var obj = {
-      username: this.form.controls['username'],
-      password: this.form.controls['password']
-    }
-
-    return obj
+    return this.signup
   }
 
   toggleVisibility(){
     this.passVisible = !this.passVisible
+  }
+
+  toggleSignup(){
+    this.signup = !this.signup
   }
 }

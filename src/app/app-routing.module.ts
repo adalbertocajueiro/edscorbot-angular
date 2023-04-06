@@ -5,12 +5,13 @@ import { MovementsComponent } from './pages/movements/movements.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { UsersComponent } from './pages/users/users.component';
+import { AuthGuard } from './util/auth.guard';
 
 const routes: Routes = [
   {path: '', redirectTo: 'movements', pathMatch: 'full'},
-  {path: 'users', component:  UsersComponent},
-  {path: 'movements', component: MovementsComponent},
-  {path: 'settings', component: SettingsComponent},
+  {path: 'users', component:  UsersComponent, canActivate:[AuthGuard]},
+  {path: 'movements', component: MovementsComponent, canActivate:[AuthGuard]},
+  {path: 'settings', component: SettingsComponent, canActivate:[AuthGuard]},
   {path: 'login', component: LoginComponent},
   {path: '**', component: NotFoundComponent}
 ];

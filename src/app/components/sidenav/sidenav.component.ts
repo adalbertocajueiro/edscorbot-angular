@@ -28,24 +28,27 @@ export class SidenavComponent {
       pathname = split[1]
     }
 
-    var selectedItem = this.items.filter( item => item.path == pathname)
-    if(selectedItem.length > 0){
-      this.items.map( (i) => {
-        if(i.path != pathname){
-          i.selected = false;
-        } else {
-          i.selected = true;
-        }
-      }) 
-    } else {
-      this.items.map( (i) => {
-        if(i.path != 'settings'){
-          i.selected = false;
-        } else {
-          i.selected = true;
-        }
-      })
+    if(!pathname.includes("login")){
+      var selectedItem = this.items.filter( item => item.path == pathname)
+      if(selectedItem.length > 0){
+        this.items.map( (i) => {
+          if(i.path != pathname){
+            i.selected = false;
+          } else {
+            i.selected = true;
+          }
+        }) 
+      } else {
+        this.items.map( (i) => {
+          if(i.path != 'settings'){
+            i.selected = false;
+          } else {
+            i.selected = true;
+          }
+        })
+      }
     }
+    
   }
 
   changeSelected(item:SidenavItem){

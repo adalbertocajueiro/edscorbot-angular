@@ -43,6 +43,19 @@
         .eye{
             transform: translateX(255px);
         }
+        span{
+            color:rgb(4, 4, 196);
+            font-size: 0.8rem;
+            &:hover{
+                cursor: pointer;
+            }
+        }
+        .warning{
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: rgb(172, 16, 16);
+            width: 100%!important;
+        }
     }
 }
 :host ::ng-deep .mdc-button__label {

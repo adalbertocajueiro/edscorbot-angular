@@ -24,8 +24,6 @@
     "material-icons": "^1.13.2",
     "mqtt-browser": "^4.3.7",
     "ngx-mqtt": "^9.0.5",
-    "npyjs": "^0.4.0",
-    "npyz": "^0.4.2",
     "plotly": "^1.0.6",
     "plotly.js-dist-min": "^2.20.0",
     "rxjs": "~7.8.0",

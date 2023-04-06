@@ -7,8 +7,6 @@ import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-ser
 import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, ARM_STATUS} from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 import { Point, Trajectory } from 'src/app/util/models';
-import npyjs from 'src/app/util/npy';
-import { npyz } from 'src/app/util/numpy';
 
 @Component({
   selector: 'app-single',
@@ -187,9 +185,7 @@ export class SingleComponent implements OnInit{
         //////
         if(this.selectedFile.name.endsWith(".npy")){
           fileReader.readAsDataURL(this.selectedFile)
-          npyz.read(fileReader.result).then(
-            (res:any) => console.log(npyz.pJSON(res)),
-          );
+          
         }
         //////
         fileReader.readAsText(this.selectedFile, "UTF-8");
@@ -259,7 +255,7 @@ export class SingleComponent implements OnInit{
 
 
   loadFromNpy(buf:ArrayBufferLike){
-    var loader = new npyjs(undefined)
+    
     //var dec = this.asciiDecode(buf.slice(0,6))
     //console.log("decode",dec)
     //console.log('buffer',buf)

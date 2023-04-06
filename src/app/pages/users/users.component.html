@@ -1,6 +1,47 @@
 <div class="container-users">
-    <div *ngIf="this.loggedUser.role == 'ADMIN'">
-        User is admin
+    <div *ngIf="this.loggedUser.role == 'ADMIN'" class="users">
+        <div class="users-header">
+            <label>Users</label>
+        </div>
+        <div class="users-list">
+            <div class="header">
+                <label class="username">Username</label>
+                <label class="email">E-mail</label>
+                <label class="name">Name</label>
+                <label class="enabled">Enabled</label>
+                <label class="role">Role</label>
+                <label class="action">Action</label>
+            </div>
+            <mat-list>
+                <mat-list-item *ngFor="let user of users">
+                    <label class="username">{{user.username}}</label>
+                    <label class="email">{{user.email}}</label>
+                    <label class="name">{{user.name}}</label>
+                    <label class="enabled">
+                        <app-toggle-switch
+                            [checked]="user.enabled"
+                            [width]="'52px'"
+                            [height]="'26px'"
+                            (onToggleChanged)="changeEnabled($event,user)"></app-toggle-switch>
+                    </label>
+                    <label class="role">
+                        <select (change)="changeRole($event,user)">
+                            <option [selected]="user.role.roleName == 'USER'" [value]="user.role.roleName">USER</option>
+                            <option [selected]="user.role.roleName == 'ADMIN'" [value]="user.role.roleName">ADMIN</option>
+                        </select>
+                        <!-- mat-form-field appearance="fill">
+                            <mat-label>Role</mat-label>
+                            <mat-select #selectRobot>
+                                <mat-option [ariaSelected]="user.role.roneName == 'USER'" [value]="user.role.roneName">USER</mat-option>
+                                <mat-option [ariaSelected]="user.role.roneName == 'ADMIN'" [value]="user.role.roneName">ADMIN</mat-option>
+                            </mat-select>
+                        </mat-form-field -->
+                        
+                    </label>
+                    <label class="action">none</label>
+                </mat-list-item>
+            </mat-list>
+        </div>
     </div>
     <div *ngIf="this.loggedUser.role == 'USER'">
         User is not admin

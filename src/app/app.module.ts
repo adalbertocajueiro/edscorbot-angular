@@ -37,6 +37,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LoginDialogComponent } from './pages/login/login-dialog/login-dialog.component';
 import { AuthInterceptor } from './util/auth.interceptor';
+import { ToggleSwitchComponent } from './components/toggle-switch/toggle-switch.component';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
@@ -71,7 +72,8 @@ export const MQTT_SERVICE_OPTIONS = {
     PlotlyComponent,
     SpinnerComponent,
     LoginComponent,
-    LoginDialogComponent
+    LoginDialogComponent,
+    ToggleSwitchComponent
   ],
   imports: [
     BrowserModule,

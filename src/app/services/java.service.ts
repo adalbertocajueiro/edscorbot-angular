@@ -36,4 +36,15 @@ export class JavaService {
   getUsers(){
     return this.httpClient.get("/api/users")
   }
+
+  updateUser(user:any){
+    var updUser = {
+      username: user.username,
+      email: user.email,
+      name: user.name,
+      enabled: user.enabled,
+      role: user.role.roleName
+    }
+    return this.httpClient.put(`/api/users/${user.username}`,updUser)
+  }
 }

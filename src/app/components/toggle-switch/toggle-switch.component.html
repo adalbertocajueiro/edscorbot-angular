@@ -1,0 +1,4 @@
+<label class="switch" [ngStyle]="{'width': this.width, 'height': this.height}">
+    <input type="checkbox" [checked]="checked" (change)="toggleChanged($event)">
+    <span class="slider round"></span>
+</label>

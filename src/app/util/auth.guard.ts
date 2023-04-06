@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, NavigationEnd, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, CanActivate, NavigationEnd, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { LocalStorageService } from '../services/local-storage.service';
 
@@ -8,10 +8,19 @@ import { LocalStorageService } from '../services/local-storage.service';
 })
 export class AuthGuard implements CanActivate {
 
-  currentRoute:string = ""
+  currentRoute?:string
 
-  constructor(private localStorageService:LocalStorageService, private router:Router){
-    
+  constructor(private localStorageService:LocalStorageService, private router:Router ){
+    /*
+    this.router.events.subscribe(
+      (event: any) => {
+        if (event instanceof NavigationEnd) {
+          console.log('this.router.url', this.router.url);
+          this.currentRoute = this.router.url
+        }
+      }
+    );
+    */
   }
 
   canActivate(
@@ -21,12 +30,10 @@ export class AuthGuard implements CanActivate {
       var loggedUser = this.localStorageService.getLoggedUser()
       //console.log('saved user', loggedUser)
       //return (loggedUser != null && loggedUser != undefined)
-      
-      if(!loggedUser){
-        
-        return this.localStorageService.isLoggedIn$("test").pipe(
-          //tap( () => this.router.navigate(["/","login"]))
-          tap( () => this.router.navigate([this.currentRoute]))
+      //console.log("current route", this.currentRoute)
+      if(loggedUser == undefined ){
+        return this.localStorageService.isLoggedIn$().pipe(
+          tap( () => this.router.navigate(["/","login"]))
         )
       } else{
         return true

@@ -9,9 +9,9 @@ import { AuthGuard } from './util/auth.guard';
 
 const routes: Routes = [
   {path: '', redirectTo: 'movements', pathMatch: 'full'},
-  {path: 'users', component:  UsersComponent, canActivate:[AuthGuard]},
-  {path: 'movements', component: MovementsComponent, canActivate:[AuthGuard]},
-  {path: 'settings', component: SettingsComponent, canActivate:[AuthGuard]},
+  {path: 'users', component:  UsersComponent , canActivate:[AuthGuard]},
+  {path: 'movements', component: MovementsComponent/*, canActivate:[AuthGuard]*/},
+  {path: 'settings', component: SettingsComponent/*, canActivate:[AuthGuard]*/},
   {path: 'login', component: LoginComponent},
   {path: '**', component: NotFoundComponent}
 ];

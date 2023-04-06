@@ -14,7 +14,7 @@ export class UsersComponent implements OnInit{
 
   ngOnInit(): void {
     this.loggedUser = this.localStorageService.getLoggedUser()
-    console.log('user',this.loggedUser)
+    //console.log('user',this.loggedUser)
     this.javaService.getUsers().subscribe(
       {
         next: (res) => { console.log('users',res)},

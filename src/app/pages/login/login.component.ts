@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { JavaService } from 'src/app/services/java.service';
 import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit{
   constructor(private javaService:JavaService, 
               private dialog:MatDialog,
               private formBuilder: FormBuilder,
-              private localStorageService:LocalStorageService){
+              private localStorageService:LocalStorageService,
+              private router:Router){
 
   }
   ngOnInit(): void {
@@ -56,6 +58,7 @@ export class LoginComponent implements OnInit{
           console.log('login sucess',res)
           //store information in local storage
           this.localStorageService.saveLoggedUser(res)
+          this.router.navigate(["/"])
         },
         error:(err) => {
           console.log("login error", err)

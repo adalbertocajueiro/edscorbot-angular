@@ -40,7 +40,7 @@ export class LocalStorageService {
     return user
   }
 
-  public isLoggedIn$(route:string): Observable<boolean>{
+  public isLoggedIn$(): Observable<boolean>{
     return of(false)
   }
 

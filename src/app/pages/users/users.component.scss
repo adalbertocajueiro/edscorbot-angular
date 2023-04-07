@@ -76,6 +76,40 @@
                         }
         }
     }
+
+    .user{
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        height: 100%;
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            label {
+                font-weight: 500;
+            }
+        }
+        .personal-data{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            
+            .field{
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                margin-top: 5px;
+
+                label{
+                    font-size: 0.9rem;
+                    width: 90px;
+                }
+            }
+        }
+    }
 }
 .username{
     width: 20%;
@@ -92,23 +126,18 @@
 .enabled{
     display: flex;
     justify-content: center;
-    width: 5%;
+    width: 8%;
 }
 .role{
-    width: 8%;
+    width: 10%;
     display: flex;
     justify-content: center;
     select{
         width: 80%;
         border: none;
         height: 28px;
-        background-color: transparent;
+        background-color: inherit;
     }
-}
-.action{
-    width: 5%;
-    display: flex;
-    justify-content: center;
 }
 
 :host ::ng-deep .mdc-list-item__content {
@@ -126,4 +155,21 @@
 :host ::ng-deep .mdc-list-item__content {
     display: flex;
     width: 100%;
+}
+
+:host ::ng-deep .mdc-button__label {
+    color: rgb(74, 74, 74);
+    
+}
+
+:host ::ng-deep .mat-mdc-button {
+    width: 54px;
+    height: 30px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    margin-top: 10px;
+    
+    &:hover {
+        background-color: lightgray;
+    }
 }

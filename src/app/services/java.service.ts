@@ -38,12 +38,19 @@ export class JavaService {
   }
 
   updateUser(user:any){
-    var updUser = {
+    var updUser:any = {
       username: user.username,
       email: user.email,
-      name: user.name,
-      enabled: user.enabled,
-      role: user.role.roleName
+      name: user.name 
+    }
+    if(user.password){
+      updUser.password = user.password
+    }
+    if(user.enabled != undefined){
+      updUser.enabled = user.enabled
+    }
+    if(user.role){
+      updUser.role = user.role.roleName
     }
     return this.httpClient.put(`/api/users/${user.username}`,updUser)
   }

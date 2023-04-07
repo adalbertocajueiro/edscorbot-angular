@@ -43,6 +43,8 @@
 </div>
 
 <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="resetForm()">Cancel</button>
-    <button mat-button [mat-dialog-close]="sendCredentials()" cdkFocusInitial>Ok</button>
+    <button mat-button [mat-dialog-close]="resetForm()">
+        <mat-icon fontSet="material-icons-outlined">cancel</mat-icon>Cancel</button>
+    <button mat-button [mat-dialog-close]="sendCredentials()" cdkFocusInitial>
+        <mat-icon fontSet="material-icons-outlined">login</mat-icon>Login</button>
 </div>

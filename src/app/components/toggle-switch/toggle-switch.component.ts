@@ -19,6 +19,9 @@ export class ToggleSwitchComponent {
   @Input()
   height:string = "34px"
 
+  @Input()
+  scale:string = "1"
+
   @Output()
   onToggleChanged:EventEmitter<boolean> = new EventEmitter<boolean>()
 

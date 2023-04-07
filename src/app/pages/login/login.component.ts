@@ -54,11 +54,18 @@ export class LoginComponent implements OnInit{
     var password = this.form.controls['password'].value
     this.javaService.authenticate(username,password).subscribe(
       {
-        next:(res) => {
-          //console.log('login sucess',res)
+        next:(res:any) => {
+          console.log('login sucess',res)
           //store information in local storage
-          this.localStorageService.saveLoggedUser(res)
-          this.router.navigate(["/"])
+          // if the user is enabled then saves in local storage
+          if(res.enabled == true){
+            this.localStorageService.saveLoggedUser(res)
+            this.router.navigate(["/"])
+          } else {
+            //manda uma mensagem e volta pra tela de login com uma mensagem
+            this.router.navigate(["/","error"])
+          }
+          
         },
         error:(err) => {
           console.log("login error", err)

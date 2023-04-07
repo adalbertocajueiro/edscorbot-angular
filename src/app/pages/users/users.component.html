@@ -10,7 +10,6 @@
                 <label class="name">Name</label>
                 <label class="enabled">Enabled</label>
                 <label class="role">Role</label>
-                <label class="action">Action</label>
             </div>
             <mat-list>
                 <mat-list-item *ngFor="let user of users">
@@ -19,31 +18,56 @@
                     <label class="name">{{user.name}}</label>
                     <label class="enabled">
                         <app-toggle-switch
+                            [tooltip]="'Enable/Disable user'"
                             [checked]="user.enabled"
                             [width]="'52px'"
                             [height]="'26px'"
                             (onToggleChanged)="changeEnabled($event,user)"></app-toggle-switch>
                     </label>
                     <label class="role">
-                        <select (change)="changeRole($event,user)">
+                        <select (change)="changeRole($event,user)" [disabled]="!user.enabled">
                             <option [selected]="user.role.roleName == 'USER'" [value]="user.role.roleName">USER</option>
                             <option [selected]="user.role.roleName == 'ADMIN'" [value]="user.role.roleName">ADMIN</option>
                         </select>
-                        <!-- mat-form-field appearance="fill">
-                            <mat-label>Role</mat-label>
-                            <mat-select #selectRobot>
-                                <mat-option [ariaSelected]="user.role.roneName == 'USER'" [value]="user.role.roneName">USER</mat-option>
-                                <mat-option [ariaSelected]="user.role.roneName == 'ADMIN'" [value]="user.role.roneName">ADMIN</mat-option>
-                            </mat-select>
-                        </mat-form-field -->
-                        
                     </label>
-                    <label class="action">none</label>
                 </mat-list-item>
             </mat-list>
         </div>
     </div>
-    <div *ngIf="this.loggedUser.role == 'USER'">
-        User is not admin
+    <div *ngIf="this.loggedUser.role == 'USER'" class="user">
+        <div class="user-header">
+            <label>Profile data</label>
+        </div>
+        <form [formGroup]="form">
+            <div class="personal-data">
+                <div class="field">
+                    <label>Username:</label>
+                    <input type="text" size="36" max-size="80" 
+                        [formControlName]="'username'" 
+                        (ngModelChange)="this.fieldEdited = true"/>
+                </div>
+                <div class="field">
+                    <label>Password:</label>
+                    <input type="text" size="36" max-size="80" (ngModelChange)="this.fieldEdited = true"/>
+                </div>
+                <div class="field">
+                    <label>E-mail:</label>
+                    <input type="text" size="36" max-size="80" 
+                        [formControlName]="'email'"
+                        (ngModelChange)="this.fieldEdited = true" />
+                </div>
+                <div class="field">
+                    <label>Full name:</label>
+                    <input type="text" size="36" max-size="80" 
+                        [formControlName]="'name'"
+                        (ngModelChange)="this.fieldEdited = true"/>
+                </div>
+                <div class="field">
+                    <label>Role:</label>
+                    <span>{{this.loggedUser.role}}</span>
+                </div>
+            </div>
+        </form>
+        <button mat-button [disabled]="!this.fieldEdited" (click)="updateUser()">Update</button>
     </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { JavaService } from 'src/app/services/java.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 
@@ -8,14 +9,21 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit{
-  constructor(private javaService:JavaService, private localStorageService:LocalStorageService){}
+  constructor(private javaService:JavaService, 
+              private localStorageService:LocalStorageService,
+              private formBuilder: FormBuilder){
+            
+  }
   
+  form:FormGroup = new FormGroup({})
   loggedUser!:any
   users:any[] = []
+  fieldEdited:boolean = false
 
   ngOnInit(): void {
     this.loggedUser = this.localStorageService.getLoggedUser()
-    //console.log('user',this.loggedUser)
+    console.log('user',this.loggedUser)
+    this.buildForm()
     this.javaService.getUsers().subscribe(
       {
         next: (res) => { 
@@ -25,6 +33,23 @@ export class UsersComponent implements OnInit{
         error: (err) => { console.log('users error',err)}
       }
     )
+  }
+
+  public buildForm() {
+    var controlUsername = new FormControl(this.loggedUser.username) 
+    var controlPassword = new FormControl('')  
+    var controlEmail = new FormControl(this.loggedUser.email,[Validators.email]) 
+    var controlFullName = new FormControl(this.loggedUser.name)
+
+    var obj: any = {}
+    obj['username'] = controlUsername
+    obj['password'] = controlPassword
+    obj['email'] = controlEmail
+    obj['name'] = controlFullName
+
+    this.form = this.formBuilder.group(
+        obj
+    );
   }
 
   changeRole(event:any,user:any){
@@ -57,5 +82,29 @@ export class UsersComponent implements OnInit{
 
   getSelectedOption(options:HTMLOptionsCollection){
     return options.item(options.selectedIndex)
+  }
+
+  updateUser(){
+    console.log('form', this.form)
+    var userUpd:any = {
+        username:this.form.controls['username'].value,
+        email:this.form.controls['email'].value,
+        name:this.form.controls['name'].value
+    }
+
+    if(this.form.controls['password'].value.length > 0){
+      userUpd.password = this.form.controls['password'].value
+    }
+
+    this.javaService.updateUser(userUpd).subscribe(
+      {
+        next: (res)=> {
+          console.log('usuario atualizado', res)
+        },
+        error: (err) => {
+          console.log('error', err)
+        }
+      }
+    )
   }
 }

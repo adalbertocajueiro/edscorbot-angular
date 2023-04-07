@@ -10,6 +10,8 @@ export class LocalStorageService {
   USERFULLNAME_KEY:string = 'userfullname'
   USERTOKEN_KEY:string = 'usertoken'
   USERROLE_KEY:string = 'userrole'
+  USEREMAIL_KEY:string = 'useremail'
+
   loggedUser:any
 
   userChanged:EventEmitter<any> = new EventEmitter<any>()
@@ -21,6 +23,7 @@ export class LocalStorageService {
     localStorage.setItem(this.USERFULLNAME_KEY,user.name)
     localStorage.setItem(this.USERTOKEN_KEY,user.token)
     localStorage.setItem(this.USERROLE_KEY,user.role)
+    localStorage.setItem(this.USEREMAIL_KEY,user.email)
     this.loggedUser = this.getLoggedUser()
     this.userChanged.emit(this.loggedUser)
   }
@@ -30,6 +33,7 @@ export class LocalStorageService {
     localStorage.removeItem(this.USERFULLNAME_KEY)
     localStorage.removeItem(this.USERTOKEN_KEY)
     localStorage.removeItem(this.USERROLE_KEY)
+    localStorage.removeItem(this.USEREMAIL_KEY)
     this.loggedUser = undefined
     this.userChanged.emit(this.loggedUser)
   }
@@ -41,7 +45,8 @@ export class LocalStorageService {
         username: localStorage.getItem(this.USERNAME_KEY),
         name: localStorage.getItem(this.USERFULLNAME_KEY),
         token: localStorage.getItem(this.USERTOKEN_KEY),
-        role: localStorage.getItem(this.USERROLE_KEY)
+        role: localStorage.getItem(this.USERROLE_KEY),
+        email: localStorage.getItem(this.USEREMAIL_KEY)
       }
     }
     return user

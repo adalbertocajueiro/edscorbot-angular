@@ -31,8 +31,6 @@ export class ToogleButtonComponent{
 
   }
   toggleChanged(event:any){
-    //this.label = event.target.checked? 'Executed' : 'Simulated'
-    //console.log('obj',this)
     this.onToggleChanged.emit(event)
   }
 

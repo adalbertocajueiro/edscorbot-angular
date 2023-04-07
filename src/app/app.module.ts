@@ -96,11 +96,11 @@ export const MQTT_SERVICE_OPTIONS = {
     MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
   ],
   providers: [
-    //{
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true
-    //}
+    {
+       provide: HTTP_INTERCEPTORS,
+       useClass: AuthInterceptor,
+       multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

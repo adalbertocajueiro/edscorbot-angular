@@ -22,12 +22,12 @@ export class UsersComponent implements OnInit{
 
   ngOnInit(): void {
     this.loggedUser = this.localStorageService.getLoggedUser()
-    console.log('user',this.loggedUser)
+    //console.log('user',this.loggedUser)
     this.buildForm()
     this.javaService.getUsers().subscribe(
       {
         next: (res) => { 
-          console.log('users',res)
+          //console.log('users',res)
           this.users = res as any[]
         },
         error: (err) => { console.log('users error',err)}
@@ -40,12 +40,16 @@ export class UsersComponent implements OnInit{
     var controlPassword = new FormControl('')  
     var controlEmail = new FormControl(this.loggedUser.email,[Validators.email]) 
     var controlFullName = new FormControl(this.loggedUser.name)
+    var controlRole = new FormControl(this.loggedUser.role.roleName)
+    var controlEnabled = new FormControl(true)
 
     var obj: any = {}
     obj['username'] = controlUsername
     obj['password'] = controlPassword
     obj['email'] = controlEmail
     obj['name'] = controlFullName
+    obj['role'] = controlRole
+    obj['enabled'] = controlEnabled
 
     this.form = this.formBuilder.group(
         obj
@@ -53,8 +57,17 @@ export class UsersComponent implements OnInit{
   }
 
   changeRole(event:any,user:any){
-    user.role.roleName = this.getSelectedOption(event.target.options)?.innerText
-    this.javaService.updateUser(user).subscribe(
+    
+    var newUser = {
+      username:user.username,
+      email:user.email,
+      password:"",
+      role: this.getSelectedOption(event.target.options)?.innerText,
+      name:user.name,
+      enabled: user.enabled
+    }
+
+    this.javaService.updateUser(newUser).subscribe(
       {
         next: (res)=> {
           console.log('usuario atualizado', res)
@@ -64,10 +77,15 @@ export class UsersComponent implements OnInit{
         }
       }
     )
+    
   }
 
   changeEnabled(event:any,user:any){
+    console.log('enabled changed',user)
     user.enabled = event.target.checked
+    user.password = ""
+    this.updateUser()
+    
     this.javaService.updateUser(user).subscribe(
       {
         next: (res)=> {
@@ -78,6 +96,7 @@ export class UsersComponent implements OnInit{
         }
       }
     )
+    
   }
 
   getSelectedOption(options:HTMLOptionsCollection){
@@ -85,17 +104,19 @@ export class UsersComponent implements OnInit{
   }
 
   updateUser(){
-    console.log('form', this.form)
+    //console.log('form', this.form)
     var userUpd:any = {
         username:this.form.controls['username'].value,
         email:this.form.controls['email'].value,
-        name:this.form.controls['name'].value
+        name:this.form.controls['name'].value,
+        enabled:this.form.controls['enabled'].value,
+        role:this.form.controls['role'].value
     }
 
     if(this.form.controls['password'].value.length > 0){
       userUpd.password = this.form.controls['password'].value
     }
-
+    //console.log('user to update', userUpd, this.form)
     this.javaService.updateUser(userUpd).subscribe(
       {
         next: (res)=> {

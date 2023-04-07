@@ -38,6 +38,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { LoginDialogComponent } from './pages/login/login-dialog/login-dialog.component';
 import { AuthInterceptor } from './util/auth.interceptor';
 import { ToggleSwitchComponent } from './components/toggle-switch/toggle-switch.component';
+import { ErrorInterceptor } from './util/error.interceptor';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',

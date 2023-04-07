@@ -36,6 +36,7 @@
             font-weight: 300;
         }
         mat-icon{
+            margin-top: 4px;
             &:hover{
                 cursor:pointer;
             }
@@ -59,12 +60,12 @@
     }
 }
 
-
-
 mat-icon {
-    font-size: 1.3rem;
     color: rgb(104, 105, 105);
+    font-size: 1.2rem;
 }
+
+
 
 :host ::ng-deep .mdc-button__label {
     color: rgb(74, 74, 74);

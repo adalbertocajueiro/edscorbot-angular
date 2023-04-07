@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class LocalStorageService {
 
   userChanged:EventEmitter<any> = new EventEmitter<any>()
 
-  constructor() { }
+  constructor(private router:Router) { }
 
   public saveLoggedUser(user:any){
     localStorage.setItem(this.USERNAME_KEY,user.username)
@@ -36,6 +37,7 @@ export class LocalStorageService {
     localStorage.removeItem(this.USEREMAIL_KEY)
     this.loggedUser = undefined
     this.userChanged.emit(this.loggedUser)
+    
   }
 
   public getLoggedUser(){
@@ -54,6 +56,12 @@ export class LocalStorageService {
 
   public isLoggedIn$(): Observable<boolean>{
     return of(false)
+  }
+
+  logout(){
+    console.log('performing logout')
+    this.clearLoggedUser()
+    this.router.navigate(["/","users"])
   }
 
   public saveData(key: string, value: string) {

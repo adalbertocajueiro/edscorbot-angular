@@ -5,6 +5,8 @@ import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-ser
 import { ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, BUSY, ERROR, FREE, ARM_STATUS } from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-status-bar',
@@ -17,6 +19,7 @@ export class StatusBarComponent {
   availableRobots:MetaInfoObject[] = []
   connected:boolean = false
 
+  loggedUser:any
   status?:number
   className:string = 'disabled'
   enableClassName = 'unavailable'
@@ -29,10 +32,13 @@ export class StatusBarComponent {
   @ViewChild("selectRobot") select?:  MatSelect
   
   constructor(private mqttService:EdscorbotMqttServiceService,
-              private dialog:MatDialog){
-
+              private dialog:MatDialog,
+              private localStorageService:LocalStorageService,
+              private router:Router){
+      
   }
   ngOnInit(): void {
+    this.loggedUser = this.localStorageService.getLoggedUser()
     this.updateFields()
     this.mqttService.sendRequestMetaInfo()
     this.mqttService.sendRequestStatusMessage()
@@ -88,6 +94,17 @@ export class StatusBarComponent {
         }
       }
     )
+    this.localStorageService.userChanged.subscribe({
+      next: (res:any) => {
+        //console.log('user changed',res)
+        if(res == undefined){
+          this.loggedUser = undefined
+        } else {
+          this.loggedUser = this.localStorageService.getLoggedUser()
+        }
+      },
+      error: (err:any) => {console.log('error', err)}
+    })
   }
 
   updateFields(){
@@ -299,5 +316,11 @@ export class StatusBarComponent {
     } else {
       return false
     }
+  }
+
+  logout(){
+    this.router.navigate(["/","login"])
+    this.localStorageService.clearLoggedUser()
+    
   }
 }

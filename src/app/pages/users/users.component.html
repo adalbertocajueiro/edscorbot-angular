@@ -48,7 +48,9 @@
                 </div>
                 <div class="field">
                     <label>Password:</label>
-                    <input type="text" size="36" max-size="80" (ngModelChange)="this.fieldEdited = true"/>
+                    <input type="text" size="36" max-size="80" 
+                        [formControlName]="'password'"
+                        (ngModelChange)="this.fieldEdited = true"/>
                 </div>
                 <div class="field">
                     <label>E-mail:</label>

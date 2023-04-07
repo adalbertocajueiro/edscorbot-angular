@@ -19,6 +19,10 @@
         [searchingHome]="searchingHome"
         [tooltip]="tooltip"
         (onToggleChanged)="processConnectionToogle($event)"></app-toogle-button>
-    
-   <!-- app-connect-button (click)="processConnection()"></app-connect-button -->
+    <mat-icon class="logout" 
+        [matTooltip]="this.loggedUser?.username" matTooltipPosition="above"
+        fontSet="material-icons-outlined">person</mat-icon>
+    <mat-icon class="logout" matTooltip="Logout" matTooltipPosition="above"
+        (click)="logout()"
+        fontSet="material-icons-outlined">logout</mat-icon>
 </div>

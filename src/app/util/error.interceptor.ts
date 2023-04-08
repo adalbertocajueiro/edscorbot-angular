@@ -21,7 +21,17 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((response: HttpErrorResponse) => {
         if (response.status === HttpStatusCode.Unauthorized) {
           console.log("unauthorized")
-          this.router.navigate(['login'])
+          console.log("document.location.href",document.location.href)
+          console.log("window.location.href",window.location.href)
+          console.log("window.location.host",window.location.host)
+          console.log("window.location.hostname",window.location.hostname)
+          console.log("window.location.protocol",window.location.protocol)
+          console.log("window.location.port",window.location.port)
+          console.log("window.location.origin",window.location.origin)
+
+          //this.router.navigate(["/","login"])
+          window.location.href = window.location.origin + '/login'
+          
           //this.localStorageService.logout()
         }
         return throwError(() => response);

@@ -6,6 +6,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { UsersComponent } from './pages/users/users.component';
 import { AuthGuard } from './util/auth.guard';
+import { LogoutComponent } from './pages/logout/logout.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'movements', pathMatch: 'full'},
@@ -13,6 +14,7 @@ const routes: Routes = [
   {path: 'movements', component: MovementsComponent, canActivate:[AuthGuard]},
   {path: 'settings', component: SettingsComponent, canActivate:[AuthGuard]},
   {path: 'login', component: LoginComponent},
+  {path: 'logout', component: LogoutComponent},
   {path: '**', component: NotFoundComponent}
 ];
 

@@ -53,10 +53,6 @@
     //pointer-events: inherit !important
 }
 
-.toggle-checkbox:checked+.toggle-switch {
-    //background: #56c080;
-}
-
 .toggle-checkbox:checked+.toggle-switch:before {
     left: 36px;
 }

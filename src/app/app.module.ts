@@ -39,6 +39,8 @@ import { LoginDialogComponent } from './pages/login/login-dialog/login-dialog.co
 import { AuthInterceptor } from './util/auth.interceptor';
 import { ToggleSwitchComponent } from './components/toggle-switch/toggle-switch.component';
 import { ErrorInterceptor } from './util/error.interceptor';
+import { LogoutComponent } from './pages/logout/logout.component';
+import { LogoutDialogComponent } from './pages/logout/logout-dialog/logout-dialog.component';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
@@ -74,7 +76,9 @@ export const MQTT_SERVICE_OPTIONS = {
     SpinnerComponent,
     LoginComponent,
     LoginDialogComponent,
-    ToggleSwitchComponent
+    ToggleSwitchComponent,
+    LogoutComponent,
+    LogoutDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -100,6 +104,11 @@ export const MQTT_SERVICE_OPTIONS = {
     {
        provide: HTTP_INTERCEPTORS,
        useClass: AuthInterceptor,
+       multi: true
+    },
+    {
+       provide: HTTP_INTERCEPTORS,
+       useClass: ErrorInterceptor,
        multi: true
     }
   ],

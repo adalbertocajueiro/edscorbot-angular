@@ -22,12 +22,10 @@ export class AuthInterceptor implements HttpInterceptor {
     //console.log('logged user', loggedUser)
     //console.log('request', request.url, loggedUser)
     if(loggedUser){
-      
       authReq = request.clone({
         headers: request.headers.set('Authorization', `Bearer ${loggedUser.token}`),
       });
       //console.log('adding data to header', authReq)
-
     }
     return next.handle(authReq);
   }

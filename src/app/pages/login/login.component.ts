@@ -67,10 +67,10 @@ export class LoginComponent implements OnInit{
           }
           
         },
-        error:(err) => {
-          console.log("login error", err)
-          this.router.navigate(["/","error"])
-        }
+        //error:(err) => {
+        //  console.log("login error", err)
+        //  this.router.navigate(["/","error"])
+        //}
       }
     )
   }
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit{
       })
     dialogRef.afterClosed().subscribe(result => {
       this.blur = false
-      
+      console.log('login dialog closed')
       if(this.form.valid){ //all fields are filled and this is a signup
         this.signup()
       } else { //sign in

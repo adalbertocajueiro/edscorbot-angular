@@ -3,11 +3,14 @@
 </div>
 <div mat-dialog-content>
    <div class="message">
-        <label>Your are not logged in!</label>
+        <label *ngIf="autherror">Invalid user/password!</label>
+        <label *ngIf="!autherror">Your are not logged in!</label>
    </div>
 </div>
 
 <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="" cdkFocusInitial>
-        <mat-icon fontSet="material-icons-outlined">login</mat-icon>Login</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>
+        <mat-icon fontSet="material-icons-outlined">login</mat-icon>Login or Register</button>
+    <!-- button mat-button [mat-dialog-close]="false" cdkFocusInitial>
+        <mat-icon fontSet="material-icons-outlined">close</mat-icon>Close</button -->
 </div>

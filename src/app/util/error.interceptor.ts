@@ -20,6 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((response: HttpErrorResponse) => {
         if (response.status === HttpStatusCode.Unauthorized) {
+          /*
           console.log("unauthorized")
           console.log("document.location.href",document.location.href)
           console.log("window.location.href",window.location.href)
@@ -28,11 +29,13 @@ export class ErrorInterceptor implements HttpInterceptor {
           console.log("window.location.protocol",window.location.protocol)
           console.log("window.location.port",window.location.port)
           console.log("window.location.origin",window.location.origin)
-
-          //this.router.navigate(["/","login"])
-          window.location.href = window.location.origin + '/login'
-          
-          //this.localStorageService.logout()
+          */
+          var url = window.location.href
+          if(url.includes('/login')){
+            window.location.href = window.location.origin + '/logout?msg=autherror' //authentication error during login
+          } else {
+            window.location.href = window.location.origin + '/logout'
+          }
         }
         return throwError(() => response);
       })

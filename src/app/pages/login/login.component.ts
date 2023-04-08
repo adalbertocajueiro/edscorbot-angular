@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit{
     this.javaService.authenticate(username,password).subscribe(
       {
         next:(res:any) => {
-          console.log('login sucess',res)
+          //console.log('login sucess',res)
           //store information in local storage
           // if the user is enabled then saves in local storage
           if(res.enabled == true){
@@ -65,7 +65,6 @@ export class LoginComponent implements OnInit{
             //manda uma mensagem e volta pra tela de login com uma mensagem
             this.router.navigate(["/","error"])
           }
-          
         },
         //error:(err) => {
         //  console.log("login error", err)
@@ -94,13 +93,16 @@ export class LoginComponent implements OnInit{
       })
     dialogRef.afterClosed().subscribe(result => {
       this.blur = false
-      console.log('login dialog closed')
-      if(this.form.valid){ //all fields are filled and this is a signup
-        this.signup()
-      } else { //sign in
-        this.authenticate()
+      
+      if(result == undefined){
+        window.location.href = window.location.origin + '/logout'
+      } else {
+        if(this.form.valid){ //all fields are filled and this is a signup
+          this.signup()
+        } else { //sign in
+          this.authenticate()
+        }
       }
-      //this.authenticate()
     });
   }
 }

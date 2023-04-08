@@ -21,9 +21,7 @@ export class LoginDialogComponent{
   }
 
   resetForm(){
-    this.username = undefined
-    this.password = undefined
-    this.sendCredentials()
+    this.form.reset()
   }
   sendCredentials(){
     return this.signup

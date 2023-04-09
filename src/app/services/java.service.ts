@@ -40,4 +40,16 @@ export class JavaService {
   updateUser(user:any){
     return this.httpClient.put(`/api/users/${user.username}`,user)
   }
+
+  getTrajectories(){
+    return this.httpClient.get("/api/trajectories")
+  }
+
+  saveTrajectory(trajectory:any){
+    return this.httpClient.post("/api/trajectories",trajectory)
+  }
+
+  deleteTrajectory(trajectory:any){
+    return this.httpClient.delete("/api/trajectories/" + trajectory.timestamp)
+  }
 }

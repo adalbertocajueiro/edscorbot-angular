@@ -1,7 +1,7 @@
 <div class="container-table-trajectory">
     <div class="header">
         <div class="email">
-            <label>User (e-mail)</label>
+            <label>User name</label>
         </div>
         <div class="date">
             <label>Date</label>
@@ -14,7 +14,11 @@
         <div *ngFor="let traj of trajectories" class="line">
             <app-table-line 
                 [trajectory]="traj"
+                [enableButtons]="enableButtons"
                 (onLineClick)="changeSelectedTrajectory($event)"
+                (onDeleteClick)="deleteTrajectory($event)"
+                (onUseTrajectoryClick)="useTrajectory($event)"
+                (onAddPointsClick)="addPoints($event)"
                 ></app-table-line>
         </div>
     </div>

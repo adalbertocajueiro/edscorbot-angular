@@ -56,7 +56,10 @@ export class DialogComponent{
           point.push(value)
         }
       )
-      return point
+      var returnedPoint = {
+        coordinates:point
+      }
+      return returnedPoint
     } else {
       return undefined
     }

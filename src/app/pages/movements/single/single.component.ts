@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogComponent } from 'src/app/components/dialog/dialog.component';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
+import { JavaService } from 'src/app/services/java.service';
 import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, ARM_STATUS} from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 import { Point, Trajectory } from 'src/app/util/models';
@@ -17,14 +18,16 @@ export class SingleComponent implements OnInit{
   
   form:FormGroup = new FormGroup({})
   numberOfJoints:number = 0
-  selectedTrajectory:any
+  //selectedTrajectory:any
   joints:string[] = []
   selectedFile?: File
-  appliedPoints:number[][] = []
+  appliedPoints:any[] = []
   searchingHome:boolean = false
   executingTrajectory:boolean = false
 
   timeoutTrajectory?:NodeJS.Timeout
+
+  trajectories:any[] = []
 
   //@Output()
   //onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
@@ -46,11 +49,13 @@ export class SingleComponent implements OnInit{
   constructor(private formBuilder: FormBuilder, 
               private mqttService:EdscorbotMqttServiceService,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog){
+              private dialog: MatDialog,
+              private javaService:JavaService){
     
   }
   ngOnInit(): void {
     this.selectedRobot = this.mqttService.selectedRobot
+    
     this.buildForm()
     this.mqttService.selectedRobotSubject.subscribe(
       {
@@ -118,8 +123,21 @@ export class SingleComponent implements OnInit{
         error: (err) => { console.log('error',err)}
       }
     )
+
+    this.loadTrajectories()
   }
 
+  loadTrajectories(){
+    this.javaService.getTrajectories().subscribe(
+      {
+        next: (res:any) => {
+          //console.log('trajectories',res)
+          this.trajectories = res
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
+  }
   public buildForm() {
     if(this.selectedRobot){
       this.numberOfJoints = this.selectedRobot.joints.length
@@ -176,6 +194,16 @@ export class SingleComponent implements OnInit{
   selectTrajectory(trajectory:any){
     this.appliedPoints = trajectory.points
     //this.onSimulationPointsChanged.emit(this.appliedPoints)
+  }
+
+  useTrajectory(trajectory:any){
+    this.appliedPoints = [...trajectory.points]
+  }
+
+  addTrajectoryPoints(trajectory:any){
+    trajectory.points.forEach(
+      (p:any) => this.appliedPoints.push(p)
+    )
   }
 
   onFileChanged(event:any) {
@@ -317,8 +345,6 @@ export class SingleComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.appliedPoints.push(result)
-        //var simGraph = this.graphService.buildGraph(this.appliedPoints)
-        //this.onSimulationPointsChanged.emit(this.appliedPoints)
         this.onSimulationPointAdded.emit(result)
       }
     });
@@ -331,58 +357,34 @@ export class SingleComponent implements OnInit{
     var array = new Uint8Array(buf);
     return String.fromCharCode.apply(null, (array as any) as number[]);
   }
-  /*
-  readUint16LE(buffer:ArrayBuffer) {
-        var view = new DataView(buffer);
-        var val = view.getUint8(0);
-        val |= view.getUint8(1) << 8;
-        return val;
+  
+  saveTrajectory(){
+    var trajectory:any = {
+      points:this.appliedPoints
+    }
+
+    this.javaService.saveTrajectory(trajectory).subscribe(
+      {
+        next: (res) => {
+          //console.log('save trajectory',res)
+          this.loadTrajectories()
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
   }
 
-  fromArrayBuffer(buf:ArrayBuffer) {
-    var offsetBytes = 0;
-      // Check the magic number
-    var magic = this.asciiDecode(buf.slice(0,6));
-      if (magic.slice(1,6) != 'NUMPY') {
-          throw new Error('unknown file type');
-      }
-
-      var version = new Uint8Array(buf.slice(6,8)),
-          headerLength = this.readUint16LE(buf.slice(8,10)),
-          headerStr = this.asciiDecode(buf.slice(10, 10+headerLength));
-          offsetBytes = 10 + headerLength;
-          //rest = buf.slice(10+headerLength);  XXX -- This makes a copy!!! https://www.khronos.org/registry/typedarray/specs/latest/#5
-
-      // Hacky conversion of dict literal string to JS Object
-      eval("var info = " + headerStr.toLowerCase().replace('(','[').replace('),',']'));
+  deleteTrajectory(trajectory:any){
     
-      // Intepret the bytes according to the specified dtype
-      var data;
-      if (info.descr === "|u1") {
-          data = new Uint8Array(buf, offsetBytes);
-      } else if (info.descr === "|i1") {
-          data = new Int8Array(buf, offsetBytes);
-      } else if (info.descr === "<u2") {
-          data = new Uint16Array(buf, offsetBytes);
-      } else if (info.descr === "<i2") {
-          data = new Int16Array(buf, offsetBytes);
-      } else if (info.descr === "<u4") {
-          data = new Uint32Array(buf, offsetBytes);
-      } else if (info.descr === "<i4") {
-          data = new Int32Array(buf, offsetBytes);
-      } else if (info.descr === "<f4") {
-          data = new Float32Array(buf, offsetBytes);
-      } else if (info.descr === "<f8") {
-          data = new Float64Array(buf, offsetBytes);
-      } else {
-          throw new Error('unknown numeric dtype')
+    this.javaService.deleteTrajectory(trajectory).subscribe(
+      {
+        next: (res) => {
+          //console.log('deleted trajectory',res)
+          this.loadTrajectories()
+        },
+        error: (err) => {console.log('error',err)}
       }
-
-      return {
-          shape: info.shape,
-          fortran_order: info.fortran_order,
-          data: data
-      };
-    }
-    */
+    )
+  }
+  
 }

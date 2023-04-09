@@ -39,7 +39,7 @@ export class PlotlyComponent implements OnInit{
     this.simPointSubject?.subscribe(
       {
         next: (point) => {
-          this.addSimPoint(point)
+          this.addSimPoint(point.coordinates)
         },
         error: (err) => {console.log('error',err)}
       }

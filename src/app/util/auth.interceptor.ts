@@ -23,7 +23,9 @@ export class AuthInterceptor implements HttpInterceptor {
     //console.log('request', request.url, loggedUser)
     if(loggedUser){
       authReq = request.clone({
-        headers: request.headers.set('Authorization', `Bearer ${loggedUser.token}`),
+        headers: request.headers
+                  .set('Authorization', `Bearer ${loggedUser.token}`)
+                  .set('username',loggedUser.username!),
       });
       //console.log('adding data to header', authReq)
     }

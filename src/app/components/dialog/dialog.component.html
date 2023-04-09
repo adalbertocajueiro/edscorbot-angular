@@ -9,14 +9,6 @@
                 [matTooltip]="getRangeForJoint(field)" matTooltipPosition="above"
                 (ngModelChange)="checkCoordinate(field)"/>
         </div>
-
-        <!-- div class="buttons">
-            <button *ngIf="numberOfJoints > 0" (click)="clear()">Clear</button>
-            <button *ngIf="numberOfJoints > 0" (click)="moveToPoint()">Send to arm</button>
-            <button *ngIf="numberOfJoints > 0" [disabled]="this.mqttServ?.connected == 'NO'"
-                (click)="moveToPoint()">Move</button>
-        </div -->
-        
     </form>
     
 </div>

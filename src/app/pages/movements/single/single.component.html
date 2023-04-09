@@ -13,7 +13,7 @@
                     [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'"
                     (click)="clearPointList()">clear_all</mat-icon>
                 <mat-icon fontSet="material-icons-outlined" matTooltip="Save as trajectory" matTooltipPosition="above" 
-                    [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'">save</mat-icon>
+                    [ngClass]="this.appliedPoints.length > 0?'':'icon-disabled'" (click)="saveTrajectory()">save</mat-icon>
                 <mat-icon *ngIf="!executingTrajectory" fontSet="material-icons-outlined" matTooltip="Send trajectory to arm" matTooltipPosition="above"
                     [ngClass]="this.appliedPoints.length > 0 && this.connected && !searchingHome?'':'icon-disabled'"
                     (click)="sendTrajectoryToArm()">play_arrow</mat-icon>
@@ -29,7 +29,7 @@
                 <mat-list-item *ngFor="let point of appliedPoints;let count = index" >
                     <div *ngFor="let field of joints;let i = index">
                         <span>{{field}}: </span>
-                        <label matTooltip="{{point[i]}}" matTooltipPosition="above">{{point[i].toFixed(2)}}</label>
+                        <label matTooltip="{{point[i]}}" matTooltipPosition="above">{{point.coordinates[i].toFixed(2)}}</label>
                     </div>
                     <div (click)="deletePoint(count)">
                         <mat-icon fontSet="material-icons-outlined" >delete</mat-icon>
@@ -42,7 +42,13 @@
     <div class="trajectories">
         <label>Saved trajectories: </label>
         <div class="trajectory-list">
-            <app-trajectory-table (onSelectedTrajectory)="selectTrajectory($event)"></app-trajectory-table>
+            <app-trajectory-table 
+                [trajectories]="trajectories"
+                [enableButtons]="this.selectedRobot != undefined"
+                (onUseTrajectory)="useTrajectory($event)"
+                (onAddPoints)="addTrajectoryPoints($event)"
+                (onSelectedTrajectory)="selectTrajectory($event)"
+                (onDeleteTrajectory)="deleteTrajectory($event)"></app-trajectory-table>
         </div>
     </div>
 </div>

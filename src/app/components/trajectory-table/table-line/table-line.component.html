@@ -1,17 +1,24 @@
 <div class="table-line-container">
     <div class="basic-info">
-        <div class="email">
+        <div class="username" [ngClass]="this.selectedRobot?this.selectedRobot.joints.length == this.trajectory?.points[0].coordinates.length - 1?'':'icon-disabled':''">
             {{trajectory.owner.username}}
         </div>
-        <div class="date">
+        <div class="date" [ngClass]="this.selectedRobot?this.selectedRobot.joints.length == this.trajectory?.points[0].coordinates.length - 1?'':'icon-disabled':''">
             {{timeStampToDate(trajectory.timestamp).toUTCString()}}
+        </div>
+        <div class="joints" [ngClass]="this.selectedRobot?this.selectedRobot.joints.length == this.trajectory?.points[0].coordinates.length - 1?'':'icon-disabled':''">
+            {{trajectory.points[0].coordinates.length - 1}}
+        </div>
+        <div class="points" [ngClass]="this.selectedRobot?this.selectedRobot.joints.length == this.trajectory?.points[0].coordinates.length - 1?'':'icon-disabled':''">
+           {{trajectory.points.length}}
         </div>
         <div class="actions">
             <mat-icon matTooltip="Overwrite points with this trajectory" matTooltipPosition="left"
-            [ngClass]="this.enableButtons?'':'icon-disabled'"    
+            
+            [ngClass]="this.selectedRobot?.joints?.length == this.trajectory?.points[0].coordinates.length - 1?'':'icon-disabled'"    
             (click)="useTrajectory(trajectory)">arrow_upward</mat-icon>
             <mat-icon matTooltip="Add all points of this trajectory" matTooltipPosition="above"
-                [ngClass]="this.enableButtons?'':'icon-disabled'"
+                [ngClass]="this.selectedRobot?.joints?.length == this.trajectory?.points[0].coordinates.length - 1?'':'icon-disabled'"
                 (click)="addPoints(trajectory)">keyboard_double_arrow_up</mat-icon>
             <mat-icon matTooltip="Delete trajectory" matTooltipPosition="right" 
                 (click)="deleteTrajectory(trajectory)">delete</mat-icon>

@@ -41,6 +41,7 @@ export class SingleComponent implements OnInit{
   @Output()
   onSimulationPointListClear:EventEmitter<void> = new EventEmitter<void>()
 
+
   selectedRobot?:MetaInfoObject
   connected:boolean = false
 
@@ -63,7 +64,7 @@ export class SingleComponent implements OnInit{
           this.selectedRobot = this.mqttService.selectedRobot
           this.buildForm()
           this.appliedPoints = []
-          //this.onSimulationPointsChanged.emit(this.appliedPoints)    
+          this.sortTrajectories()
         },
         error: (err) => { console.log('error',err)}
       }
@@ -133,10 +134,85 @@ export class SingleComponent implements OnInit{
         next: (res:any) => {
           //console.log('trajectories',res)
           this.trajectories = res
+          this.sortTrajectories()
         },
         error: (err) => {console.log('error',err)}
       }
     )
+  }
+
+  sortTrajectories(){
+    if(this.selectedRobot){
+      this.trajectories = this.trajectories.sort( (t1:any,t2:any) => {
+        if(this.compatible(t1)){
+          if(this.compatible(t2)){
+            return 0
+          } else{
+            return -1
+          }
+        }else {
+          if(this.compatible(t2)){
+            return 1
+          } else {
+            return 0
+          }
+        }
+        
+      } )
+    }
+  }
+
+  sortTrajectoriesByUsername(){
+    if(this.selectedRobot){
+      this.trajectories = this.trajectories.sort( (t1:any,t2:any) => {
+        if(this.compatible(t1)){
+          if(this.compatible(t2)){
+            return t1.owner.username.localeCompare(t2.owner.username)
+          } else{
+            return -1
+          }
+        }else {
+          if(this.compatible(t2)){
+            return 1
+          } else {
+            return t1.owner.username.localeCompare(t2.owner.username)
+          }
+        }
+        
+      } )
+    }else{
+      this.trajectories = this.trajectories.sort( (t1:any,t2:any) => {
+        return t1.owner.username.localeCompare(t2.owner.username)
+      })
+    }
+  }
+
+  sortTrajectoriesByDate(){
+    if(this.selectedRobot){
+      this.trajectories = this.trajectories.sort( (t1:any,t2:any) => {
+        if(this.compatible(t1)){
+          if(this.compatible(t2)){
+            return t1.timestamp - t2.timestamp
+          } else{
+            return -1
+          }
+        }else {
+          if(this.compatible(t2)){
+            return 1
+          } else {
+            return t1.timestamp - t2.timestamp
+          }
+        }
+        
+      } )
+    }else{
+      this.trajectories = this.trajectories.sort( (t1:any,t2:any) => {
+        return t1.timestamp - t2.timestamp
+      })
+    }
+  }
+  compatible(trajectory:any){
+    return this.selectedRobot?.joints.length == trajectory.points[0].coordinates.length - 1
   }
   public buildForm() {
     if(this.selectedRobot){
@@ -197,13 +273,19 @@ export class SingleComponent implements OnInit{
   }
 
   useTrajectory(trajectory:any){
-    this.appliedPoints = [...trajectory.points]
+    //this.appliedPoints = [...trajectory.points]
+    this.appliedPoints = []
+    trajectory.points.forEach( (p:any) =>  {
+      this.appliedPoints.push(p)
+      this.onSimulationPointAdded.emit(p)
+    })
   }
 
   addTrajectoryPoints(trajectory:any){
-    trajectory.points.forEach(
-      (p:any) => this.appliedPoints.push(p)
-    )
+   trajectory.points.forEach( (p:any) =>  {
+      this.appliedPoints.push(p)
+      this.onSimulationPointAdded.emit(p)
+    })
   }
 
   onFileChanged(event:any) {

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MetaInfoObject } from 'src/app/util/matainfo';
 
 @Component({
   selector: 'app-trajectory-table',
@@ -13,7 +14,7 @@ export class TrajectoryTableComponent {
   selectedTrajectory?:any
 
   @Input()
-  enableButtons:boolean = false
+  selectedRobot?:MetaInfoObject
 
   @Output()
   onSelectTrajectory: EventEmitter<any> = new EventEmitter<any>()
@@ -27,6 +28,13 @@ export class TrajectoryTableComponent {
   @Output()
   onAddPoints:EventEmitter<any> = new EventEmitter<any>()
 
+  @Output()
+  onSortByUsername:EventEmitter<any> = new EventEmitter<any>()
+
+  @Output()
+  onSortByDate:EventEmitter<any> = new EventEmitter<any>()
+
+  
   changeSelectedTrajectory(event:any){
     this.selectedTrajectory = event
     this.onSelectTrajectory.emit(this.selectedTrajectory)

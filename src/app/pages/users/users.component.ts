@@ -81,7 +81,7 @@ export class UsersComponent implements OnInit{
   }
 
   changeEnabled(event:any,user:any){
-    console.log('enabled changed',user)
+    //console.log('enabled changed',user)
     user.enabled = event.target.checked
     user.password = ""
     this.updateUser()
@@ -103,6 +103,20 @@ export class UsersComponent implements OnInit{
     return options.item(options.selectedIndex)
   }
 
+  resetPassword(user:any){
+    user.password = user.username
+    user.role = user.role.roleName
+    this.javaService.updateUser(user).subscribe(
+      {
+        next: (res)=> {
+          console.log('usuario atualizado', res)
+        },
+        error: (err) => {
+          console.log('error', err)
+        }
+      }
+    )
+  }
   updateUser(){
     //console.log('form', this.form)
     var userUpd:any = {

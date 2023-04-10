@@ -1,10 +1,22 @@
 <div class="container-table-trajectory">
     <div class="header">
-        <div class="email">
+        <div class="username">
             <label>User name</label>
+            <mat-icon matTooltip="Sort by username" 
+                matTooltipPosition="above"
+                (click)="this.onSortByUsername.emit($event)">sort_by_alpha</mat-icon>
         </div>
-        <div class="date">
+        <div class="date" matTooltip="Sort by date" matTooltipPosition="above">
             <label>Date</label>
+            <mat-icon matTooltip="Sort by date" 
+                matTooltipPosition="above"
+                (click)="this.onSortByDate.emit($event)">sort</mat-icon>
+        </div>
+        <div class="joints">
+            <label>Joints</label>
+        </div>
+        <div class="points">
+            <label>Points</label>
         </div>
         <div class="actions">
             <label>Actions</label>
@@ -14,8 +26,7 @@
         <div *ngFor="let traj of trajectories" class="line">
             <app-table-line 
                 [trajectory]="traj"
-                [enableButtons]="enableButtons"
-                (onLineClick)="changeSelectedTrajectory($event)"
+                [selectedRobot]="selectedRobot"
                 (onDeleteClick)="deleteTrajectory($event)"
                 (onUseTrajectoryClick)="useTrajectory($event)"
                 (onAddPointsClick)="addPoints($event)"

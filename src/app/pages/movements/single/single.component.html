@@ -44,11 +44,12 @@
         <div class="trajectory-list">
             <app-trajectory-table 
                 [trajectories]="trajectories"
-                [enableButtons]="this.selectedRobot != undefined"
+                [selectedRobot]="selectedRobot"
                 (onUseTrajectory)="useTrajectory($event)"
                 (onAddPoints)="addTrajectoryPoints($event)"
                 (onSelectedTrajectory)="selectTrajectory($event)"
-                (onDeleteTrajectory)="deleteTrajectory($event)"></app-trajectory-table>
+                (onDeleteTrajectory)="deleteTrajectory($event)"
+                (onSortByUsername)="sortTrajectoriesByUsername()"></app-trajectory-table>
         </div>
     </div>
 </div>

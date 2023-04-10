@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 
 @Component({
@@ -6,12 +6,13 @@ import { MetaInfoObject } from 'src/app/util/matainfo';
   templateUrl: './table-line.component.html',
   styleUrls: ['./table-line.component.scss']
 })
-export class TableLineComponent {
+export class TableLineComponent{
+  
   @Input()
   trajectory:any
 
   @Input()
-  enableButtons:boolean = false
+  selectedRobot?:MetaInfoObject
 
   @Output()
   onLineClick:EventEmitter<any> = new EventEmitter<any>()
@@ -28,8 +29,9 @@ export class TableLineComponent {
   
 
   lineClicked(){
-    this.trajectory.selected = !this.trajectory.selected
-    this.onLineClick.emit(this.trajectory)
+    console.log('traj', this.trajectory)
+    //this.trajectory.selected = !this.trajectory.selected
+    //this.onLineClick.emit(this.trajectory)
   }
 
   timeStampToDate(timestamp:number){

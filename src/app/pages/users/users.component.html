@@ -10,6 +10,7 @@
                 <label class="name">Name</label>
                 <label class="enabled">Enabled</label>
                 <label class="role">Role</label>
+                <label class="actions">Actions</label>
             </div>
             <mat-list>
                 <mat-list-item *ngFor="let user of users">
@@ -29,6 +30,11 @@
                             <option [selected]="user.role.roleName == 'USER'" [value]="user.role.roleName">USER</option>
                             <option [selected]="user.role.roleName == 'ADMIN'" [value]="user.role.roleName">ADMIN</option>
                         </select>
+                    </label>
+                    <label class="actions">
+                        <mat-icon  fontSet="material-icons-outlined" matTooltip="Reset password" matTooltipPosition="left"
+                            (click)="resetPassword(user)"
+                            >password</mat-icon>
                     </label>
                 </mat-list-item>
             </mat-list>

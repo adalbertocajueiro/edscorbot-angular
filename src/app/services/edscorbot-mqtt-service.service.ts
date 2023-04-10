@@ -191,6 +191,7 @@ export class EdscorbotMqttServiceService {
       this.subscribeCommands(robot.name)
       this.sendRequestStatusMessage()
     }
+    this.selectedRobotSubject.next(this.selectRobot)
   }
 
   selectRobotByName(name:string){

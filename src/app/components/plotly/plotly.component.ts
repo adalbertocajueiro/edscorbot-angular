@@ -17,7 +17,10 @@ export class PlotlyComponent implements OnInit{
   realTrace:Plotly.Data = {}
 
   @Input()
-  simPointSubject?:Subject<any>
+  simPointChangedSubject?:Subject<any>
+
+  @Input()
+  simPointAddedSubject?:Subject<any>
 
   @Input()
   simPointDeletedSubject?:Subject<number>
@@ -36,7 +39,18 @@ export class PlotlyComponent implements OnInit{
   }
   ngOnInit(): void {
     this.createInitialGraph()
-    this.simPointSubject?.subscribe(
+     this.simPointChangedSubject?.subscribe(
+      {
+        next: (points) => {
+          //this.addSimPoint(point.coordinates)
+          //create initial graph and add all received points
+          console.log('points',points)
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
+
+    this.simPointAddedSubject?.subscribe(
       {
         next: (point) => {
           this.addSimPoint(point.coordinates)

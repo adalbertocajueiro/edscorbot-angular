@@ -9,9 +9,11 @@ import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-ser
 })
 export class MovementsComponent implements OnInit{
 
-  simListSubject:Subject<void> = new Subject<void>()
+  simPointChangedSubject:Subject<void> = new Subject<void>()
 
-  simPointSubject:Subject<any> = new Subject<any>()
+  simPointClearSubject:Subject<void> = new Subject<void>()
+
+  simPointAddedSubject:Subject<any> = new Subject<any>()
 
   simPointDeletedSubject:Subject<number> = new Subject<number>()
 
@@ -51,7 +53,7 @@ export class MovementsComponent implements OnInit{
   }
 
   addSimulationPoint(event:any){
-    this.simPointSubject.next(event)
+    this.simPointAddedSubject.next(event)
   }
 
   deleteSimulationPoint(event:number){
@@ -59,6 +61,11 @@ export class MovementsComponent implements OnInit{
   }
 
   clearSimulationPoints(){
-    this.simListSubject.next()
+    this.simPointClearSubject.next()
+  }
+
+  rebuildGraph(appliedPoints:any){
+    console.log('rebuiding graph', appliedPoints)
+    this.simPointChangedSubject.next(appliedPoints)
   }
 }

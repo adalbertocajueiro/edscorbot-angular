@@ -3,13 +3,15 @@
         <app-single
             (onSimulationPointAdded)="addSimulationPoint($event)"
             (onSimulationPointListClear)="clearSimulationPoints()"
-            (onSimulationPointDeleted)="deleteSimulationPoint($event)"></app-single>
+            (onSimulationPointDeleted)="deleteSimulationPoint($event)"
+            (onSimulationPointsChanged)="rebuildGraph($event)"></app-single>
     </div>
     <div class="graph">
         <app-plotly
-            [simPointSubject]="simPointSubject"
+            [simPointChangedSubject]="simPointChangedSubject"
+            [simPointAddedSubject]="simPointAddedSubject"
             [simPointDeletedSubject]="simPointDeletedSubject"
-            [simListSubject]="simListSubject"
+            [simListSubject]="simPointClearSubject"
             [realPointSubject]="realPointSubject"
             [realListSubject]="realListSubject">
         </app-plotly>

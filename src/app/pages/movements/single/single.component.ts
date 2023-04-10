@@ -8,6 +8,7 @@ import { JavaService } from 'src/app/services/java.service';
 import { ARM_CANCELED_TRAJECTORY, ARM_CONNECTED, ARM_DISCONNECTED, ARM_HOME_SEARCHED, ARM_STATUS} from 'src/app/util/constants';
 import { MetaInfoObject } from 'src/app/util/matainfo';
 import { Point, Trajectory } from 'src/app/util/models';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-single',
@@ -29,8 +30,8 @@ export class SingleComponent implements OnInit{
 
   trajectories:any[] = []
 
-  //@Output()
-  //onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
+  @Output()
+  onSimulationPointsChanged:EventEmitter<any> = new EventEmitter<any>()
 
   @Output()
   onSimulationPointAdded:EventEmitter<any> = new EventEmitter<any>()
@@ -467,6 +468,11 @@ export class SingleComponent implements OnInit{
         error: (err) => {console.log('error',err)}
       }
     )
+  }
+
+  drop(event: any) {
+    moveItemInArray(this.appliedPoints, event.previousIndex, event.currentIndex);
+    this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
   
 }

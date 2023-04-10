@@ -25,8 +25,19 @@
             </div>
         </div>
         <div class="list-points">
-            <mat-list>
-                <mat-list-item *ngFor="let point of appliedPoints;let count = index" >
+            <div cdkDropList class="drag-drop-list" (cdkDropListDropped)="drop($event)">
+                <div class="drag-drop-box" *ngFor="let point of appliedPoints;let count = index" cdkDrag>
+                    <div *ngFor="let field of joints;let i = index">
+                        <span>{{field}}: </span>
+                        <label matTooltip="{{point[i]}}" matTooltipPosition="above">{{point.coordinates[i].toFixed(2)}}</label>
+                    </div>
+                    <div class="icon-container" (click)="deletePoint(count)">
+                        <mat-icon fontSet="material-icons-outlined">delete</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <!-- mat-list>
+                <mat-list-item *ngFor="let point of appliedPoints;let count = index" class="draggable" >
                     <div *ngFor="let field of joints;let i = index">
                         <span>{{field}}: </span>
                         <label matTooltip="{{point[i]}}" matTooltipPosition="above">{{point.coordinates[i].toFixed(2)}}</label>
@@ -36,7 +47,7 @@
                     </div>
                     
                 </mat-list-item>
-            </mat-list>
+            </mat-list -->
         </div>
     </div>
     <div class="trajectories">

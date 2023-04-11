@@ -42,6 +42,9 @@ export class SingleComponent implements OnInit{
   @Output()
   onSimulationPointListClear:EventEmitter<void> = new EventEmitter<void>()
 
+  @Output()
+  onSendTrajectory:EventEmitter<void> = new EventEmitter<void>()
+
 
   selectedRobot?:MetaInfoObject
   connected:boolean = false
@@ -293,12 +296,7 @@ export class SingleComponent implements OnInit{
       this.selectedFile = event.target.files[0];
       const fileReader = new FileReader();
       if(this.selectedFile){
-        //////
-        if(this.selectedFile.name.endsWith(".npy")){
-          fileReader.readAsDataURL(this.selectedFile)
-          
-        }
-        //////
+        
         fileReader.readAsText(this.selectedFile, "UTF-8");
         
         fileReader.onload = () => {
@@ -313,8 +311,11 @@ export class SingleComponent implements OnInit{
                     
                     points.map( p => p.push(this.mqttService.defaultPointTime))
                     points.forEach( p =>  {
-                      this.appliedPoints.push(p)
-                      this.onSimulationPointAdded.emit(p)
+                      var point = {
+                        coordinates: p
+                      }
+                      this.appliedPoints.push(point)
+                      this.onSimulationPointAdded.emit(point)
                     })
                 } else {
                   this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
@@ -327,14 +328,6 @@ export class SingleComponent implements OnInit{
             } else if (this.selectedFile?.name.endsWith(".tsv")){
               //console.log('trying to load as csv')
               this.loadFromCsv(fileReader.result)
-            } else if (this.selectedFile?.name.endsWith(".npy")){
-              //format is npy
-              console.log("file:", this.selectedFile.webkitRelativePath)
-              var path = this.selectedFile.name
-              
-              //fileReader.readAsArrayBuffer(this.selectedFile)
-              //this.loadFromNpy(fileReader.result as ArrayBuffer)
-              //console.log("content",fileReader.result)
             }
             
           }
@@ -356,24 +349,16 @@ export class SingleComponent implements OnInit{
                   .split('\t')
                   .map ( n => n.replaceAll(',','.'))
                   .map ( n => parseFloat(n))
-      this.appliedPoints.push(row)
-      this.onSimulationPointAdded.emit(row)
+      var point = {
+        coordinates:row
+      }  
+      this.appliedPoints.push(point)
+      this.onSimulationPointAdded.emit(point)
     })
 
     //this.graphService.buildGraph(this.appliedPoints)
     //this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
-
-
-  loadFromNpy(buf:ArrayBufferLike){
-    
-    //var dec = this.asciiDecode(buf.slice(0,6))
-    //console.log("decode",dec)
-    //console.log('buffer',buf)
-    //var obj = loader.parse(buf);
-    //console.log('parsed',obj)
-  }
-
   
   verifyConditions(event:any){
     if(!this.mqttService.selectedRobot){
@@ -386,20 +371,21 @@ export class SingleComponent implements OnInit{
   nothing(){ }
 
   sendTrajectoryToArm(){
+    this.onSendTrajectory.emit()
     if(this.appliedPoints.length == 1){
-      var p = {
-        coordinates: this.appliedPoints[0]
-      }
-      this.mqttService.sendMoveToPointMessage(p);
+      //var p = {
+      //  coordinates: this.appliedPoints[0]
+      //}
+      this.mqttService.sendMoveToPointMessage(this.appliedPoints[0]);
     } else {
       var trajectory:Trajectory = {
         points: []
       }
       this.appliedPoints.forEach ( p => {
-        var point:Point = {
-          coordinates: p
-        }
-        trajectory.points.push(point)
+        //var point:Point = {
+        //  coordinates: p
+        //}
+        trajectory.points.push(p)
       })
       this.mqttService.sendTrajectoryMessage(trajectory)
       this.executingTrajectory = true

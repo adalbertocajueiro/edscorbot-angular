@@ -19,6 +19,8 @@ export class MovementsComponent implements OnInit{
 
   realListSubject:Subject<void> = new Subject<void>()
 
+  clearRealListSubject:Subject<void> = new Subject<void>()
+
   realPointSubject:Subject<any> = new Subject<any>()
 
   toogleChecked:boolean = false

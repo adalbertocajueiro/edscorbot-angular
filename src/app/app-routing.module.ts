@@ -7,12 +7,14 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { UsersComponent } from './pages/users/users.component';
 import { AuthGuard } from './util/auth.guard';
 import { LogoutComponent } from './pages/logout/logout.component';
+import { ToolsComponent } from './pages/tools/tools.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'movements', pathMatch: 'full'},
   {path: 'users', component:  UsersComponent , canActivate:[AuthGuard]},
   {path: 'movements', component: MovementsComponent, canActivate:[AuthGuard]},
   {path: 'settings', component: SettingsComponent, canActivate:[AuthGuard]},
+  {path: 'tools', component: ToolsComponent, canActivate:[AuthGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'logout', component: LogoutComponent},
   {path: '**', component: NotFoundComponent}

@@ -42,6 +42,7 @@ import { ToggleSwitchComponent } from './components/toggle-switch/toggle-switch.
 import { ErrorInterceptor } from './util/error.interceptor';
 import { LogoutComponent } from './pages/logout/logout.component';
 import { LogoutDialogComponent } from './pages/logout/logout-dialog/logout-dialog.component';
+import { ToolsComponent } from './pages/tools/tools.component';
 
 export const MQTT_SERVICE_OPTIONS = {
   hostname: 'localhost',
@@ -79,7 +80,8 @@ export const MQTT_SERVICE_OPTIONS = {
     LoginDialogComponent,
     ToggleSwitchComponent,
     LogoutComponent,
-    LogoutDialogComponent
+    LogoutDialogComponent,
+    ToolsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,32 @@
+<div class="container-settings">
+    <div class="header">
+        <label>File conversion tool</label>
+    </div>
+    <div class="source">
+        
+        <select (change)="changeSourceType($event)">
+            <option [value]="1">Angles (Degrees)</option>
+            <option [value]="2" selected>Angles (Radians)</option>
+            <option [value]="3">Reference values</option>
+            <option [value]="4">Digital counters</option>
+        </select>
+    </div>
+    <div class="target">
+        <select (change)="changeTargetType($event)">
+            <option [value]="1" selected>Angles (Degrees)</option>
+            <option [value]="2">Angles (Radians)</option>
+            <option [value]="3">Reference values</option>
+            <option [value]="4">Digital counters</option>
+        </select>
+    </div>
+    <div>
+        <label>File:</label>
+        <mat-icon fontSet="material-icons-outlined" matTooltip="Load file" matTooltipPosition="above"
+            (click)="fileInput.click()">cloud_upload</mat-icon>
+        <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+    </div>
+    <button (click)="submit()">
+        Submit
+    </button>
+    
+</div>

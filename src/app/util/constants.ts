@@ -1,3 +1,6 @@
+//python API URL
+export const PYTHON_API_URL = 'http://127.0.0.1:5000'
+
 //arm status constants
 export const FREE:number = 0;
 export const BUSY:number = -1;

@@ -34,6 +34,9 @@ export class PlotlyComponent implements OnInit{
    @Input()
   realListSubject?:Subject<void>
 
+  @Input()
+  clearRealListSubject?:Subject<void>
+
   constructor(private mqttService:EdscorbotMqttServiceService){
     
   }
@@ -45,6 +48,7 @@ export class PlotlyComponent implements OnInit{
           //this.addSimPoint(point.coordinates)
           //create initial graph and add all received points
           console.log('points',points)
+          this.rebuildSimPoints(points)
         },
         error: (err) => {console.log('error',err)}
       }
@@ -99,6 +103,14 @@ export class PlotlyComponent implements OnInit{
       }
     )
 
+    this.clearRealListSubject?.subscribe(
+      {
+        next: () => {
+          this.clearRealTrace()
+        },
+        error: (err) => {console.log('error',err)}
+      }
+    )
    
   }
 
@@ -166,6 +178,33 @@ export class PlotlyComponent implements OnInit{
     Plotly.newPlot("myPlot", this.data, layout);
   }
 
+  rebuildSimPoints(points:any[]){
+    
+    var robotName = this.mqttService.selectedRobot?.name
+    if(robotName){
+      var cinematicFunction = cinematicFunctions.get(robotName)
+      if(cinematicFunction){ 
+          (this.simulatedTrace as {[key: string] : number[]})['x'].length = 0;
+          (this.simulatedTrace as {[key: string] : number[]})['y'].length = 0;
+          (this.simulatedTrace as {[key: string] : number[]})['z'].length = 0;
+          for(const point of points){
+            var {x,y,z} = cinematicFunction(point.coordinates);
+            (this.simulatedTrace as {[key: string] : number[]})['x'].push(x);
+            (this.simulatedTrace as {[key: string] : number[]})['y'].push(y);
+            (this.simulatedTrace as {[key: string] : number[]})['z'].push(z);
+          }  
+      }
+      var update = {
+        'marker.size':8,
+        'marker.opacity': 0.6,
+        'marker.color':'blue'
+      }
+      var graphDiv = document.getElementById('myPlot');
+        Plotly.restyle(graphDiv!, update,0)
+      }
+    
+  }
+
   addSimPoint(point:number[]){
     
     var robotName = this.mqttService.selectedRobot?.name
@@ -186,6 +225,7 @@ export class PlotlyComponent implements OnInit{
             (this.realTrace as {[key: string] : number[]})['z'].shift();
           }
       }
+      
       var update = {
         'marker.size':8,
         'marker.opacity': 0.6,
@@ -239,4 +279,22 @@ export class PlotlyComponent implements OnInit{
         Plotly.restyle(graphDiv!, update,1)
       }
   }
+
+  clearRealTrace(){
+    
+    (this.realTrace as {[key: string] : number[]})['x'] = [];
+    (this.realTrace as {[key: string] : number[]})['y'] = [];
+    (this.realTrace as {[key: string] : number[]})['z'] = []
+
+
+    var update = {
+        'marker.size':1,
+        'marker.opacity': 0.8,
+        'marker.color':'gray',
+        'marker.symbol':'circle',
+    }
+    var graphDiv = document.getElementById('myPlot');
+    Plotly.restyle(graphDiv!, update,1)
+  }
+  
 }

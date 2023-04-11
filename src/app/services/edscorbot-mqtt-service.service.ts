@@ -264,7 +264,7 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    //console.log('sending connect message', content.signal)
+    console.log('sending connect message', content)
     this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
   }
 

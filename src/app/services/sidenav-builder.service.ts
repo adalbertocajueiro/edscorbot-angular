@@ -22,6 +22,10 @@ export class SidenavBuilderService {
     sidenavItems.push(
       {enabled:true,path:'movements',icon:'timeline',selected:false,tooltip:'Movements'}
     )
+
+    sidenavItems.push(
+      {enabled:true,path:'tools',icon:'handyman',selected:false,tooltip:'Tools'}
+    )
     
     //sidenavItems.push(
     //  {enabled:true,path:'login',icon:'login',selected:false,tooltip:'Login'}

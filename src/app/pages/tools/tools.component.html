@@ -2,8 +2,15 @@
     <div class="header">
         <label>File conversion tool</label>
     </div>
+    <div class="file">
+        <label>Choose a file to upload:</label>
+        <mat-icon fontSet="material-icons-outlined" matTooltip="Load file" matTooltipPosition="above"
+            (click)="fileInput.click()">cloud_upload</mat-icon>
+        <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+    </div>
+    
     <div class="source">
-        
+        <label>Detected format:</label>
         <select (change)="changeSourceType($event)">
             <option [value]="1">Angles (Degrees)</option>
             <option [value]="2" selected>Angles (Radians)</option>
@@ -12,6 +19,7 @@
         </select>
     </div>
     <div class="target">
+        <label>Target format:</label>
         <select (change)="changeTargetType($event)">
             <option [value]="1" selected>Angles (Degrees)</option>
             <option [value]="2">Angles (Radians)</option>
@@ -19,14 +27,15 @@
             <!-- option [value]="4">Digital counters</option -->
         </select>
     </div>
-    <div>
-        <label>File:</label>
-        <mat-icon fontSet="material-icons-outlined" matTooltip="Load file" matTooltipPosition="above"
-            (click)="fileInput.click()">cloud_upload</mat-icon>
-        <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+    <div class="buttons">
+        <label>Action:</label>
+        <button (click)="exportToTsv()" [disabled]="!this.fileContent">
+            Save in TSV
+        </button>
+        <button (click)="exportToJson()" [disabled]="!this.fileContent">
+            Save in JSON
+        </button>
     </div>
-    <button (click)="submit()">
-        Submit
-    </button>
+    
     
 </div>

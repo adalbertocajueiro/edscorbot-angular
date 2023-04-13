@@ -49,6 +49,9 @@
                 <div class="field">
                     <label>Username:</label>
                     <input type="text" size="36" max-size="80" 
+                        [matTooltip]="'Not editable'"
+                        [matTooltipPosition]="'above'"
+                        readonly
                         [formControlName]="'username'" 
                         (ngModelChange)="this.fieldEdited = true"/>
                 </div>

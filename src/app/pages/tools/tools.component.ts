@@ -36,55 +36,77 @@ export class ToolsComponent {
 
   onFileChanged(event:any) {
       this.selectedFile = event.target.files[0];
-      
+      const fileReader = new FileReader();
       console.log('selected file',this.selectedFile)
-      /*
-      if(selectedFile){ 
-        fileReader.readAsText(this.selectedFile, "UTF-8");
-        
-        fileReader.onload = () => {
-          console.log('file result',this.selectedFile)
-          if(fileReader.result){
-            var points:any[][] = []
-            if(this.selectedFile?.name.endsWith(".json")){
-              points = JSON.parse(fileReader.result.toString())
-              if(points.length > 0){
-                if (this.mqttService.selectedRobot?.joints.length == points[0].length){
-                    //points have not time coordinate. using the default
-                    
-                    points.map( p => p.push(this.mqttService.defaultPointTime))
-                    points.forEach( p =>  {
-                      var point = {
-                        coordinates: p
-                      }
-                      this.appliedPoints.push(point)
-                      this.onSimulationPointAdded.emit(point)
-                    })
-                } else {
-                  this.snackBar.open("File specifies an incompatible number of points for this arm","Close",{duration:5000,verticalPosition:"top"})
-                }
-              } else{
-                  //file has no points
-                  this.snackBar.open("File does not define points","Close",{duration:5000,verticalPosition:"top"})
-              }
-              
-            } else if (this.selectedFile?.name.endsWith(".tsv")){
-              //console.log('trying to load as csv')
-              this.loadFromCsv(fileReader.result)
-            }
-            
-          }
-          
-        }
-        fileReader.onerror = (error) => {
-          console.log(error);
-        } 
-      }
-      */
+      var formData:FormData = new FormData()
+      formData.set('sourceType',this.sourceType! + "")
+      formData.set('targetType',this.targetType! + "")
+      formData.set('file', this.selectedFile)
+      formData.set('hasTimeInfo', 'false')
+      this.pythonService.convertFile(formData).subscribe(
+         (res) => {
+          console.log('returned content',res)
+          //the returned content is an array of points
+          this.fileContent = res
+          //the source and target formats can be suggested besed on the file content
+         }
+       
+      )
+      
   }
 
-  exportToTsv(content:string){
+  exportToTsv(){
+    const data = this.generateTsv()
+    const blob = new Blob([data], {
+              type: 'application/octet-stream'
+          });
+          //const blob = new Blob(data, { type: "octet/stream"});
+          //new Blob(data, { type: "octet/stream"});
+          const a = document.createElement('a')
+          //this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+          this.fileUrl = window.URL.createObjectURL(blob);
+          a.href = this.fileUrl
+          a.download = "temp" + '.tsv';
+          a.click();
+          URL.revokeObjectURL(this.fileUrl);
+  }
+  generateTsv(){
+    var tsvContent = (this.fileContent as any[])
+    var result = new Array()
+    var firstPoint:any[] = tsvContent[0]
+    firstPoint.forEach((coord,index) => {
+        result.push("J" + (index+1))
+        if(index < firstPoint.length - 1){
+          result.push("\t")
+        } else {
+          result.push("\n")
+        }
+    })
+    tsvContent.forEach((point:any[]) => {
+      point.forEach((coord,index) => {
+        result.push(coord)
+        if(index < point.length - 1){
+          result.push("\t")
+        } else {
+          result.push("\n")
+        }
+      })
+    });
 
+    return result.join("")
+  }
+  exportToJson(){
+    const data = JSON.stringify(this.fileContent);
+    const blob = new Blob([data], {
+              type: 'application/octet-stream'
+          });
+          
+          const a = document.createElement('a')
+          this.fileUrl = window.URL.createObjectURL(blob);
+          a.href = this.fileUrl
+          a.download = "temp" + '.json';
+          a.click();
+          URL.revokeObjectURL(this.fileUrl);
   }
   submit(){
       console.log('src,tgt,file',this.sourceType,this.targetType,this.selectedFile)
@@ -111,16 +133,7 @@ export class ToolsComponent {
           a.click();
           URL.revokeObjectURL(this.fileUrl);
          }
-        /*(blob:any) => {
-            const a = document.createElement('a')
-            const objectUrl = URL.createObjectURL(blob)
-            a.href = objectUrl
-            a.download = "temp" + '.xlsx';
-            a.click();
-            URL.revokeObjectURL(objectUrl);
-          }
-          */
-        
       )
   }
+
 }

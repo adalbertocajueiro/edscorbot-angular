@@ -24,6 +24,10 @@ export class UsersComponent implements OnInit{
     this.loggedUser = this.localStorageService.getLoggedUser()
     //console.log('user',this.loggedUser)
     this.buildForm()
+    this.loadUsers()
+  }
+
+  loadUsers(){
     this.javaService.getUsers().subscribe(
       {
         next: (res) => { 
@@ -71,6 +75,7 @@ export class UsersComponent implements OnInit{
       {
         next: (res)=> {
           console.log('usuario atualizado', res)
+          this.loadUsers()
         },
         error: (err) => {
           console.log('error', err)
@@ -97,6 +102,7 @@ export class UsersComponent implements OnInit{
       {
         next: (res)=> {
           console.log('usuario atualizado', res)
+          this.loadUsers()
         },
         error: (err) => {
           console.log('error', err)

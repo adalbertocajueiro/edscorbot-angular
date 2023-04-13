@@ -14,6 +14,7 @@ export class ToolsComponent {
   targetType?:number = 1
 
   fileUrl:any
+  fileContent:any
 
   constructor(private pythonService:PythonService, private sanitizer: DomSanitizer){}
   
@@ -82,16 +83,20 @@ export class ToolsComponent {
       */
   }
 
+  exportToTsv(content:string){
+
+  }
   submit(){
       console.log('src,tgt,file',this.sourceType,this.targetType,this.selectedFile)
       var formData:FormData = new FormData()
       formData.set('sourceType',this.sourceType! + "")
       formData.set('targetType',this.targetType! + "")
       formData.set('file', this.selectedFile)
+      formData.set('hasTimeInfo', 'false')
 
       this.pythonService.convertFile(formData).subscribe(
          (res) => {
-          console.log(res)
+          console.log('returned content',res)
           const data = JSON.stringify(res);
           const blob = new Blob([data], {
               type: 'application/octet-stream'

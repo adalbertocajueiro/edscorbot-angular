@@ -23,11 +23,11 @@ export class EdscorbotMqttServiceService {
   owner?:Client
 
   private MQTT_SERVICE_OPTIONS = {
-    hostname: environment.hostname,
-    port: environment.port,
-    clean: environment.clean, // Retain session
-    connectTimeout: environment.connectTimeout, // Timeout period
-    reconnectPeriod: environment.reconnectPeriod, // Reconnect period
+    hostname: environment.broker.hostname,
+    port: environment.broker.port,
+    clean: environment.broker.clean, 
+    connectTimeout: environment.broker.connectTimeout, 
+    reconnectPeriod: environment.broker.reconnectPeriod, 
     clientId: "Angular client" + new Date().toLocaleString()
   }
 

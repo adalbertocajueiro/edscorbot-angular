@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { JAVA_API_URL } from '../util/constants';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class JavaService {
         password:password
     }
 
-    return this.httpClient.post<Object>(JAVA_API_URL + "/api/authenticate", body)
+    return this.httpClient.post<Object>(environment.javaAPI.JAVA_API_URL + "/api/authenticate", body)
   }
 
   signup(form:FormGroup){
@@ -31,26 +31,26 @@ export class JavaService {
         role:form.controls['role'].value
     }
     
-    return this.httpClient.post<Object>(JAVA_API_URL + "/api/signup", body)
+    return this.httpClient.post<Object>(environment.javaAPI.JAVA_API_URL + "/api/signup", body)
   }
 
   getUsers(){
-    return this.httpClient.get(JAVA_API_URL + "/api/users")
+    return this.httpClient.get(environment.javaAPI.JAVA_API_URL + "/api/users")
   }
 
   updateUser(user:any){
-    return this.httpClient.put(JAVA_API_URL + `/api/users/${user.username}`,user)
+    return this.httpClient.put(environment.javaAPI.JAVA_API_URL + `/api/users/${user.username}`,user)
   }
 
   getTrajectories(){
-    return this.httpClient.get(JAVA_API_URL +  "/api/trajectories")
+    return this.httpClient.get(environment.javaAPI.JAVA_API_URL +  "/api/trajectories")
   }
 
   saveTrajectory(trajectory:any){
-    return this.httpClient.post(JAVA_API_URL + "/api/trajectories",trajectory)
+    return this.httpClient.post(environment.javaAPI.JAVA_API_URL + "/api/trajectories",trajectory)
   }
 
   deleteTrajectory(trajectory:any){
-    return this.httpClient.delete(JAVA_API_URL + "/api/trajectories/" + trajectory.timestamp)
+    return this.httpClient.delete(environment.javaAPI.JAVA_API_URL + "/api/trajectories/" + trajectory.timestamp)
   }
 }

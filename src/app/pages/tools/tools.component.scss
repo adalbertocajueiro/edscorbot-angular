@@ -18,6 +18,9 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        border: 1px solid rgb(196, 195, 195);
+        border-radius: 4px;
+        padding: 5px;
 
         .file {
             display: flex;
@@ -90,37 +93,44 @@
     .content {
         margin-top: 10px;
         display: flex;
-        width: 95%;
-
+        justify-content: space-between;
+        width: 70%;
         font-size: 0.85rem;
         font-weight: 300;
-
-        label {
-            width: 120px;
-        }
-
-        .file-content {
+        
+        .original{
             display: flex;
-            width: 100%;
-            overflow: hidden;
-            overflow-y: auto;
-            background-color: white;
-            border: 1px dotted purple;
-
-            pre {
-                display: flex;
-                margin-left: 10px;
-                width: 100%;
-                max-height: 500px;
-                //border: 1px solid lightgray;
-                overflow: hidden;
-                overflow-y: auto;
-            }
+            width: 49%;
+            flex-direction: column;
         }
-
+        .converted{
+            display: flex;
+            width: 49%;
+            flex-direction: column;
+        }
     }
 }
 
+.file-content {
+    display: flex;
+    width: 100%;
+    margin-top: 5px;
+    overflow: hidden;
+    overflow-y: auto;
+    border: 1px solid rgb(148, 137, 137);
+    border-radius: 2px;
+    background-color: white;
+
+    pre {
+        display: flex;
+        margin-left: 10px;
+        width: 100%;
+        max-height: 500px;
+        //border: 1px solid lightgray;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+}
 .icon-disabled {
     pointer-events: none!important;
     color: lightgray!important;

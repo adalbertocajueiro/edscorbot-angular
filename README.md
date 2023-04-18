@@ -1,27 +1,43 @@
-# EdscorbotAngular
+# Getting Started
+This repository contains the front-end (microservice) of the EDScorbot project. The service is implemented as a Spring Boot/Java microservice. 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.5.
+### Tools Information
+This project has been developed using the following tools:
+* NodeJS version 18.14.0 (NPM version 9.3.1)
+* Angular CLI version 15.2.6
 
-## Development server
+### Project structure
+After downloading and extracting the project, the folder `edscorbot-angular` is the root folder of an Angular project with a specific folder/files structure
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+### Installing and running
+* If you do not have NodeJS installed in your machine, please follow the install instructions at [NodeJS Official site] (https://nodejs.org/en). 
+* Install Angular CLI: open a terminal and type `npm install -g @angular/cli`. Depending on your platform, Admin privileges must be required
+* Enter the folder `edscorbot-angular` and type `npm install` to install all dependencies.
+* Open the project folder in Visual Studio Code (vscode). It might be possible vscode offers other extensions to be installed. Just accept it.
+* Open the file `src/environments/environment.development.ts` and check/adjust the values of the broker, the Python and the Java APIs.
+* The server can be started in two ways: using proxy rewrite or not. This influenciates the content of the environment variable `javaAPI.JAVA_API_URL`. For the moment, then Angular application connects correctly with the Java back-end only qhen usin proxy rewrite. This is an Angular support to aviod CORS problem qhen connecting microservices.
+* Open the file `proxy.conf.json`. The key `target` points to the root route where the edscorbot-java project is running. Adjust it if necessary.
+* Open a terminal. Enter the folder edscorbot-angular and run the command `npm start`. It will launch the microservice using the proxy configurations to avoid CORS problem with the Java microservice. If the service starts correctly, you should see the message such as:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+    ```
+    ** Angular Live Development Server is listening on localhost:PORT ...
+    
+    ✔ Compiled successfully
+    ```
 
-## Build
+* Open the URL http://localhost:PORT in your browser and enjoy the Web application.
+* You will be able to access all features of the application only if all microservices in the ecossystem are running: broker, python api, java api and arm's controller (C/C++ microservice)
+* There is a super user (`root/edscorbot`). Use it carefully!
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Reference Documentation
+For further reference, please consider the following items:
+* [EDScorbot Github Project](https://github.com/RTC-research-group/Py-EDScorbotTool) - the main Github project with details about the entire project and the low level code to control the robotic arm
+* [EDScorbot Documentation](https://py-edscorbottool.readthedocs.io/en/latest/) - documentation about the entire project
+* [EDScorbot Python API](https://github.com/adalbertocajueiro/edscorbot-py) - the Github project with details about the Python microservice
+* [EDScorbot Java API](https://github.com/adalbertocajueiro/edscorbot-java) - the Github project with details about the Java microservice
+* [NodeJS Official site](https://nodejs.org/en)
+* [Angular CLI Overview and Command Reference](https://angular.io/cli)
+* [Angular CLI](https://github.com/angular/angular-cli).

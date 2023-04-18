@@ -62,12 +62,17 @@
         </div>
     </div>
     <div class="content">
-        <label>Content: </label>
-        <div class="file-content">
-            <pre>{{ this.originalFileContent | json}}</pre>
+        <div class="original" *ngIf="this.originalFileContent">
+            <label>Original content: </label>
+            <div class="file-content">
+                <pre>{{ this.originalFileContent | json}}</pre>
+            </div>
         </div>
-        <div class="file-content">
-            <pre>{{ this.convertedFileContent | json}}</pre>
+        <div class="converted" *ngIf="this.convertedFileContent">
+            <label>Converted content: </label>
+            <div class="file-content">
+                <pre>{{ this.convertedFileContent | json}}</pre>
+            </div>
         </div>
     </div>
     

@@ -5,6 +5,7 @@ import { ARM_APPLY_TRAJECTORY, ARM_CANCELED_TRAJECTORY, ARM_CANCEL_TRAJECTORY, A
 import { MetaInfoObject } from '../util/matainfo';
 import { Client, Point, Trajectory } from '../util/models';
 import { LocalStorageService } from './local-storage.service';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -21,19 +22,13 @@ export class EdscorbotMqttServiceService {
 
   owner?:Client
 
-  private MQTT_SERVICE_OPTIONS1 = {
-
-    hostname: 'localhost',
-    //hostname: '192.168.1.104',
-    //hostname: '10.0.2.15',
-    port: 8080,
-    //path: '/mqtt',
-    clean: true, // Retain session
-    connectTimeout: 4000, // Timeout period
-    reconnectPeriod: 4000, // Reconnect period
-    // Authentication information
-    clientId: 'mqttx_597046f4',
-    //protocol: 'ws',
+  private MQTT_SERVICE_OPTIONS = {
+    hostname: environment.hostname,
+    port: environment.port,
+    clean: environment.clean, // Retain session
+    connectTimeout: environment.connectTimeout, // Timeout period
+    reconnectPeriod: environment.reconnectPeriod, // Reconnect period
+    clientId: "Angular client" + new Date().toLocaleString()
   }
 
   client:any
@@ -53,7 +48,6 @@ export class EdscorbotMqttServiceService {
 
     this.localStorageService.userChanged.subscribe({
       next: (res:any) => {
-        //console.log('user changed',res)
         if(res == undefined){
           this.loggedUser = undefined
         } else {
@@ -66,8 +60,8 @@ export class EdscorbotMqttServiceService {
     })
 
     var mqttClientId = new Date().toLocaleString()
-    this.MQTT_SERVICE_OPTIONS1.clientId = mqttClientId
-    this._mqttService = new MqttService(this.MQTT_SERVICE_OPTIONS1)
+    this.MQTT_SERVICE_OPTIONS.clientId = mqttClientId
+    this._mqttService = new MqttService(this.MQTT_SERVICE_OPTIONS)
     this.client = this._mqttService
     this.createConnection()
     this.subscribeMetainfo()
@@ -86,7 +80,6 @@ export class EdscorbotMqttServiceService {
     });
     this.client?.onMessage.subscribe((packet: any) => {
       console.log(`Received message ${packet.payload} from topic ${packet.topic}`)
-      //this.notifyClients(packet)
     })
   }
 

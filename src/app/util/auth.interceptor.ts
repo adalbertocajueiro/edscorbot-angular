@@ -19,15 +19,12 @@ export class AuthInterceptor implements HttpInterceptor {
     var authReq = request.clone();
 
     var loggedUser = this.localStorageService.getLoggedUser()
-    //console.log('logged user', loggedUser)
-    //console.log('request', request.url, loggedUser)
     if(loggedUser){
       authReq = request.clone({
         headers: request.headers
                   .set('Authorization', `Bearer ${loggedUser.token}`)
                   .set('username',loggedUser.username!),
       });
-      //console.log('adding data to header', authReq)
     }
     return next.handle(authReq);
   }

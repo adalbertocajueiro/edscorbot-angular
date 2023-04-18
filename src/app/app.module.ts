@@ -44,17 +44,6 @@ import { LogoutComponent } from './pages/logout/logout.component';
 import { LogoutDialogComponent } from './pages/logout/logout-dialog/logout-dialog.component';
 import { ToolsComponent } from './pages/tools/tools.component';
 
-export const MQTT_SERVICE_OPTIONS = {
-  hostname: 'localhost',
-   port: 8080,
-   //path: '/mqtt',
-   clean: true, // Retain session
-   connectTimeout: 4000, // Timeout period
-   reconnectPeriod: 4000, // Reconnect period
-   // Authentication information
-   clientId: 'mqttx_597046f4',
-   //protocol: 'ws',
-}
 
 @NgModule({
   declarations: [
@@ -101,8 +90,7 @@ export const MQTT_SERVICE_OPTIONS = {
     MatDialogModule,
     MatSelectModule,
     MatSnackBarModule,
-    DragDropModule,
-    MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
+    DragDropModule
   ],
   providers: [
     {

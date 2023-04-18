@@ -2,40 +2,73 @@
     <div class="header">
         <label>File conversion tool</label>
     </div>
-    <div class="file">
-        <label>Choose a file to upload:</label>
-        <mat-icon fontSet="material-icons-outlined" matTooltip="Load file" matTooltipPosition="above"
-            (click)="fileInput.click()">cloud_upload</mat-icon>
-        <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput>
+    <div class="fields">
+        <div class="file">
+            <label>Choose a file to upload:</label>
+            <mat-icon fontSet="material-icons-outlined" matTooltip="Select an arm and load a file" matTooltipPosition="above"
+                (click)="fileInput.click()" >cloud_upload</mat-icon>
+            <input style="display: none" type="file" (change)="onFileChanged($event)" #fileInput [disabled]="!this.selectedRobot">
+        </div>
+        
+        <div class="source">
+            <label>Detected format:</label>
+            <select (change)="changeSourceType($event)">
+                <option [value]="1">Angles (Degrees)</option>
+                <option [value]="2" selected>Angles (Radians)</option>
+                <option [value]="3">Reference values</option>
+                <!-- option [value]="4">Digital counters</option -->
+            </select>
+        </div>
+        <div class="target">
+            <label>Target format:</label>
+            <select (change)="changeTargetType($event)">
+                <option [value]="1" selected>Angles (Degrees)</option>
+                <option [value]="2">Angles (Radians)</option>
+                <option [value]="3">Reference values</option>
+            </select>
+        </div>
+        <div class="time-info">
+            <label>Time info:</label>
+            <app-toggle-switch [tooltip]="'Do the points contain time information in the last coordinate?'" [width]="'52px'" [height]="'26px'"
+                (onToggleChanged)="changeEnabled($event)"></app-toggle-switch>
+        </div>
+        <div class="buttons">
+            <button (click)="convert()" [disabled]="!this.originalFileContent || !this.selectedRobot"
+                matTooltip="Convert content" 
+                    matTooltipPosition="above">
+                <mat-icon fontSet="material-icons-outlined" 
+                    [ngClass]="!this.originalFileContent || !this.selectedRobot? 'icon-disabled' : ''"
+                    >
+                    swap_horizon</mat-icon> 
+                <label>Convert</label>
+            </button>
+            <button (click)="exportToTsv()" [disabled]="!this.convertedFileContent || !this.selectedRobot"
+                    matTooltip="Save in TSV" 
+                    matTooltipPosition="above">
+                <mat-icon fontSet="material-icons-outlined" 
+                    [ngClass]="!this.convertedFileContent || !this.selectedRobot? 'icon-disabled' : ''"
+                    >
+                    cloud_download</mat-icon> 
+                <label>TSV</label>
+            </button>
+            <button (click)="exportToJson()" [disabled]="!this.convertedFileContent || !this.selectedRobot"
+                    matTooltip="Save in JSON" matTooltipPosition="above">
+                <mat-icon fontSet="material-icons-outlined" 
+                    [ngClass]="!this.convertedFileContent || !this.selectedRobot? 'icon-disabled' : ''"
+                    >
+                    cloud_download</mat-icon> 
+                <label>JSON</label>
+            </button>
+        </div>
     </div>
-    
-    <div class="source">
-        <label>Detected format:</label>
-        <select (change)="changeSourceType($event)">
-            <option [value]="1">Angles (Degrees)</option>
-            <option [value]="2" selected>Angles (Radians)</option>
-            <option [value]="3">Reference values</option>
-            <!-- option [value]="4">Digital counters</option -->
-        </select>
+    <div class="content">
+        <label>Content: </label>
+        <div class="file-content">
+            <pre>{{ this.originalFileContent | json}}</pre>
+        </div>
+        <div class="file-content">
+            <pre>{{ this.convertedFileContent | json}}</pre>
+        </div>
     </div>
-    <div class="target">
-        <label>Target format:</label>
-        <select (change)="changeTargetType($event)">
-            <option [value]="1" selected>Angles (Degrees)</option>
-            <option [value]="2">Angles (Radians)</option>
-            <option [value]="3">Reference values</option>
-            <!-- option [value]="4">Digital counters</option -->
-        </select>
-    </div>
-    <div class="buttons">
-        <label>Action:</label>
-        <button (click)="exportToTsv()" [disabled]="!this.fileContent">
-            Save in TSV
-        </button>
-        <button (click)="exportToJson()" [disabled]="!this.fileContent">
-            Save in JSON
-        </button>
-    </div>
-    
     
 </div>

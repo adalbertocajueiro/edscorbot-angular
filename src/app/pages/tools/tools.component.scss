@@ -3,86 +3,125 @@
     flex-direction: column;
     justify-content: flex-start;
     width: 100%;
-    height: 95%;
+    height: 90%;
     border: 1px solid rgb(148, 137, 137);
     border-radius: 4px;
     padding: 10px;
     font-weight: 300;
 
-    .header{
+    .header {
         font-weight: 500;
         margin-bottom: 10px;
     }
-    .file{
-        display: flex;
-        align-items: center;
-        
-        
-        mat-icon {
-            margin-left: 10px;
-            font-size: 1.3rem;
-            color: rgb(86, 85, 85);
-        }
-    }
-    .source{
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-        label{
-            width: 120px;
-        }
-        select{
-            margin-left: 10px;
-        }
-    }
-    .target{
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-        label {
-            width: 120px;
-        }
-        
-        select {
-            margin-left: 10px;
-        }
-    }
 
-    .buttons {
+    .fields {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .file {
             display: flex;
             align-items: center;
-            margin-top: 10px;
-    
-            label {
-                width: 120px;
-            }
-    
-            button {
+
+            mat-icon {
                 margin-left: 10px;
+                font-size: 1.3rem;
+                color: rgb(86, 85, 85);
                 &:hover{
                     cursor: pointer;
                 }
             }
         }
-    .line {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 5px;
 
-        label {
-            font-family: 'Roboto', sans-serif
+        .source {
+            display: flex;
+            align-items: center;
+
+            label {
+                width: 120px;
+            }
+
+            select {
+                margin-left: 10px;
+            }
         }
 
-        input {
-            width: 60%;
-            font-size: 1.05rem;
+        .target {
+            display: flex;
+            align-items: center;
+
+            label {
+                width: 120px;
+            }
+
+            select {
+                margin-left: 10px;
+            }
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            button {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-right: 5px;
+                &:hover {
+                        cursor: pointer !important;
+                    }
+                
+                mat-icon {
+                    margin-right: 5px;
+                    font-size: 1.3rem;
+                    color: rgb(86, 85, 85);
+                }
+                label{
+                    &:hover {
+                            cursor: pointer !important;
+                    }
+                }
+            }
         }
     }
 
-   
+    .content {
+        margin-top: 10px;
+        display: flex;
+        width: 95%;
+
+        font-size: 0.85rem;
+        font-weight: 300;
+
+        label {
+            width: 120px;
+        }
+
+        .file-content {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px dotted purple;
+
+            pre {
+                display: flex;
+                margin-left: 10px;
+                width: 100%;
+                max-height: 500px;
+                //border: 1px solid lightgray;
+                overflow: hidden;
+                overflow-y: auto;
+            }
+        }
+
+    }
 }
 
-.mat-icon{
-    cursor: pointer;
+.icon-disabled {
+    pointer-events: none!important;
+    color: lightgray!important;
 }

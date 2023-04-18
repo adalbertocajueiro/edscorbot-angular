@@ -9,6 +9,10 @@ export class PythonService {
 
   constructor(private httpClient:HttpClient) { }
 
+  loadFile(formData:FormData){
+    return this.httpClient.post(PYTHON_API_URL + '/python/load',formData)
+  }
+
   convertFile(formData:FormData){
     return this.httpClient.post(PYTHON_API_URL + '/python/convert',formData)
   }

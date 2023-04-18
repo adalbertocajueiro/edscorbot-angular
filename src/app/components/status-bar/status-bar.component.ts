@@ -116,7 +116,7 @@ export class StatusBarComponent {
     this.tooltip = this.getTooltip()
     this.buttonLabel = this.getButtonLabel()
     this.enableButtonConnect = this.getEnableButtonConnect()
-    
+    this.selectedRobot = this.mqttService.selectedRobot
   }
   
   processConnectionToogle(event:any){

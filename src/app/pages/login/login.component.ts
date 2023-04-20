@@ -77,8 +77,9 @@ export class LoginComponent implements OnInit{
     this.javaService.signup(this.form).subscribe(
         {
           next:(res) => {
-            console.log('signup response',res)
-            this.router.navigate(["/message?message=Your user has been created. Please wait untill be enabled&type=check&redirecturi=/login"])
+            //var uri = encodeURI('/message?message=Your user has been created&type=check&redirecturi=/login')
+            //this.router.navigate([uri])
+            window.location.href = window.location.origin + `/message?message=Your user has been created&type=check&redirecturi=/login`
           },
           error:(err) => {
             console.log("signup error", err)

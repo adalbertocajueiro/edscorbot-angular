@@ -14,15 +14,28 @@
     }
 }
 
-.message{
+.message {
     display: flex;
-    width: 300px;
+    align-items: center;
+    min-width: 300px;
     justify-content: center;
+    .warning_amber {
+        color: rgb(246, 95, 40)!important;
+    }
+    .error {
+        color: rgb(205, 17, 17) !important;
+    }
+    .check{
+        color: rgb(32, 165, 17) !important;
+    }
 }
+
 
 mat-icon {
     color: rgb(104, 105, 105);
     font-size: 1.2rem;
+    margin-top: 4px;
+    margin-right: 4px;
 }
 
 :host ::ng-deep .mdc-button__label {

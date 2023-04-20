@@ -52,9 +52,7 @@ export class StatusBarComponent {
               this.availableRobots = this.mqttService.availableRobots
               if(this.mqttService.owner){
                 this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
-              }
-              
-              
+              } 
           }
           if(commandObj.signal == ARM_CONNECTED){
               this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
@@ -68,10 +66,10 @@ export class StatusBarComponent {
               // this.select?.options.forEach((item: MatOption) => item.deselect());
             } 
             //this.mqttService.sendRequestMetaInfo()
-            
           }
           if(commandObj.signal == ARM_HOME_SEARCHED){
             this.searchingHome = false
+            this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
           }
           this.updateFields()
         },
@@ -152,7 +150,7 @@ export class StatusBarComponent {
         },
       })
   }
-
+  //quanto demora a conectar a cor do botao toogle se perde e o enable do play tambem
   changeToogleButtonColor(){
     if(this.mqttService.selectedRobot){
       if(this.status != undefined){

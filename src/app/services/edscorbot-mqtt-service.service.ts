@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subject, Subscription } from 'rxjs';
-import { ARM_APPLY_TRAJECTORY, ARM_CANCELED_TRAJECTORY, ARM_CANCEL_TRAJECTORY, ARM_CHECK_STATUS, ARM_CONNECT, ARM_CONNECTED, ARM_DISCONNECT, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_METAINFO, ARM_MOVE_TO_POINT, ARM_STATUS, BUSY, COMMANDS_CHANNEL, ERROR, FREE, META_INFO_CHANNEL, MOVED_CHANNEL } from '../util/constants';
+import { ARM_APPLY_TRAJECTORY, ARM_CANCELED_TRAJECTORY, ARM_CANCEL_TRAJECTORY, ARM_CHECK_STATUS, ARM_CONNECT, ARM_CONNECTED, ARM_DISCONNECT, ARM_DISCONNECTED, ARM_GET_METAINFO, ARM_HOME_SEARCHED, ARM_METAINFO, ARM_MOVE_TO_POINT, ARM_STATUS, BUSY, COMMANDS_CHANNEL, ERROR, FREE, META_INFO_CHANNEL, MOVED_CHANNEL } from '../util/constants';
 import { MetaInfoObject } from '../util/matainfo';
 import { Client, Point, Trajectory } from '../util/models';
 import { LocalStorageService } from './local-storage.service';
@@ -83,30 +83,7 @@ export class EdscorbotMqttServiceService {
     })
   }
 
-  notifyClients(packet:any){
-    if(packet.topic.toString().includes(META_INFO_CHANNEL)){
-      //if(payloadObj.signal == ARM_METAINFO){
-      this.metaInfoSubject.next(this.availableRobots)
-      //}    
-    } else if (packet.topic.toString().includes(COMMANDS_CHANNEL)){
-      
-      if(payloadObj.signal == ARM_CONNECTED 
-          || payloadObj.signal == ARM_STATUS
-          || payloadObj.signal == ARM_DISCONNECTED
-          || payloadObj.signal == ARM_CANCELED_TRAJECTORY){
-            if(packet.payload){
-              var payloadObj = JSON.parse(packet.payload.toString())
-              this.commandsSubject.next(payloadObj)
-            }
-            
-          }
-      
-    } else if (packet.topic.toString().includes(MOVED_CHANNEL)) {
-      var payloadObj = JSON.parse(packet.payload.toString())
-      this.movedSubject.next(payloadObj)
-    }
-  }
-
+  
   subscribeMetainfo(){
     const subscriptionMetainfo = {
       topic: META_INFO_CHANNEL,
@@ -196,19 +173,25 @@ export class EdscorbotMqttServiceService {
     if(commandObj.signal == ARM_STATUS
         || commandObj.signal == ARM_CONNECTED
         || commandObj.signal == ARM_CANCELED_TRAJECTORY
-        || commandObj.signal == ARM_DISCONNECTED){
+        || commandObj.signal == ARM_DISCONNECTED
+        || commandObj.signal == ARM_HOME_SEARCHED){
 
           if(commandObj.error) {
             this.serverError = true
           } else {
             if(commandObj.signal == ARM_STATUS){
               this.owner = commandObj.client
+              this.serverError = commandObj.error
             }
             if(commandObj.signal == ARM_CONNECTED){
               this.owner = commandObj.client
               if(this.owner?.id == this.loggedUser?.id){
                 this.subscribeMoved(this.selectedRobot!.name)
               }
+            }
+            
+            if(commandObj.signal == ARM_HOME_SEARCHED){
+              this.serverError = commandObj.error
             }
             if(commandObj.signal == ARM_DISCONNECTED){
               this.owner = undefined
@@ -257,7 +240,6 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    console.log('sending connect message', content)
     this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
   }
 

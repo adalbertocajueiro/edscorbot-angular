@@ -6,8 +6,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { UsersComponent } from './pages/users/users.component';
 import { AuthGuard } from './util/auth.guard';
-import { LogoutComponent } from './pages/logout/logout.component';
 import { ToolsComponent } from './pages/tools/tools.component';
+import { MessageComponent } from './pages/message/message.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'movements', pathMatch: 'full'},
@@ -16,7 +16,7 @@ const routes: Routes = [
   {path: 'settings', component: SettingsComponent, canActivate:[AuthGuard]},
   {path: 'tools', component: ToolsComponent, canActivate:[AuthGuard]},
   {path: 'login', component: LoginComponent},
-  {path: 'logout', component: LogoutComponent},
+  { path: 'message', component:  MessageComponent },
   {path: '**', component: NotFoundComponent}
 ];
 

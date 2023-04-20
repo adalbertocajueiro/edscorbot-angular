@@ -40,9 +40,9 @@ import { LoginDialogComponent } from './pages/login/login-dialog/login-dialog.co
 import { AuthInterceptor } from './util/auth.interceptor';
 import { ToggleSwitchComponent } from './components/toggle-switch/toggle-switch.component';
 import { ErrorInterceptor } from './util/error.interceptor';
-import { LogoutComponent } from './pages/logout/logout.component';
-import { LogoutDialogComponent } from './pages/logout/logout-dialog/logout-dialog.component';
 import { ToolsComponent } from './pages/tools/tools.component';
+import { MessageComponent } from './pages/message/message.component';
+import { MessageDialogComponent } from './pages/message/message-dialog/message-dialog.component';
 
 
 @NgModule({
@@ -68,9 +68,9 @@ import { ToolsComponent } from './pages/tools/tools.component';
     LoginComponent,
     LoginDialogComponent,
     ToggleSwitchComponent,
-    LogoutComponent,
-    LogoutDialogComponent,
-    ToolsComponent
+    ToolsComponent,
+    MessageComponent,
+    MessageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -98,6 +98,7 @@ import { ToolsComponent } from './pages/tools/tools.component';
        useClass: AuthInterceptor,
        multi: true
     },
+    
     {
        provide: HTTP_INTERCEPTORS,
        useClass: ErrorInterceptor,

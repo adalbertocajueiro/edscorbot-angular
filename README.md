@@ -1,5 +1,7 @@
 # Getting Started
-This repository contains the front-end (microservice) of the EDScorbot project. The service is implemented as a Spring Boot/Java microservice. 
+This repository contains the front-end (microservice) of the EDScorbot project. The service is implemented as an Angular microservice and works at the top level of the ecosystem, interacting with a Python service (for converting NYP files to JSON/TSV), with a Java service (to manage authentication, users and trajectories) and with the C/C++ service (the controller) via Mosquitto broker. 
+
+To know more about the interaction with these microservices, it is important to have a view about the contracts/specifications (synchronous and asynchronous), available at:
 
 ### Tools Information
 This project has been developed using the following tools:

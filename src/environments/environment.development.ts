@@ -1,10 +1,11 @@
 export const environment = {
     broker: {
-        hostname: 'localhost', //host running the broker
+        //hostname: '192.168.1.104', //host running the broker
+        hostname: 'localhost',
         port: 8080, //port of the broker listening to websockets
         clean: true, // Retain session
-        connectTimeout: 4000, // Timeout period
-        reconnectPeriod: 4000 // Reconnect period
+        connectTimeout: 400, // Timeout period
+        reconnectPeriod: 390 // Reconnect period
     },
 
     pythonApi: {
@@ -17,5 +18,6 @@ export const environment = {
         //If you are using proxy config (the application is started with npm start)
         //Then do not adjust this value
         JAVA_API_URL: ''
+        //JAVA_API_URL: 'http://localhost:8081'
     }
 };

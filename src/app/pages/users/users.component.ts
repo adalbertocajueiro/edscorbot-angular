@@ -101,7 +101,6 @@ export class UsersComponent implements OnInit{
     this.javaService.updateUser(updUser).subscribe(
       {
         next: (res)=> {
-          console.log('usuario atualizado', res)
           this.loadUsers()
         },
         error: (err) => {

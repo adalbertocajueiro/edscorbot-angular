@@ -11,16 +11,7 @@ export class AuthGuard implements CanActivate {
   currentRoute?:string
 
   constructor(private localStorageService:LocalStorageService, private router:Router ){
-    /*
-    this.router.events.subscribe(
-      (event: any) => {
-        if (event instanceof NavigationEnd) {
-          console.log('this.router.url', this.router.url);
-          this.currentRoute = this.router.url
-        }
-      }
-    );
-    */
+
   }
 
   canActivate(

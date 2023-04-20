@@ -66,10 +66,10 @@ export class LoginComponent implements OnInit{
             this.router.navigate(["/","error"])
           }
         },
-        //error:(err) => {
-        //  console.log("login error", err)
-        //  this.router.navigate(["/","error"])
-        //}
+        error:(err) => {
+          console.log("login error", err)
+          this.router.navigate(["/","error"])
+        }
       }
     )
   }
@@ -77,7 +77,8 @@ export class LoginComponent implements OnInit{
     this.javaService.signup(this.form).subscribe(
         {
           next:(res) => {
-            console.log('signup success',res)
+            console.log('signup response',res)
+            this.router.navigate(["/message?message=Your user has been created. Please wait untill be enabled&type=check&redirecturi=/login"])
           },
           error:(err) => {
             console.log("signup error", err)
@@ -95,7 +96,9 @@ export class LoginComponent implements OnInit{
       this.blur = false
       
       if(result == undefined){
-        window.location.href = window.location.origin + '/logout'
+        // window.location.href = window.location.origin + '/logout'
+        window.location.href = window.location.origin + "/message?message=You are not logged in&type=warning_amber&redirecturi=/login"
+
       } else {
         if(this.form.valid){ //all fields are filled and this is a signup
           this.signup()

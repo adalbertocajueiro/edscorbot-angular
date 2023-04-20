@@ -45,6 +45,9 @@
 <div mat-dialog-actions>
     <button mat-button (click)="resetForm()">
         <mat-icon fontSet="material-icons-outlined">cancel</mat-icon>Reset</button>
-    <button mat-button [mat-dialog-close]="sendCredentials()" cdkFocusInitial>
+    <button *ngIf="!signup" mat-button [mat-dialog-close]="sendCredentials()" cdkFocusInitial>
         <mat-icon fontSet="material-icons-outlined">login</mat-icon>Login</button>
+    <button *ngIf="signup" mat-button [mat-dialog-close]="sendCredentials()" cdkFocusInitial>
+        <mat-icon fontSet="material-icons-outlined">person_add</mat-icon>Register</button>
+        
 </div>

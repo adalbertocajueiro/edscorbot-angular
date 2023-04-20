@@ -2,10 +2,10 @@
     <label>Login</label>
 </div>
 <div mat-dialog-content>
-   <div class="message">
-        <label *ngIf="autherror">Invalid user/password!</label>
-        <label *ngIf="!autherror">Your are not logged in!</label>
-   </div>
+    <div class="message" >
+        <mat-icon [ngClass]="this.type" fontSet="material-icons-outlined">{{this.type}}</mat-icon>
+        <label>{{this.message}}</label>
+    </div>
 </div>
 
 <div mat-dialog-actions>
@@ -14,3 +14,4 @@
     <!-- button mat-button [mat-dialog-close]="false" cdkFocusInitial>
         <mat-icon fontSet="material-icons-outlined">close</mat-icon>Close</button -->
 </div>
+

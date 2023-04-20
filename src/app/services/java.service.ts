@@ -1,14 +1,15 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { environment } from 'src/environments/environment.development';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JavaService {
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private httpClient: HttpClient, private localStorageService:LocalStorageService) { }
 
   authenticate(username:string,password:string){
 

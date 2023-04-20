@@ -30,12 +30,12 @@ export class ErrorInterceptor implements HttpInterceptor {
           console.log("window.location.port",window.location.port)
           console.log("window.location.origin",window.location.origin)
           */
-          var url = window.location.href
-          if(url.includes('/login')){
-            window.location.href = window.location.origin + '/logout?msg=autherror' //authentication error during login
-          } else {
-            window.location.href = window.location.origin + '/logout'
-          }
+
+          window.location.href = window.location.origin + `/message?message=${response.error}&type=warning_amber&redirecturi=/login`
+
+        } else if (response.status === HttpStatusCode.PreconditionFailed){
+
+          window.location.href = window.location.origin + `/message?message=${response.error}&type=error&redirecturi=/login`
         }
         return throwError(() => response);
       })

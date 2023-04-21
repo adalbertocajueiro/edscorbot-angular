@@ -19,7 +19,6 @@ export class SingleComponent implements OnInit{
   
   form:FormGroup = new FormGroup({})
   numberOfJoints:number = 0
-  //selectedTrajectory:any
   joints:string[] = []
   selectedFile?: File
   appliedPoints:any[] = []

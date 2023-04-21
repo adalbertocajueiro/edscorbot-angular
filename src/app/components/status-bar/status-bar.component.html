@@ -13,9 +13,8 @@
         </mat-select>
     </mat-form-field>
     <app-toogle-button
-        [className]="className"
         [connected]="connected"
-        [enableClass]="enableClassName"
+        [enabled]="this.selectedRobot != undefined"
         [searchingHome]="searchingHome"
         [tooltip]="tooltip"
         (onToggleChanged)="processConnectionToogle($event)"></app-toogle-button>
@@ -24,5 +23,5 @@
         fontSet="material-icons-outlined">person</mat-icon>
     <mat-icon class="logout" matTooltip="Logout" matTooltipPosition="above"
         (click)="logout()"
-        fontSet="material-icons-outlined">logout</mat-icon>
+        fontSet="material-icons-outlined" >logout</mat-icon>
 </div>

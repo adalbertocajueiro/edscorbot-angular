@@ -13,10 +13,7 @@ export class ToogleButtonComponent{
   tooltip:string = ''
 
   @Input()
-  className:string = ''
-
-  @Input()
-  enableClass:string = ''
+  enabled:boolean = false
 
   @Input()
   connected:boolean = false

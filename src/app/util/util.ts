@@ -48,7 +48,7 @@ function robotPointTo3D3(coordinates:number[]){
     return { x: 100, y: 50, z: 30}
 }
 
-
+//ANGLES ARE IN RADIANS ??? by the values it seems to be in degrees
 function robotPointTo3D(coordinates:number[]){
     const a1 = 5.0
     const a2 = 30

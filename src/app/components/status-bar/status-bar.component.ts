@@ -21,13 +21,9 @@ export class StatusBarComponent {
 
   loggedUser:any
   status?:number
-  className:string = 'disabled'
-  enableClassName = 'unavailable'
   searchingHome:boolean = false
-  iconName:string = ''
+  
   tooltip:string = ''
-  buttonLabel:string = 'Robot not selected'
-  enableButtonConnect:boolean = false
 
   @ViewChild("selectRobot") select?:  MatSelect
   
@@ -61,10 +57,13 @@ export class StatusBarComponent {
           }
           if(commandObj.signal == ARM_DISCONNECTED){
             this.selectedRobot = this.mqttService.selectedRobot
+            
             if(this.mqttService.loggedUser?.id == commandObj.client.id){
               this.connected = this.mqttService.loggedUser?.id == this.mqttService.owner?.id
               // this.select?.options.forEach((item: MatOption) => item.deselect());
-            } 
+            } else {
+              this.connected = false
+            }
             //this.mqttService.sendRequestMetaInfo()
           }
           if(commandObj.signal == ARM_HOME_SEARCHED){
@@ -106,15 +105,14 @@ export class StatusBarComponent {
   }
 
   updateFields(){
+    this.selectedRobot = this.mqttService.selectedRobot
     this.status = this.getStatus()
     this.changeToogleButtonColor()
-    this.enableClassName = this.getEnableClass()
-    this.iconName = this.getIconName()
-    this.className = this.getClassName()
+    //this.enableClassName = this.getEnableClass()
+    //this.className = this.getClassName()
     this.tooltip = this.getTooltip()
-    this.buttonLabel = this.getButtonLabel()
-    this.enableButtonConnect = this.getEnableButtonConnect()
-    this.selectedRobot = this.mqttService.selectedRobot
+    //this.buttonLabel = this.getButtonLabel()
+    
   }
   
   processConnectionToogle(event:any){
@@ -127,14 +125,6 @@ export class StatusBarComponent {
         this.mqttService.sendConnectMessage()
         this.searchingHome = true
       }
-    }
-  }
-
-  processConnection(){
-    if (this.connected){
-      this.mqttService.sendDisconnectMessage()
-    } else {
-      this.mqttService.sendConnectMessage()
     }
   }
 
@@ -152,7 +142,7 @@ export class StatusBarComponent {
   }
   //quanto demora a conectar a cor do botao toogle se perde e o enable do play tambem
   changeToogleButtonColor(){
-    if(this.mqttService.selectedRobot){
+    if(this.selectedRobot){
       if(this.status != undefined){
         switch(this.status){
           case FREE:
@@ -185,29 +175,6 @@ export class StatusBarComponent {
       return BUSY
     }
     return undefined
-  }
-  getIconName(){
-    
-    if(this.status != undefined){
-      switch(this.status){
-        case FREE:
-          return 'link'
-        case BUSY:
-          //if logged user is equals to the owner then disconnect
-          if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
-            return 'link_off'
-          } else {
-            return 'sentiment_dissatisfied'
-          }
-          
-        case ERROR:
-          return 'error'
-        default:
-          return ''
-      }
-    } else {
-      return ''
-    }
   }
 
   getEnableClass(){
@@ -295,30 +262,19 @@ export class StatusBarComponent {
     }
   }
 
-  getEnableButtonConnect(){
-    if(this.status != undefined){
-      switch(this.status){
-        case FREE:
-          return true
-        case BUSY:
-          if(this.mqttService.owner?.id == this.mqttService.loggedUser?.id){
-            return true
-          } else {
-            return false
-          } 
-        case ERROR:
-          return false
-        default:
-          return false
-      }
-    } else {
-      return false
-    }
-  }
+  
 
   logout(){
-    this.router.navigate(["/","login"])
-    this.localStorageService.clearLoggedUser()
     
+    if(this.connected){
+      var event = {
+        target: {
+          checked: false
+        }
+      }
+      this.processConnectionToogle(event)
+    }
+    this.localStorageService.clearLoggedUser()
+    this.router.navigate(["/","login"])
   }
 }

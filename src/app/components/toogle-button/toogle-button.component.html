@@ -1,4 +1,4 @@
-<label class="toggle" matTooltip="{{tooltip}}" matTooltipPosition="above" [ngClass]="[enableClass,className]">
+<label class="toggle" matTooltip="{{tooltip}}" matTooltipPosition="above" [ngClass]="!enabled?'unavailable':''">
     
     <input #inputToogle class="toggle-checkbox" 
             type="checkbox" 

@@ -74,7 +74,6 @@ export class UsersComponent implements OnInit{
     this.javaService.updateUser(newUser).subscribe(
       {
         next: (res)=> {
-          console.log('usuario atualizado', res)
           this.loadUsers()
         },
         error: (err) => {
@@ -86,9 +85,6 @@ export class UsersComponent implements OnInit{
   }
 
   changeEnabled(event:any,user:any){
-    //console.log('enabled changed',user)
-    //user.enabled = event.target.checked
-    //user.password = ""
     var updUser = {
       username:user.username,
       email:user.email,

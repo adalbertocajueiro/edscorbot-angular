@@ -24,6 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
         headers: request.headers
                   .set('Authorization', `Bearer ${loggedUser.token}`)
                   .set('username',loggedUser.username!)
+                  .set('usertoken', loggedUser.token!)
       });
       
     }

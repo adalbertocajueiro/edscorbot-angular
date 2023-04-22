@@ -17,7 +17,7 @@ export const environment = {
         //The host root route where the edscorbot-java project is running
         //If you are using proxy config (the application is started with npm start)
         //Then do not adjust this value
-        JAVA_API_URL: ''
-        //JAVA_API_URL: 'http://localhost:8081'
+        //JAVA_API_URL: ''
+        JAVA_API_URL: 'http://localhost:8081'
     }
 };

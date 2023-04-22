@@ -26,7 +26,6 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { StatusBarComponent } from './components/status-bar/status-bar.component';
 import { TrajectoryTableComponent } from './components/trajectory-table/trajectory-table.component';
 import { TableLineComponent } from './components/trajectory-table/table-line/table-line.component';
-import { MqttModule } from 'ngx-mqtt';
 import { MovementsComponent } from './pages/movements/movements.component';
 import { SingleComponent } from './pages/movements/single/single.component';
 import { DialogComponent } from './components/dialog/dialog.component';
@@ -43,7 +42,6 @@ import { ErrorInterceptor } from './util/error.interceptor';
 import { ToolsComponent } from './pages/tools/tools.component';
 import { MessageComponent } from './pages/message/message.component';
 import { MessageDialogComponent } from './pages/message/message-dialog/message-dialog.component';
-
 
 @NgModule({
   declarations: [

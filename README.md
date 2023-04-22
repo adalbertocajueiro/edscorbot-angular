@@ -35,8 +35,7 @@ Each microservice (except the Angular microservice) follows an API specification
 * After cloning the project, enter the folder `edscorbot-angular` and type `npm install` to install all dependencies.
 * Open the project folder in Visual Studio Code (vscode). It might be possible vscode offers other extensions to be installed. Just accept it. You can also apply these steps using an integrated terminal inside vscode.
 * Open the file `src/environments/environment.development.ts` and check/adjust the values of the broker, the Python and the Java APIs.
-* The server can be started in two ways: using proxy configuration or not. This influenciates the content of the environment variable `javaAPI.JAVA_API_URL`. For the moment, then Angular application connects correctly with the Java back-end only when usin proxy configuration. This is an Angular support to avoid CORS problem when connecting microservices.
-* Open the file `proxy.conf.json`. The key `target` points to the root route where the edscorbot-java project is running. Adjust it if necessary.
+* Adjust these informations conveniently using the fields inside the variables `broker`, `pythonAPI` and `javaAPI`. 
 
 
 ### Running
@@ -58,9 +57,9 @@ allow_anonymous true
 
 2. The second service to be launched is `C/C++`. Follows the instructions of that project achieve that.
 
-3. Finally, laung the Angular service as follows:
+3. Finally, launch the Angular service as follows:
 
-    * Inside the folder `edscorbot-angular` run the command `npm start`. It will launch the microservice using the proxy configurations to avoid CORS problem with the Java microservice. If the service starts correctly, you should see the message such as:
+    * Inside the folder `edscorbot-angular` run the command `ng serve`. It will launch the microservice. If the service starts correctly, you should see the message such as:
 
     ```
      ** Angular Live Development Server is listening on localhost:PORT ...

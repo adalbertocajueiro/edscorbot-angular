@@ -8,9 +8,9 @@ import { LocalStorageService } from '../services/local-storage.service';
 })
 export class AuthGuard implements CanActivate {
 
-  currentRoute?:string
+  currentRoute?: string
 
-  constructor(private localStorageService:LocalStorageService, private router:Router ){
+  constructor(private localStorageService: LocalStorageService, private router: Router) {
 
   }
 
@@ -18,18 +18,18 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-      var loggedUser = this.localStorageService.getLoggedUser()
-      //console.log('saved user', loggedUser)
-      //return (loggedUser != null && loggedUser != undefined)
-      //console.log("current route", this.currentRoute)
-      if(loggedUser == undefined ){
-        return this.localStorageService.isLoggedIn$().pipe(
-          tap( () => this.router.navigate(["/","login"]))
-        )
-      } else{
-        return true
-      }
-      
+    var loggedUser = this.localStorageService.getLoggedUser()
+    //console.log('saved user', loggedUser)
+    //return (loggedUser != null && loggedUser != undefined)
+    //console.log("current route", this.currentRoute)
+    if (loggedUser == undefined) {
+      return this.localStorageService.isLoggedIn$().pipe(
+        tap(() => this.router.navigate(["/", "login"]))
+      )
+    } else {
+      return true
+    }
+
   }
-  
+
 }

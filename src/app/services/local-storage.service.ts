@@ -7,29 +7,29 @@ import { Observable, of } from 'rxjs';
 })
 export class LocalStorageService {
 
-  USERNAME_KEY:string = 'username'
-  USERFULLNAME_KEY:string = 'userfullname'
-  USERTOKEN_KEY:string = 'usertoken'
-  USERROLE_KEY:string = 'userrole'
-  USEREMAIL_KEY:string = 'useremail'
+  USERNAME_KEY: string = 'username'
+  USERFULLNAME_KEY: string = 'userfullname'
+  USERTOKEN_KEY: string = 'usertoken'
+  USERROLE_KEY: string = 'userrole'
+  USEREMAIL_KEY: string = 'useremail'
 
-  loggedUser:any
+  loggedUser: any
 
-  userChanged:EventEmitter<any> = new EventEmitter<any>()
+  userChanged: EventEmitter<any> = new EventEmitter<any>()
 
-  constructor(private router:Router) { }
+  constructor(private router: Router) { }
 
-  public saveLoggedUser(user:any){
-    localStorage.setItem(this.USERNAME_KEY,user.username)
-    localStorage.setItem(this.USERFULLNAME_KEY,user.name)
-    localStorage.setItem(this.USERTOKEN_KEY,user.token)
-    localStorage.setItem(this.USERROLE_KEY,user.role)
-    localStorage.setItem(this.USEREMAIL_KEY,user.email)
+  public saveLoggedUser(user: any) {
+    localStorage.setItem(this.USERNAME_KEY, user.username)
+    localStorage.setItem(this.USERFULLNAME_KEY, user.name)
+    localStorage.setItem(this.USERTOKEN_KEY, user.token)
+    localStorage.setItem(this.USERROLE_KEY, user.role)
+    localStorage.setItem(this.USEREMAIL_KEY, user.email)
     this.loggedUser = this.getLoggedUser()
     this.userChanged.emit(this.loggedUser)
   }
 
-  public clearLoggedUser(){
+  public clearLoggedUser() {
     localStorage.removeItem(this.USERNAME_KEY)
     localStorage.removeItem(this.USERFULLNAME_KEY)
     localStorage.removeItem(this.USERTOKEN_KEY)
@@ -37,12 +37,12 @@ export class LocalStorageService {
     localStorage.removeItem(this.USEREMAIL_KEY)
     this.loggedUser = undefined
     this.userChanged.emit(this.loggedUser)
-    
+
   }
 
-  public getLoggedUser(){
+  public getLoggedUser() {
     var user = undefined
-    if(localStorage.getItem(this.USERNAME_KEY)){
+    if (localStorage.getItem(this.USERNAME_KEY)) {
       user = {
         username: localStorage.getItem(this.USERNAME_KEY),
         name: localStorage.getItem(this.USERFULLNAME_KEY),
@@ -54,13 +54,13 @@ export class LocalStorageService {
     return user
   }
 
-  public isLoggedIn$(): Observable<boolean>{
+  public isLoggedIn$(): Observable<boolean> {
     return of(false)
   }
 
-  logout(){
+  logout() {
     this.clearLoggedUser()
-    this.router.navigate(["/","users"])
+    this.router.navigate(["/", "users"])
   }
 
   public saveData(key: string, value: string) {

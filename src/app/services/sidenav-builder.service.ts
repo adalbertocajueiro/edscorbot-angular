@@ -8,29 +8,24 @@ export class SidenavBuilderService {
 
   constructor() { }
 
-  buildSidenav():SidenavItem[]{
+  buildSidenav(): SidenavItem[] {
     var sidenavItems: SidenavItem[] = []
 
     sidenavItems.push(
-      {enabled:true,path:'settings',icon:'settings',selected:false,tooltip:'Settings'}
+      { enabled: true, path: 'settings', icon: 'settings', selected: false, tooltip: 'Settings' }
     )
 
     sidenavItems.push(
-      {enabled:true,path:'users',icon:'people',selected:true, tooltip:'Users'}
-    )
-    
-    sidenavItems.push(
-      {enabled:true,path:'movements',icon:'timeline',selected:false,tooltip:'Movements'}
+      { enabled: true, path: 'users', icon: 'people', selected: true, tooltip: 'Users' }
     )
 
     sidenavItems.push(
-      {enabled:true,path:'tools',icon:'handyman',selected:false,tooltip:'Tools'}
+      { enabled: true, path: 'movements', icon: 'timeline', selected: false, tooltip: 'Movements' }
     )
-    
-    //sidenavItems.push(
-    //  {enabled:true,path:'login',icon:'login',selected:false,tooltip:'Login'}
-    //)
 
+    sidenavItems.push(
+      { enabled: true, path: 'tools', icon: 'handyman', selected: false, tooltip: 'Tools' }
+    )
 
     return sidenavItems
   }

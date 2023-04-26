@@ -32,25 +32,25 @@ def direcKin(q1,q2,q3,q4):
  * 
  */
 
-export type CinematicFunction = (coordinates: number[]) => {x:number,y:number,z:number}
+export type CinematicFunction = (coordinates: number[]) => { x: number, y: number, z: number }
 
-export const cinematicFunctions:Map<string,CinematicFunction> = new Map<string,CinematicFunction>(
+export const cinematicFunctions: Map<string, CinematicFunction> = new Map<string, CinematicFunction>(
     [
-        ['EDScorbot',robotPointTo3D],
+        ['EDScorbot', robotPointTo3D],
         ['EDScorbotSim', robotPointTo3D]
     ]
 )
 
-function robotPointTo3D2(coordinates:number[]){
-    return { x: 10, y: 10, z: 10}
+function robotPointTo3D2(coordinates: number[]) {
+    return { x: 10, y: 10, z: 10 }
 }
 
-function robotPointTo3D3(coordinates:number[]){
-    return { x: 100, y: 50, z: 30}
+function robotPointTo3D3(coordinates: number[]) {
+    return { x: 100, y: 50, z: 30 }
 }
 
 //ANGLES ARE IN RADIANS ??? by the values it seems to be in degrees
-function robotPointTo3D(coordinates:number[]){
+function robotPointTo3D(coordinates: number[]) {
     const a1 = 5.0
     const a2 = 30
     const a3 = 35
@@ -64,33 +64,33 @@ function robotPointTo3D(coordinates:number[]){
     var q3 = coordinates[2]
     var q4 = coordinates[3]
 
-    var x = 
-        a1 * Math.cos(q1) 
-        + a2 * Math.cos(q1) * Math.cos(q2) 
-        - a3 * Math.sin(q2) * Math.sin(q3) * Math.cos(q1) 
-        + a3 * Math.cos(q1) * Math.cos(q2) * Math.cos(q3) 
-        + a4 * (- Math.sin(q2) * Math.sin(q3) * Math.cos(q1) + Math.cos(q1) * Math.cos(q2) * Math.cos(q3)) * Math.cos(q4) 
-        + a4 * (- Math.sin(q2) * Math.cos(q1) * Math.cos(q3) - Math.sin(q3) * Math.cos(q1) * Math.cos(q2)) * Math.sin(q4) 
+    var x =
+        a1 * Math.cos(q1)
+        + a2 * Math.cos(q1) * Math.cos(q2)
+        - a3 * Math.sin(q2) * Math.sin(q3) * Math.cos(q1)
+        + a3 * Math.cos(q1) * Math.cos(q2) * Math.cos(q3)
+        + a4 * (- Math.sin(q2) * Math.sin(q3) * Math.cos(q1) + Math.cos(q1) * Math.cos(q2) * Math.cos(q3)) * Math.cos(q4)
+        + a4 * (- Math.sin(q2) * Math.cos(q1) * Math.cos(q3) - Math.sin(q3) * Math.cos(q1) * Math.cos(q2)) * Math.sin(q4)
         - d2 * Math.sin(q1) - d3 * Math.sin(q1)
 
-    var y = 
-        a1 * Math.sin(q1) 
-        + a2 * Math.sin(q1) * Math.cos(q2) 
-        - a3 * Math.sin(q1) * Math.sin(q2) * Math.sin(q3) 
-        + a3 * Math.sin(q1) * Math.cos(q2) * Math.cos(q3) 
-        + a4 * (-Math.sin(q1) * Math.sin(q2) * Math.sin(q3) + Math.sin(q1) * Math.cos(q2) * Math.cos(q3)) * Math.cos(q4) 
-        + a4 * (-Math.sin(q1) * Math.sin(q2) * Math.cos(q3) - Math.sin(q1) * Math.sin(q3) * Math.cos(q2)) * Math.sin(q4) 
-        + d2 * Math.cos(q1) 
+    var y =
+        a1 * Math.sin(q1)
+        + a2 * Math.sin(q1) * Math.cos(q2)
+        - a3 * Math.sin(q1) * Math.sin(q2) * Math.sin(q3)
+        + a3 * Math.sin(q1) * Math.cos(q2) * Math.cos(q3)
+        + a4 * (-Math.sin(q1) * Math.sin(q2) * Math.sin(q3) + Math.sin(q1) * Math.cos(q2) * Math.cos(q3)) * Math.cos(q4)
+        + a4 * (-Math.sin(q1) * Math.sin(q2) * Math.cos(q3) - Math.sin(q1) * Math.sin(q3) * Math.cos(q2)) * Math.sin(q4)
+        + d2 * Math.cos(q1)
         + d3 * Math.cos(q1)
 
-    var z = 
-        - a2 * Math.sin(q2) 
-        - a3 * Math.sin(q2) * Math.cos(q3) 
-        - a3 * Math.sin(q3) * Math.cos(q2) 
-        + a4 * (Math.sin(q2) * Math.sin(q3) - Math.cos(q2) * Math.cos(q3)) * Math.sin(q4) 
-        + a4 * (-Math.sin(q2) * Math.cos(q3) - Math.sin(q3) * Math.cos(q2)) * Math.cos(q4) 
+    var z =
+        - a2 * Math.sin(q2)
+        - a3 * Math.sin(q2) * Math.cos(q3)
+        - a3 * Math.sin(q3) * Math.cos(q2)
+        + a4 * (Math.sin(q2) * Math.sin(q3) - Math.cos(q2) * Math.cos(q3)) * Math.sin(q4)
+        + a4 * (-Math.sin(q2) * Math.cos(q3) - Math.sin(q3) * Math.cos(q2)) * Math.cos(q4)
         + d1
 
 
-    return {x:x,y:y,z:z}
+    return { x: x, y: y, z: z }
 }

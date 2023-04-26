@@ -1,9 +1,9 @@
 
 
 //arm status constants
-export const FREE:number = 0;
-export const BUSY:number = -1;
-export const ERROR:number = -2;
+export const FREE: number = 0;
+export const BUSY: number = -1;
+export const ERROR: number = -2;
 
 // metainfo constants
 export const ARM_GET_METAINFO = 1;

@@ -1,10 +1,10 @@
 export type MetaInfoObject = {
-    signal:number
-    name:string
-    joints:JointInfo[];
+    signal: number
+    name: string
+    joints: JointInfo[];
 }
 
-export type JointInfo = { 
-    minimum:number
-    maximum:number
+export type JointInfo = {
+    minimum: number
+    maximum: number
 }

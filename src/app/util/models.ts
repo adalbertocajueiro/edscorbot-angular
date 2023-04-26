@@ -1,11 +1,11 @@
 export type Client = {
-    id:string
+    id: string
 }
 
 export type Point = {
-    coordinates:number[]
+    coordinates: number[]
 }
 
 export type Trajectory = {
-    points:Point[]
+    points: Point[]
 }

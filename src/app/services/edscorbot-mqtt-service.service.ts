@@ -12,48 +12,48 @@ import { environment } from 'src/environments/environment.development';
 })
 export class EdscorbotMqttServiceService {
 
-  defaultPointTime:number = 500 //milisseconds
-  javaApiUrl:string = "http://localhost:8080"
-  brokerUrl:string = "tpc://localhost:1833"
-  serverError:boolean = false
-  availableRobots:MetaInfoObject[] = []
-  selectedRobot?:MetaInfoObject
-  loggedUser?:Client
+  defaultPointTime: number = 500 //milisseconds
+  javaApiUrl: string = "http://localhost:8080"
+  brokerUrl: string = "tpc://localhost:1833"
+  serverError: boolean = false
+  availableRobots: MetaInfoObject[] = []
+  selectedRobot?: MetaInfoObject
+  loggedUser?: Client
 
-  owner?:Client
+  owner?: Client
 
   private MQTT_SERVICE_OPTIONS = {
     hostname: environment.broker.hostname,
     port: environment.broker.port,
-    clean: environment.broker.clean, 
-    connectTimeout: environment.broker.connectTimeout, 
-    reconnectPeriod: environment.broker.reconnectPeriod, 
+    clean: environment.broker.clean,
+    connectTimeout: environment.broker.connectTimeout,
+    reconnectPeriod: environment.broker.reconnectPeriod,
     clientId: "Angular client" + new Date().toLocaleString()
   }
 
-  client:any
+  client: any
   private subscriptionMetainfo: Subscription | undefined;
   private subscriptionCommands: Subscription | undefined;
   private subscriptionMoved: Subscription | undefined;
 
-  metaInfoSubject:Subject<any> = new Subject<any>()
-  commandsSubject:Subject<any> = new Subject<any>()
-  movedSubject:Subject<any> = new Subject<any>()
+  metaInfoSubject: Subject<any> = new Subject<any>()
+  commandsSubject: Subject<any> = new Subject<any>()
+  movedSubject: Subject<any> = new Subject<any>()
 
-  selectedRobotSubject:Subject<any> = new Subject<any>()
+  selectedRobotSubject: Subject<any> = new Subject<any>()
 
   _mqttService: MqttService
 
-  constructor(private localStorageService:LocalStorageService){
+  constructor(private localStorageService: LocalStorageService) {
     var localStorageUser = localStorageService.getLoggedUser()
-    if(localStorageUser){
+    if (localStorageUser) {
       this.loggedUser = {
         id: localStorageUser.username!
       }
     }
     this.localStorageService.userChanged.subscribe({
-      next: (res:any) => {
-        if(res == undefined){
+      next: (res: any) => {
+        if (res == undefined) {
           this.loggedUser = undefined
         } else {
           this.loggedUser = {
@@ -61,7 +61,7 @@ export class EdscorbotMqttServiceService {
           }
         }
       },
-      error: (err:any) => {console.log('error', err)}
+      error: (err: any) => { console.log('error', err) }
     })
 
     var mqttClientId = new Date().toLocaleString()
@@ -88,8 +88,8 @@ export class EdscorbotMqttServiceService {
     })
   }
 
-  
-  subscribeMetainfo(){
+
+  subscribeMetainfo() {
     const subscriptionMetainfo = {
       topic: META_INFO_CHANNEL,
       qos: 0
@@ -98,19 +98,19 @@ export class EdscorbotMqttServiceService {
     this.subscriptionMetainfo = this.client?.observe(subscriptionMetainfo.topic, subscriptionMetainfo.qos)
       .subscribe((message: IMqttMessage) => {
         var metainfo = JSON.parse(message.payload.toString())
-        if(metainfo.signal == ARM_METAINFO){
+        if (metainfo.signal == ARM_METAINFO) {
           this.addRobot(metainfo)
           this.metaInfoSubject.next(this.availableRobots)
         }
       })
   }
 
-  subscribeCommands(robotName:string){
-   const subscriptionCommands = {
-        topic: robotName + "/" + COMMANDS_CHANNEL,
-        qos: 0
-      }
-      this.subscriptionCommands = this.client?.observe(subscriptionCommands.topic, subscriptionCommands.qos)
+  subscribeCommands(robotName: string) {
+    const subscriptionCommands = {
+      topic: robotName + "/" + COMMANDS_CHANNEL,
+      qos: 0
+    }
+    this.subscriptionCommands = this.client?.observe(subscriptionCommands.topic, subscriptionCommands.qos)
       .subscribe((message: IMqttMessage) => {
         var payload = JSON.parse(message.payload.toString())
         this.processCommand(payload);
@@ -118,12 +118,12 @@ export class EdscorbotMqttServiceService {
       })
   }
 
-  subscribeMoved(robotName:string){
+  subscribeMoved(robotName: string) {
     const subscriptionMoved = {
-        topic: robotName + "/" + MOVED_CHANNEL,
-        qos: 0
+      topic: robotName + "/" + MOVED_CHANNEL,
+      qos: 0
     }
-    
+
     this.subscriptionMoved = this.client?.observe(subscriptionMoved.topic, subscriptionMoved.qos)
       .subscribe((message: IMqttMessage) => {
         var payload = JSON.parse(message.payload.toString())
@@ -131,24 +131,24 @@ export class EdscorbotMqttServiceService {
       })
   }
 
-  unsubscribeMetainfo(){
+  unsubscribeMetainfo() {
     this.subscriptionMetainfo?.unsubscribe()
   }
-  unsubscribeCommands(){
+  unsubscribeCommands() {
     this.subscriptionCommands?.unsubscribe()
   }
-  unsubscribeMoved(){
+  unsubscribeMoved() {
     this.subscriptionMoved?.unsubscribe()
   }
 
-  addRobot(metainfo:MetaInfoObject){
-    if (this.availableRobots.filter(mi => mi.name === metainfo.name).length == 0){
+  addRobot(metainfo: MetaInfoObject) {
+    if (this.availableRobots.filter(mi => mi.name === metainfo.name).length == 0) {
       this.availableRobots.push(metainfo)
     }
   }
-  selectRobot(robot:MetaInfoObject | undefined){
-    if(!robot){
-      if(this.selectedRobot){
+  selectRobot(robot: MetaInfoObject | undefined) {
+    if (!robot) {
+      if (this.selectedRobot) {
         this.unsubscribeCommands()
         this.unsubscribeMoved()
       }
@@ -157,8 +157,8 @@ export class EdscorbotMqttServiceService {
     } else {
       this.selectedRobot = robot
       //unsubscribe on all other robots
-      this.availableRobots.forEach( r => {
-        if (r.name != this.selectedRobot?.name){
+      this.availableRobots.forEach(r => {
+        if (r.name != this.selectedRobot?.name) {
           this.unsubscribeCommands()
           this.unsubscribeMoved()
         }
@@ -169,45 +169,45 @@ export class EdscorbotMqttServiceService {
     this.selectedRobotSubject.next(this.selectRobot)
   }
 
-  selectRobotByName(name:string){
-    var found = this.availableRobots.find( r => r.name === name)
+  selectRobotByName(name: string) {
+    var found = this.availableRobots.find(r => r.name === name)
     this.selectRobot(found)
   }
 
-  processCommand(commandObj:any){
-    if(commandObj.signal == ARM_STATUS
-        || commandObj.signal == ARM_CONNECTED
-        || commandObj.signal == ARM_CANCELED_TRAJECTORY
-        || commandObj.signal == ARM_DISCONNECTED
-        || commandObj.signal == ARM_HOME_SEARCHED){
+  processCommand(commandObj: any) {
+    if (commandObj.signal == ARM_STATUS
+      || commandObj.signal == ARM_CONNECTED
+      || commandObj.signal == ARM_CANCELED_TRAJECTORY
+      || commandObj.signal == ARM_DISCONNECTED
+      || commandObj.signal == ARM_HOME_SEARCHED) {
 
-          if(commandObj.error) {
-            this.serverError = true
-          } else {
-            if(commandObj.signal == ARM_STATUS){
-              this.owner = commandObj.client
-              this.serverError = commandObj.error
-            }
-            if(commandObj.signal == ARM_CONNECTED){
-              this.owner = commandObj.client
-              if(this.owner?.id == this.loggedUser?.id){
-                this.subscribeMoved(this.selectedRobot!.name)
-              }
-            }
-            
-            if(commandObj.signal == ARM_HOME_SEARCHED){
-              this.serverError = commandObj.error
-            }
-            if(commandObj.signal == ARM_DISCONNECTED){
-              this.owner = undefined
-            }
+      if (commandObj.error) {
+        this.serverError = true
+      } else {
+        if (commandObj.signal == ARM_STATUS) {
+          this.owner = commandObj.client
+          this.serverError = commandObj.error
+        }
+        if (commandObj.signal == ARM_CONNECTED) {
+          this.owner = commandObj.client
+          if (this.owner?.id == this.loggedUser?.id) {
+            this.subscribeMoved(this.selectedRobot!.name)
           }
-          this.commandsSubject.next(commandObj)
+        }
+
+        if (commandObj.signal == ARM_HOME_SEARCHED) {
+          this.serverError = commandObj.error
+        }
+        if (commandObj.signal == ARM_DISCONNECTED) {
+          this.owner = undefined
+        }
+      }
+      this.commandsSubject.next(commandObj)
     }
   }
 
-  sendRequestMetaInfo(){
-    if(this.selectedRobot == undefined){
+  sendRequestMetaInfo() {
+    if (this.selectedRobot == undefined) {
       const content = {
         signal: ARM_GET_METAINFO
       }
@@ -216,12 +216,12 @@ export class EdscorbotMqttServiceService {
         qos: 0,
         payload: JSON.stringify(content)
       }
-      this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
-    } 
+      this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
+    }
   }
-  
-  sendRequestStatusMessage(){
-    if(this.selectedRobot){
+
+  sendRequestStatusMessage() {
+    if (this.selectedRobot) {
       const content = {
         signal: ARM_CHECK_STATUS,
         client: this.loggedUser
@@ -231,11 +231,11 @@ export class EdscorbotMqttServiceService {
         qos: 0,
         payload: JSON.stringify(content)
       }
-      this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+      this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
     }
   }
 
-  sendConnectMessage(){
+  sendConnectMessage() {
     const content = {
       signal: ARM_CONNECT,
       client: this.loggedUser
@@ -245,10 +245,10 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
   }
 
-  sendTrajectoryMessage(trajectory:Trajectory){
+  sendTrajectoryMessage(trajectory: Trajectory) {
     const content = {
       signal: ARM_APPLY_TRAJECTORY,
       client: this.loggedUser,
@@ -259,10 +259,10 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
   }
 
-  sendMoveToPointMessage(point:Point){
+  sendMoveToPointMessage(point: Point) {
     const content = {
       signal: ARM_MOVE_TO_POINT,
       client: this.loggedUser,
@@ -273,10 +273,10 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
   }
 
-  sendCancelTrajectoryMessage(){
+  sendCancelTrajectoryMessage() {
     const content = {
       signal: ARM_CANCEL_TRAJECTORY,
       client: this.loggedUser
@@ -286,10 +286,10 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
   }
 
-  sendDisconnectMessage(){
+  sendDisconnectMessage() {
     const content = {
       signal: ARM_DISCONNECT,
       client: this.loggedUser
@@ -299,6 +299,6 @@ export class EdscorbotMqttServiceService {
       qos: 0,
       payload: JSON.stringify(content)
     }
-    this.client.unsafePublish(publish.topic,publish.payload,publish.qos)
+    this.client.unsafePublish(publish.topic, publish.payload, publish.qos)
   }
 }

@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor() { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
@@ -33,10 +33,10 @@ export class ErrorInterceptor implements HttpInterceptor {
 
           window.location.href = window.location.origin + `/message?message=${response.error}&type=warning_amber&redirecturi=/login`
 
-        } else if (response.status === HttpStatusCode.PreconditionFailed){
+        } else if (response.status === HttpStatusCode.PreconditionFailed) {
 
           window.location.href = window.location.origin + `/message?message=${response.error}&type=error&redirecturi=/login`
-        } 
+        }
         return throwError(() => response);
       })
     );

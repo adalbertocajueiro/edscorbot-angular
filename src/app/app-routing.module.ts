@@ -10,14 +10,14 @@ import { ToolsComponent } from './pages/tools/tools.component';
 import { MessageComponent } from './pages/message/message.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'movements', pathMatch: 'full'},
-  {path: 'users', component:  UsersComponent , canActivate:[AuthGuard]},
-  {path: 'movements', component: MovementsComponent, canActivate:[AuthGuard]},
-  {path: 'settings', component: SettingsComponent, canActivate:[AuthGuard]},
-  {path: 'tools', component: ToolsComponent, canActivate:[AuthGuard]},
-  {path: 'login', component: LoginComponent},
-  { path: 'message', component:  MessageComponent },
-  {path: '**', component: NotFoundComponent}
+  { path: '', redirectTo: 'settings', pathMatch: 'full' },
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+  { path: 'movements', component: MovementsComponent, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: 'tools', component: ToolsComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'message', component: MessageComponent },
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({

@@ -59,7 +59,6 @@ export class LocalStorageService {
   }
 
   logout(){
-    console.log('performing logout')
     this.clearLoggedUser()
     this.router.navigate(["/","users"])
   }

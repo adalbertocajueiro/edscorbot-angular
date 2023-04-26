@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
 import { ARM_GET_METAINFO, META_INFO_CHANNEL } from 'src/app/util/constants';
-import { MetaInfoObject } from 'src/app/util/matainfo';
+import { environment } from '../../../environments/environment'
 
 @Component({
   selector: 'app-settings',
@@ -11,6 +11,7 @@ import { MetaInfoObject } from 'src/app/util/matainfo';
 export class SettingsComponent implements OnInit{
   
   mqttServ?:EdscorbotMqttServiceService
+  enrivonment = environment
   
   constructor(private mqttService:EdscorbotMqttServiceService){
     this.mqttServ = mqttService

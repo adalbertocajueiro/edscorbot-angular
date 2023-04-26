@@ -36,7 +36,8 @@ export type CinematicFunction = (coordinates: number[]) => {x:number,y:number,z:
 
 export const cinematicFunctions:Map<string,CinematicFunction> = new Map<string,CinematicFunction>(
     [
-        ['EDScorbot',robotPointTo3D]
+        ['EDScorbot',robotPointTo3D],
+        ['EDScorbotSim', robotPointTo3D]
     ]
 )
 

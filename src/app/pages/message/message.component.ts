@@ -14,6 +14,8 @@ export class MessageComponent {
   message?:string
   redirecturi?:string
 
+  ///TODO: put the text of the button as well
+
   constructor(private dialog: MatDialog, private activatedRoute: ActivatedRoute) {
     this.message = this.activatedRoute.snapshot.queryParams['message']
     this.type = this.activatedRoute.snapshot.queryParams['type']
@@ -30,6 +32,7 @@ export class MessageComponent {
       data: {
         message: this.message,
         type: this.type
+        // TODO: pass the text of button as well
       }
     })
     dialogRef.afterClosed().subscribe(result => {

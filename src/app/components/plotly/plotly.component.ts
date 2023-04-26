@@ -45,9 +45,7 @@ export class PlotlyComponent implements OnInit{
      this.simPointChangedSubject?.subscribe(
       {
         next: (points) => {
-          //this.addSimPoint(point.coordinates)
           //create initial graph and add all received points
-          console.log('points',points)
           this.rebuildSimPoints(points)
         },
         error: (err) => {console.log('error',err)}
@@ -241,19 +239,24 @@ export class PlotlyComponent implements OnInit{
     
     var robotName = this.mqttService.selectedRobot?.name
     if(robotName){
-      
-      (this.simulatedTrace as {[key: string] : number[]})['x'].splice(index,1); 
-      (this.simulatedTrace as {[key: string] : number[]})['y'].splice(index,1);
-      (this.simulatedTrace as {[key: string] : number[]})['z'].splice(index,1);
-
       var update = {
-        'marker.size':8,
+        'marker.size': 8,
         'marker.opacity': 0.6,
-        'marker.color':'blue'
+        'marker.color': 'blue'
       }
-      var graphDiv = document.getElementById('myPlot');
-        Plotly.restyle(graphDiv!, update,0)
+
+      if ((this.simulatedTrace as { [key: string]: number[] })['x'].length == 1) {
+        this.data = []
+        this.createInitialGraph()
+        
+      } else{
+        (this.simulatedTrace as { [key: string]: number[] })['x'].splice(index, 1);
+        (this.simulatedTrace as { [key: string]: number[] })['y'].splice(index, 1);
+        (this.simulatedTrace as { [key: string]: number[] })['z'].splice(index, 1);
+        var graphDiv = document.getElementById('myPlot');
+        Plotly.restyle(graphDiv!, update, 0)
       }
+    } 
     
   }
 

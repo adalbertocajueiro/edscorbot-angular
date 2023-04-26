@@ -45,7 +45,12 @@ export class EdscorbotMqttServiceService {
   _mqttService: MqttService
 
   constructor(private localStorageService:LocalStorageService){
-
+    var localStorageUser = localStorageService.getLoggedUser()
+    if(localStorageUser){
+      this.loggedUser = {
+        id: localStorageUser.username!
+      }
+    }
     this.localStorageService.userChanged.subscribe({
       next: (res:any) => {
         if(res == undefined){

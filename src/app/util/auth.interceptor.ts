@@ -22,8 +22,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if(loggedUser){
       authReq = request.clone({
         headers: request.headers
-                  .set('Authorization', `Bearer ${loggedUser.token}`)
-                  .set('username',loggedUser.username!)
                   .set('usertoken', loggedUser.token!)
       });
       

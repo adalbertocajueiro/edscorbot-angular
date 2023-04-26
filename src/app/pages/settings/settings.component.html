@@ -10,57 +10,37 @@
     </div>
     <div class="user-servers">
         <div class="list-label">
-            Servers
-        </div>
-
-        <div class="line">
-            <label>Java server (API) URL: </label>
-            <input type="text" [(ngModel)]="mqttServ!.javaApiUrl" size="40" />
+            Broker
         </div>
         <div class="line">
-            <label>Mosquitto server URL: </label>
-            <input type="text" [(ngModel)]="mqttServ!.brokerUrl" size="40" />
+            <label>Host: </label>
+            <input type="text" [(ngModel)]="this.enrivonment.broker.hostname" disabled size="40" />
+        </div>
+        <div class="line">
+            <label>Port: </label>
+            <input type="text" [(ngModel)]="this.enrivonment.broker.port" disabled size="40" />
+        </div>
+        <div class="line">
+            <label>Protocol: </label>
+            <input type="text" value="Websockets" disabled size="40" />
         </div>
     </div>
-    <div class="container-robots-list">
+    <div class="user-servers">
         <div class="list-label">
-            <label>Available controllers to connect</label>
-            <mat-icon fontSet="material-icons-outlined" matTooltip="Refresh list" matTooltipPosition="above"
-               (click)="refresh()" >refresh</mat-icon>
+            Java API Service
         </div>
-        <div *ngIf="this.mqttServ?.availableRobots!.length > 0" class="robots-list">
-            <mat-selection-list [multiple]="false">            
-                <mat-list-option *ngFor="let robot of this.mqttServ?.availableRobots"
-                    [selected]="robot.name == this.mqttServ?.selectedRobot?.name"
-                    (selectedChange)="toggleSelect(robot,$event)">
-                    {{robot.name}}
-                </mat-list-option>
-            </mat-selection-list>
+        <div class="line">
+            <label>URL: </label>
+            <input type="text" [(ngModel)]="this.enrivonment.javaAPI.JAVA_API_URL" disabled size="40" />
         </div>
-        <!-- div *ngIf="this.mqttServ?.selectedRobot" class="robot-info">
-            <div class="joint-header">
-                <label class="joint">
-                    Joint
-                </label>
-                <label class="min">
-                    Minimum Angle
-                </label>
-                <label class="max">
-                    Maximum Angle
-                </label>
-            </div>
-            <div *ngFor="let joint of this.mqttServ?.selectedRobot?.joints; let i = index" class="joint-info">
-                <label class="joint">
-                    {{i + 1}}
-                </label>
-                <label class="min">
-                    {{joint.minimum}}
-                </label>
-                <label class="max">
-                    {{joint.maximum}}
-                </label>
-            </div>
-        </div -->
-        
+    </div>
+    <div class="user-servers">
+        <div class="list-label">
+            Python API Service
+        </div>
+        <div class="line">
+            <label>URL: </label>
+            <input type="text" [(ngModel)]="this.enrivonment.pythonApi.PYTHON_API_URL" disabled size="40" />
+        </div>
     </div>
 </div>

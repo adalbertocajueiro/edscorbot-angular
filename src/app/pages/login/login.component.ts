@@ -62,8 +62,9 @@ export class LoginComponent implements OnInit{
             this.localStorageService.saveLoggedUser(res)
             this.router.navigate(["/"])
           } else {
-            //manda uma mensagem e volta pra tela de login com uma mensagem
-            this.router.navigate(["/","error"])
+            //manda uma mensagem e volta pra tela de mensagem
+            //this.router.navigate(["/","error"])
+            window.location.href = window.location.origin + `/message?message=User registered but disabled&type=warning_amber&redirecturi=/login`
           }
         },
         error:(err) => {

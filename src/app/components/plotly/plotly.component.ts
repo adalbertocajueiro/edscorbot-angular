@@ -186,7 +186,7 @@ export class PlotlyComponent implements OnInit{
           (this.simulatedTrace as {[key: string] : number[]})['y'].length = 0;
           (this.simulatedTrace as {[key: string] : number[]})['z'].length = 0;
           for(const point of points){
-            var {x,y,z} = cinematicFunction(point.coordinates);
+            var {x,y,z} = cinematicFunction(point.coordinates,robotName);
             (this.simulatedTrace as {[key: string] : number[]})['x'].push(x);
             (this.simulatedTrace as {[key: string] : number[]})['y'].push(y);
             (this.simulatedTrace as {[key: string] : number[]})['z'].push(z);
@@ -209,7 +209,7 @@ export class PlotlyComponent implements OnInit{
     if(robotName){
       var cinematicFunction = cinematicFunctions.get(robotName)
       if(cinematicFunction){
-          var {x,y,z} = cinematicFunction(point);
+          var {x,y,z} = cinematicFunction(point,robotName);
           (this.simulatedTrace as {[key: string] : number[]})['x'].push(x);
           (this.simulatedTrace as {[key: string] : number[]})['y'].push(y);
           (this.simulatedTrace as {[key: string] : number[]})['z'].push(z);
@@ -266,7 +266,7 @@ export class PlotlyComponent implements OnInit{
     if(robotName){
       var cinematicFunction = cinematicFunctions.get(robotName)
       if(cinematicFunction){
-          var {x,y,z} = cinematicFunction(point);
+          var {x,y,z} = cinematicFunction(point,robotName);
           (this.realTrace as {[key: string] : number[]})['x'].push(x);
           (this.realTrace as {[key: string] : number[]})['y'].push(y);
           (this.realTrace as {[key: string] : number[]})['z'].push(z);

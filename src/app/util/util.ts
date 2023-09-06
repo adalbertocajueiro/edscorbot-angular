@@ -24,7 +24,7 @@ const DH_Robotanno =
     [Math.PI/2,     0,          35.6,   369     ],
     [0,             Math.PI/2,  241.5,  0       ],
     [-Math.PI/2,    -Math.PI,   0,      0       ],
-    [Math.PI/2,     0,          0,      288.2   ],
+    [-Math.PI/2,     0,          0,      288.2  ],
     [Math.PI/2,     Math.PI/2,  0,      0       ],
     [0,             0,          0,      136     ]
 ]
@@ -113,18 +113,18 @@ function robotPointTo3D(coordinates: number[], robotname: string) {
 
     var TM = I_matrix;
 
-    if (robotname == 'EDScorbot'){
-        for (let DOF = 0; DOF < DH_Edscorbot[0].length; DOF++) {
+    if (robotname == 'EDScorbot' || robotname == 'EDScorbotSim'){
+        for (let DOF = 0; DOF < 4; DOF++) {
             TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Edscorbot);
             I_matrix = matrixMultiplication(I_matrix,TM);
         }
     } 
-    else if (robotname == 'Rbtanno'){
-        for (let DOF = 0; DOF < DH_Robotanno[0].length; DOF++) {
+    else if (robotname == 'RbtAnno'){
+        for (let DOF = 0; DOF < 6; DOF++) {
             TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Robotanno);
             I_matrix = matrixMultiplication(I_matrix,TM);
         }
-    } 
+    }  
 
     return { x: I_matrix[0][3], y: I_matrix[1][3], z: I_matrix[2][3] };
 }

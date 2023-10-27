@@ -214,9 +214,9 @@ export class PlotlyComponent implements OnInit{
           (this.simulatedTrace as {[key: string] : number[]})['z'].length = 0;
           for(const point of points){
             var {x,y,z} = cinematicFunction(point.coordinates,robotName);
-            (this.simulatedTrace as {[key: string] : number[]})['x'].push(x[5]);
-            (this.simulatedTrace as {[key: string] : number[]})['y'].push(y[5]);
-            (this.simulatedTrace as {[key: string] : number[]})['z'].push(z[5]);
+            (this.simulatedTrace as {[key: string] : number[]})['x'].push(x[x.length -1]]);
+            (this.simulatedTrace as {[key: string] : number[]})['y'].push(y[y.length -1]]);
+            (this.simulatedTrace as {[key: string] : number[]})['z'].push(z[z.length -1]]);
           }  
       }
       var update = {

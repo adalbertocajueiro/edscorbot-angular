@@ -15,6 +15,7 @@ export class PlotlyComponent implements OnInit{
   showLegend:boolean = true
   simulatedTrace:Plotly.Data = {}
   realTrace:Plotly.Data = {}
+  robotTrace:Plotly.Data = {}
 
   @Input()
   simPointChangedSubject?:Subject<any>
@@ -96,6 +97,9 @@ export class PlotlyComponent implements OnInit{
       {
         next: (point) => {
           this.addRealPoint(point)
+          this.clearRobotTrace()
+          this.addRobotPoint(point)
+
         },
         error: (err) => {console.log('error',err)}
       }
@@ -153,18 +157,41 @@ export class PlotlyComponent implements OnInit{
         showlegend: this.showLegend
       }
   }
+
+  createInitialRobotTrace(){
+    this.robotTrace = 
+      {
+        x:[0],
+        y:[0],
+        z:[0],
+        mode:"lines",
+        line: {
+          color: 'gray',
+          width: 8
+        },
+        type: 'scatter3d',
+        name:'Robot',
+        showlegend: this.showLegend
+      }
+  }
+
   createInitialGraph(){
     this.createInitialSimulatedTrace()
     this.createInitialRealTrace();
+    this.createInitialRobotTrace();
 
     this.data.push(this.simulatedTrace)
     this.data.push(this.realTrace)
+    this.data.push(this.robotTrace)
 
-    // Define Layout
+    // Define Layout so that the robot(anno) fits
     var layout = {
-      //xaxis: {range: [40, 210], title: "Square Meters"},
-      //yaxis: {range: [5, 20], title: "Price in Millions"}, 
-      //zaxis: {range: [0, 20], title: "Months"}, 
+      scene:{
+        xaxis: {range: [-780, 780], title: 'X'},
+        yaxis: {range: [-780, 780], title: 'Y'}, 
+        zaxis: {range: [-200, 1100], title: 'Z'}, 
+      },
+
       // title: "Simulated points x Real points",
       legend: {
         x: 0.0, 
@@ -187,9 +214,9 @@ export class PlotlyComponent implements OnInit{
           (this.simulatedTrace as {[key: string] : number[]})['z'].length = 0;
           for(const point of points){
             var {x,y,z} = cinematicFunction(point.coordinates,robotName);
-            (this.simulatedTrace as {[key: string] : number[]})['x'].push(x);
-            (this.simulatedTrace as {[key: string] : number[]})['y'].push(y);
-            (this.simulatedTrace as {[key: string] : number[]})['z'].push(z);
+            (this.simulatedTrace as {[key: string] : number[]})['x'].push(x[5]);
+            (this.simulatedTrace as {[key: string] : number[]})['y'].push(y[5]);
+            (this.simulatedTrace as {[key: string] : number[]})['z'].push(z[5]);
           }  
       }
       var update = {
@@ -204,15 +231,18 @@ export class PlotlyComponent implements OnInit{
   }
 
   addSimPoint(point:number[]){
-    
     var robotName = this.mqttService.selectedRobot?.name
-    if(robotName){
-      var cinematicFunction = cinematicFunctions.get(robotName)
+    //var robotName = 'RbtAnno'
+    if(robotName){  
+    var cinematicFunction = cinematicFunctions.get(robotName)
       if(cinematicFunction){
           var {x,y,z} = cinematicFunction(point,robotName);
-          (this.simulatedTrace as {[key: string] : number[]})['x'].push(x);
-          (this.simulatedTrace as {[key: string] : number[]})['y'].push(y);
-          (this.simulatedTrace as {[key: string] : number[]})['z'].push(z);
+          //console.log('x: ', x);
+          //console.log('y: ', y);
+          //console.log('z: ', z);
+          (this.simulatedTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
+          (this.simulatedTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
+          (this.simulatedTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
           var size = (this.simulatedTrace as {[key: string] : any})['marker'].size
           if(size == 1){
             (this.simulatedTrace as {[key: string] : number[]})['x'].shift();
@@ -221,9 +251,11 @@ export class PlotlyComponent implements OnInit{
             (this.realTrace as {[key: string] : number[]})['x'].shift();
             (this.realTrace as {[key: string] : number[]})['y'].shift();
             (this.realTrace as {[key: string] : number[]})['z'].shift();
+            (this.robotTrace as {[key: string] : number[]})['x'].shift();
+            (this.robotTrace as {[key: string] : number[]})['y'].shift();
+            (this.robotTrace as {[key: string] : number[]})['z'].shift();
           }
       }
-      
       var update = {
         'marker.size':8,
         'marker.opacity': 0.6,
@@ -262,21 +294,54 @@ export class PlotlyComponent implements OnInit{
 
   addRealPoint(point:any){
     //console.log('add new real point', point)
+    //var robotName = 'RbtAnno'
     var robotName = this.mqttService.selectedRobot?.name
     if(robotName){
       var cinematicFunction = cinematicFunctions.get(robotName)
       if(cinematicFunction){
           var {x,y,z} = cinematicFunction(point,robotName);
-          (this.realTrace as {[key: string] : number[]})['x'].push(x);
-          (this.realTrace as {[key: string] : number[]})['y'].push(y);
-          (this.realTrace as {[key: string] : number[]})['z'].push(z);
-          
+          (this.realTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
+          (this.realTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
+          (this.realTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
       }
       var update = {
         'marker.size':8,
         'marker.opacity': 0.6,
         'marker.color':'blue',
         'marker.symbol':'circle'
+      }
+      var graphDiv = document.getElementById('myPlot');
+        Plotly.restyle(graphDiv!, update,1)
+      }
+  }
+
+  addRobotPoint(point:any){
+    //console.log('add new real point', point)
+    //var robotName = 'RbtAnno'
+    var robotName = this.mqttService.selectedRobot?.name
+    if(robotName){
+      var cinematicFunction = cinematicFunctions.get(robotName)
+      if(cinematicFunction){
+          var {x,y,z} = cinematicFunction(point,robotName);
+          //console.log('x: ', x);
+          //console.log('y: ', y);
+          //console.log('z: ', z);
+          (this.realTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
+          (this.realTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
+          (this.realTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
+
+          (this.robotTrace as {[key: string] : number[]})['x'].push(0);
+          (this.robotTrace as {[key: string] : number[]})['y'].push(0);
+          (this.robotTrace as {[key: string] : number[]})['z'].push(0);
+          for (let DOF = 0; DOF < x.length ; DOF++) {
+            (this.robotTrace as {[key: string] : number[]})['x'].push(x[DOF]);
+            (this.robotTrace as {[key: string] : number[]})['y'].push(y[DOF]);
+            (this.robotTrace as {[key: string] : number[]})['z'].push(z[DOF]);
+          }         
+      }
+      var update = {
+        'line.width':8,
+        'line.color':'blue',
       }
       var graphDiv = document.getElementById('myPlot');
         Plotly.restyle(graphDiv!, update,1)
@@ -300,4 +365,19 @@ export class PlotlyComponent implements OnInit{
     Plotly.restyle(graphDiv!, update,1)
   }
   
+  clearRobotTrace(){
+    
+    (this.robotTrace as {[key: string] : number[]})['x'] = [];
+    (this.robotTrace as {[key: string] : number[]})['y'] = [];
+    (this.robotTrace as {[key: string] : number[]})['z'] = []
+
+
+    var update = {
+        'line.size':1,
+        'line.color':'gray',
+    }
+    var graphDiv = document.getElementById('myPlot');
+    Plotly.restyle(graphDiv!, update,1)
+  }
+
 }

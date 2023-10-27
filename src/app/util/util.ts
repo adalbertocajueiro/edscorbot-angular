@@ -24,7 +24,7 @@ const DH_Robotanno =
     [Math.PI/2,     0,          35.6,   369     ],
     [0,             Math.PI/2,  241.5,  0       ],
     [-Math.PI/2,    -Math.PI,   0,      0       ],
-    [-Math.PI/2,     0,          0,      288.2  ],
+    [-Math.PI/2,    0,          0,      288.2   ],
     [Math.PI/2,     Math.PI/2,  0,      0       ],
     [0,             0,          0,      136     ]
 ]
@@ -34,22 +34,30 @@ const DH_Robotanno =
         Coordinates: Array of "NumJoints" positions. It contains the radians values of every joint.
         Robotname: String containing the name of the robot.
     Outputs:
-        x, y, z: The values of the end-effector's coordinates.
+        x_n, y_n, z_n: The values of all of the joints ends.
 */
-export type CinematicFunction = (coordinates: number[], robotname:string) => { x: number, y: number, z: number }
+
+//export type CinematicFunction = (coordinates: number[], robotname:string) => { x: number, y: number, z: number } //Old function
+export type CinematicFunction = (coordinates: number[], robotname:string) => { x: number[], y: number[], z: number[] }
 
 export const cinematicFunctions: Map<string, CinematicFunction> = new Map<string, CinematicFunction>(
     [
-        ['EDScorbot', robotPointTo3D],
-        ['EDScorbotSim', robotPointTo3D],
-        ['Rbtanno', robotPointTo3D]
+        ['EDScorbot', robotPointTo3D_FullJoints],
+        ['EDScorbotSim', robotPointTo3D_FullJoints],
+        //['RbtAnno', robotPointTo3D],
+        ['RbtAnno', robotPointTo3D_FullJoints]
 
     ]
 )
 
-
-//Auto-generates the transformation matrix with the DH parameters for a given joint index
-//Angles are in radians here
+/*  generateDHmatrix: Auto-generates the transformation matrix with the DH parameters for a given joint index. Angles are in radians here
+    Inputs: 
+        index: Index of current joint.
+        angle: Angle of current joint.
+        matrix: DH-Parameter matrix to be evaluated.
+    Outputs:
+        TF_matrix: Current joint's transformation matrix.
+*/
 function generateDHmatrix(index: number, angle: number, matrix: number[][])
 {
     //DH matrix Edscorbot                       
@@ -97,11 +105,19 @@ function matrixMultiplication(matrixA: number[][], matrixB: number[][]) {
     return result;
 }
 
-/*The actual kinematic function. It will evaluate the robot name before starting the calculations for xyz representation.
+/*  robotPointTo3D_FullJoints: The actual kinematic function. 
+It will evaluate the robot name before starting the calculations for xyz representation.
 In order for the function to work, both the robot name and the DH parameter matrix must be known and declared in this script of code
 Angles are given in degrees, and then transformed to radians
+    Inputs: 
+        coordinates: Array of direct kinematics coordinates.
+        robotname: name of controlled robot.
+    Outputs:
+        x_n: Array of position X of every joint of the robot, starting from joint J1.
+        y_n: Array of position Y of every joint of the robot, starting from joint J1.
+        z_n: Array of position Z of every joint of the robot, starting from joint J1.
 */
-function robotPointTo3D(coordinates: number[], robotname: string) {
+function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
 
     var I_matrix = 
     [
@@ -112,28 +128,38 @@ function robotPointTo3D(coordinates: number[], robotname: string) {
     ];
 
     var TM = I_matrix;
+    var x_n = [0,0,0,0,0,0];
+    var y_n = [0,0,0,0,0,0];
+    var z_n = [0,0,0,0,0,0];
 
-    if (robotname == 'EDScorbot' || robotname == 'EDScorbotSim'){
-        for (let DOF = 0; DOF < 4; DOF++) {
+
+    if (robotname == 'EDScorbot'){
+        for (let DOF = 0; DOF < DH_Edscorbot.length; DOF++) {
             TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Edscorbot);
             I_matrix = matrixMultiplication(I_matrix,TM);
+            x_n[DOF]= I_matrix[0][3];
+            y_n[DOF]= I_matrix[1][3];
+            z_n[DOF]= I_matrix[2][3];
         }
     } 
     else if (robotname == 'RbtAnno'){
-        for (let DOF = 0; DOF < 6; DOF++) {
+        for (let DOF = 0; DOF < DH_Robotanno.length; DOF++) {
             TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Robotanno);
             I_matrix = matrixMultiplication(I_matrix,TM);
+            x_n[DOF]= I_matrix[0][3];
+            y_n[DOF]= I_matrix[1][3];
+            z_n[DOF]= I_matrix[2][3];
         }
-    }  
+    } 
 
-    return { x: I_matrix[0][3], y: I_matrix[1][3], z: I_matrix[2][3] };
+
+    return { x: x_n, y: y_n, z: z_n };
 }
-
 
 /*//Test the function with example coordinates
 //Test robotanno
 const coordinates_1 = [0, -90, 90, 0, 180, 0];
-const endEffectorPosition_1 = robotPointTo3D(coordinates_1,'Rbtanno');
+const endEffectorPosition_1 = robotPointTo3D(coordinates_1,'RbtAnno');
 
 console.log("Coordinates (radians):", coordinates_1);
 console.log("End-Effector Position:");

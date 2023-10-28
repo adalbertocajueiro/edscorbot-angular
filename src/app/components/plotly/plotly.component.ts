@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import * as Plotly from 'plotly.js-dist-min'
 import { Subject } from 'rxjs';
 import { EdscorbotMqttServiceService } from 'src/app/services/edscorbot-mqtt-service.service';
@@ -7,7 +7,8 @@ import { cinematicFunctions } from 'src/app/util/util';
 @Component({
   selector: 'app-plotly',
   templateUrl: './plotly.component.html',
-  styleUrls: ['./plotly.component.scss']
+  styleUrls: ['./plotly.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PlotlyComponent implements OnInit{
   
@@ -37,6 +38,11 @@ export class PlotlyComponent implements OnInit{
 
   @Input()
   clearRealListSubject?:Subject<void>
+
+  realPointList:any[] = []
+
+  realPointAddedSubject: Subject<any> = new Subject<any>();
+  clearRealPointsSubject: Subject<any> = new Subject<any>();
 
   constructor(private mqttService:EdscorbotMqttServiceService){
     
@@ -87,6 +93,7 @@ export class PlotlyComponent implements OnInit{
         next: () => {
           //console.log('rebuilding graphs')
           this.data = []
+          this.realPointList = []
           this.createInitialGraph()
         },
         error: (err) => {console.log('error',err)}
@@ -99,7 +106,7 @@ export class PlotlyComponent implements OnInit{
           this.addRealPoint(point)
           this.clearRobotTrace()
           this.addRobotPoint(point)
-
+          this.realPointAddedSubject.next(point)
         },
         error: (err) => {console.log('error',err)}
       }
@@ -243,6 +250,10 @@ export class PlotlyComponent implements OnInit{
           (this.simulatedTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
           (this.simulatedTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
           (this.simulatedTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
+          //(this.simulatedTrace as { [key: string]: number[] })['x'].push(x[0]);
+          //(this.simulatedTrace as { [key: string]: number[] })['y'].push(y[0]);
+          //(this.simulatedTrace as { [key: string]: number[] })['z'].push(z[0]);
+
           var size = (this.simulatedTrace as {[key: string] : any})['marker'].size
           if(size == 1){
             (this.simulatedTrace as {[key: string] : number[]})['x'].shift();
@@ -326,6 +337,7 @@ export class PlotlyComponent implements OnInit{
           //console.log('x: ', x);
           //console.log('y: ', y);
           //console.log('z: ', z);
+          this.realPointList.push(point);
           (this.realTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
           (this.realTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
           (this.realTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
@@ -378,6 +390,16 @@ export class PlotlyComponent implements OnInit{
     }
     var graphDiv = document.getElementById('myPlot');
     Plotly.restyle(graphDiv!, update,1)
+  }
+
+  pointSelected(point:number){
+    //TODO you sould put here the code you want to execute when 
+    //another point is choosen in the tool bar. the event comes automatically and calls
+    //this method.
+    alert('point selected ' + point)
+
+    //I believe that you should to exactly what you do when a new point comes from the server 
+    //now you just have to select the point from this.realPointList array using (point - 1) index
   }
 
 }

@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="nav-button" [ngClass]="!selectedPoint || selectedPoint == 1?'icon-disabled':''">
+        <mat-icon mat-button 
+            (click)="previousClicked()">navigate_before</mat-icon>
+    </div>
+    <div class="internal-buttons">
+        <div *ngFor="let p of points;let i = index" 
+            class="point-button"
+            (click)="pointClicked(p)"
+            [ngClass]="selectedPoint == (i+1)?'icon-selected':''">{{i+1}}</div>
+    </div>
+
+    <div class="nav-button" [ngClass]="!selectedPoint || selectedPoint == points.length?'icon-disabled':''">
+        <mat-icon mat-button
+            (click)="nextClicked()">navigate_next</mat-icon>
+    </div>
+</div>

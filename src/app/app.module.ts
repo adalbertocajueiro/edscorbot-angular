@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule} from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { UsersComponent } from './pages/users/users.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -42,6 +43,7 @@ import { ErrorInterceptor } from './util/error.interceptor';
 import { ToolsComponent } from './pages/tools/tools.component';
 import { MessageComponent } from './pages/message/message.component';
 import { MessageDialogComponent } from './pages/message/message-dialog/message-dialog.component';
+import { PointsBarComponent } from './components/points-bar/points-bar.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,8 @@ import { MessageDialogComponent } from './pages/message/message-dialog/message-d
     ToggleSwitchComponent,
     ToolsComponent,
     MessageComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    PointsBarComponent
   ],
   imports: [
     BrowserModule,
@@ -88,7 +91,8 @@ import { MessageDialogComponent } from './pages/message/message-dialog/message-d
     MatDialogModule,
     MatSelectModule,
     MatSnackBarModule,
-    DragDropModule
+    DragDropModule,
+    MatGridListModule
   ],
   providers: [
     {

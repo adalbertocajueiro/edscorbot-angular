@@ -33,7 +33,7 @@ export class PlotlyComponent implements OnInit{
   @Input()
   simListSubject?:Subject<void>
 
-   @Input()
+  @Input()
   realListSubject?:Subject<void>
 
   @Input()
@@ -116,6 +116,8 @@ export class PlotlyComponent implements OnInit{
       {
         next: () => {
           this.clearRealTrace()
+          this.realPointList = []
+          console.log('Cleared Real Points')
         },
         error: (err) => {console.log('error',err)}
       }
@@ -196,7 +198,7 @@ export class PlotlyComponent implements OnInit{
       scene:{
         xaxis: {range: [-780, 780], title: 'X'},
         yaxis: {range: [-780, 780], title: 'Y'}, 
-        zaxis: {range: [-200, 1100], title: 'Z'}, 
+        zaxis: {range: [-260, 1300], title: 'Z'}, 
       },
 
       // title: "Simulated points x Real points",
@@ -311,6 +313,7 @@ export class PlotlyComponent implements OnInit{
       var cinematicFunction = cinematicFunctions.get(robotName)
       if(cinematicFunction){
           var {x,y,z} = cinematicFunction(point,robotName);
+          this.realPointList.push(point);
           (this.realTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
           (this.realTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
           (this.realTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
@@ -334,14 +337,6 @@ export class PlotlyComponent implements OnInit{
       var cinematicFunction = cinematicFunctions.get(robotName)
       if(cinematicFunction){
           var {x,y,z} = cinematicFunction(point,robotName);
-          //console.log('x: ', x);
-          //console.log('y: ', y);
-          //console.log('z: ', z);
-          this.realPointList.push(point);
-          (this.realTrace as {[key: string] : number[]})['x'].push(x[x.length -1]);
-          (this.realTrace as {[key: string] : number[]})['y'].push(y[y.length -1]);
-          (this.realTrace as {[key: string] : number[]})['z'].push(z[z.length -1]);
-
           (this.robotTrace as {[key: string] : number[]})['x'].push(0);
           (this.robotTrace as {[key: string] : number[]})['y'].push(0);
           (this.robotTrace as {[key: string] : number[]})['z'].push(0);
@@ -393,13 +388,9 @@ export class PlotlyComponent implements OnInit{
   }
 
   pointSelected(point:number){
-    //TODO you sould put here the code you want to execute when 
-    //another point is choosen in the tool bar. the event comes automatically and calls
-    //this method.
-    alert('point selected ' + point)
-
-    //I believe that you should to exactly what you do when a new point comes from the server 
-    //now you just have to select the point from this.realPointList array using (point - 1) index
+    this.clearRobotTrace()
+    this.addRobotPoint(this.realPointList[point - 1])
+    console.log(this.realPointList)
   }
 
 }

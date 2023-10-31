@@ -5,7 +5,8 @@
             (onSimulationPointListClear)="clearSimulationPoints()"
             (onSimulationPointDeleted)="deleteSimulationPoint($event)"
             (onSimulationPointsChanged)="rebuildGraph($event)"
-            (onSendTrajectory)="this.clearRealListSubject.next()"></app-single>
+            (onSendTrajectory)="this.clearRealListSubject.next()"
+            (onRealPointsClear)="this.realListSubject.next()"></app-single>
     </div>
     <div class="graph">
         <app-plotly

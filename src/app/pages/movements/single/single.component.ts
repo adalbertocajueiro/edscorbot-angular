@@ -44,6 +44,8 @@ export class SingleComponent implements OnInit{
   @Output()
   onSendTrajectory:EventEmitter<void> = new EventEmitter<void>()
 
+  @Output()
+  onRealPointsClear: EventEmitter<void> = new EventEmitter<void>()
 
   selectedRobot?:MetaInfoObject
   connected:boolean = false
@@ -258,25 +260,22 @@ export class SingleComponent implements OnInit{
   
   deletePoint(index:number){
     this.appliedPoints.splice(index,1)
-    //this.graphService.buildGraph(this.appliedPoints)
-    //this.onSimulationPointsChanged.emit(this.appliedPoints)
     this.onSimulationPointDeleted.emit(index)
   }
 
   clearPointList(){
     this.appliedPoints = []
-    //this.onSimulationPointsChanged.emit(this.appliedPoints)
     this.onSimulationPointListClear.emit()
+    this.onRealPointsClear.emit()
   }
 
   selectTrajectory(trajectory:any){
     this.appliedPoints = trajectory.points
-    //this.onSimulationPointsChanged.emit(this.appliedPoints)
   }
 
   useTrajectory(trajectory:any){
-    //this.appliedPoints = [...trajectory.points]
-    this.appliedPoints = []
+    this.clearPointList()
+    
     trajectory.points.forEach( (p:any) =>  {
       this.appliedPoints.push(p)
       this.onSimulationPointAdded.emit(p)

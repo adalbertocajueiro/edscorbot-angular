@@ -117,6 +117,7 @@ export class PlotlyComponent implements OnInit{
         next: () => {
           this.clearRealTrace()
           this.realPointList = []
+          this.clearRealPointsSubject.next({})
           console.log('Cleared Real Points')
         },
         error: (err) => {console.log('error',err)}

@@ -13,10 +13,12 @@
 
 const DH_Edscorbot =
 [
-    [-Math.PI/2,    0,      5,      35.85   ],
-    [0,             0,      30,     -9.8    ],
-    [0,             0,      35,     6.5     ],
-    [Math.PI/2,     0,      22,     0       ]
+//    [0,             0,      0,       0          ],
+//    [0,             0,      0,       0          ],
+    [-Math.PI/2,    0,      50,      358.5      ],
+    [0,             0,      300,     -98        ],
+    [0,             0,      350,     65         ],
+    [Math.PI/2,     0,      220,     0          ]
 ]
 
 const DH_Robotanno =
@@ -42,10 +44,10 @@ export type CinematicFunction = (coordinates: number[], robotname:string) => { x
 
 export const cinematicFunctions: Map<string, CinematicFunction> = new Map<string, CinematicFunction>(
     [
-        ['EDScorbot', robotPointTo3D],
+        ['RbtAnno', robotPointTo3D_FullJoints],
         //['EDScorbotSim', robotPointTo3D_FullJoints],
         //['RbtAnno', robotPointTo3D],
-        ['RbtAnno', robotPointTo3D_FullJoints]
+        ['EDScorbot', robotPointTo3D_FullJoints]
 
     ]
 )
@@ -137,9 +139,10 @@ function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
         for (let DOF = 0; DOF < DH_Edscorbot.length; DOF++) {
             TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Edscorbot);
             I_matrix = matrixMultiplication(I_matrix,TM);
-            x_n[DOF]= I_matrix[0][3];
-            y_n[DOF]= I_matrix[1][3];
-            z_n[DOF]= I_matrix[2][3];
+            x_n[DOF+2]= I_matrix[0][3];
+            y_n[DOF+2]= I_matrix[1][3];
+            z_n[DOF+2]= I_matrix[2][3];
+            //Added +2 offset to represent the edscorbot robot
         }
     } 
     else if (robotname == 'RbtAnno'){
@@ -179,13 +182,13 @@ console.log("Z:", endEffectorPosition_2.z);
 */
 
 function robotPointTo3D(coordinates: number[],robotName:string) {
-    const a1 = 5.0
-    const a2 = 30
-    const a3 = 35
-    const a4 = 22
-    const d1 = 35.85
-    const d2 = -9.8
-    const d3 = 6.5
+    const a1 = 50
+    const a2 = 300
+    const a3 = 350
+    const a4 = 220
+    const d1 = 358.5
+    const d2 = -98
+    const d3 = 65
 
     var q1 = coordinates[0]
     var q2 = coordinates[1]

@@ -197,9 +197,9 @@ export class PlotlyComponent implements OnInit{
     // Define Layout so that the robot(anno) fits
     var layout = {
       scene:{
-        xaxis: {range: [-780, 780], title: 'X'},
-        yaxis: {range: [-780, 780], title: 'Y'}, 
-        zaxis: {range: [-260, 1300], title: 'Z'}, 
+        xaxis: {range: [-1000, 1000], title: 'X'},
+        yaxis: {range: [-1000, 1000], title: 'Y'}, 
+        zaxis: {range: [-200, 1800], title: 'Z'}, 
       },
 
       // title: "Simulated points x Real points",

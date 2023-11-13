@@ -15,10 +15,10 @@ const DH_Edscorbot =
 [
 //    [0,             0,      0,       0          ],
 //    [0,             0,      0,       0          ],
-    [-Math.PI/2,    0,      50,      358.5      ],
-    [0,             0,      300,     -98        ],
-    [0,             0,      350,     65         ],
-    [Math.PI/2,     0,      220,     0          ]
+    [-Math.PI/2,    0.1311*Math.PI,     50,      358.5      ],
+    [0,             -0.1222*Math.PI,      300,     -98        ],
+    [0,             0.0611*Math.PI,      350,     65         ],
+    [Math.PI/2,     0,                   220,     0          ]
 ]
 
 const DH_Robotanno =
@@ -130,6 +130,7 @@ function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
     ];
 
     var TM = I_matrix;
+    const polarity=[-1,-1,1,1];
     var x_n = [0,0,0,0,0,0];
     var y_n = [0,0,0,0,0,0];
     var z_n = [0,0,0,0,0,0];
@@ -137,7 +138,7 @@ function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
 
     if (robotname == 'EDScorbot'){
         for (let DOF = 0; DOF < DH_Edscorbot.length; DOF++) {
-            TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Edscorbot);
+            TM = generateDHmatrix(DOF, coordinates[DOF]*polarity[DOF]*Math.PI/180, DH_Edscorbot);
             I_matrix = matrixMultiplication(I_matrix,TM);
             x_n[DOF+2]= I_matrix[0][3];
             y_n[DOF+2]= I_matrix[1][3];

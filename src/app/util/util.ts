@@ -1,6 +1,6 @@
-// Declare all known DH Parameters
-//Structure:
-/*
+/* Declare all known DH Parameters
+Structure:
+
 [J1.Alpha,    J1.Theta_offset,      J1.a,      J1.d   ],
 [J2.Alpha,    J2.Theta_offset,      J2.a,      J2.d   ],
 [J3.Alpha,    J3.Theta_offset,      J3.a,      J3.d   ],
@@ -8,15 +8,13 @@
 .
 .
 .
-[Jn.Alpha,    Jn.Theta,      Jn.a,      Jn.d   ],
+[Jn.Alpha,    Jn.Theta_offset,      Jn.a,      Jn.d   ],
 */
 
 const DH_Edscorbot =
 [
-//    [0,             0,      0,       0          ],
-//    [0,             0,      0,       0          ],
-    [-Math.PI/2,    0.1311*Math.PI,     50,      358.5      ],
-    [0,             -0.1222*Math.PI,      300,     -98        ],
+    [-Math.PI/2,    0.1311*Math.PI,      50,      358.5      ],
+    [0,             -0.1222*Math.PI,     300,     -98        ],
     [0,             0.0611*Math.PI,      350,     65         ],
     [Math.PI/2,     0,                   220,     0          ]
 ]
@@ -130,7 +128,8 @@ function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
     ];
 
     var TM = I_matrix;
-    const polarity=[-1,-1,1,1];
+    const polarity_edscorbot=[-1,-1,1,1];
+    const polarity_rbtanno=[1,1,1,1,1,1];
     var x_n = [0,0,0,0,0,0];
     var y_n = [0,0,0,0,0,0];
     var z_n = [0,0,0,0,0,0];
@@ -138,7 +137,7 @@ function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
 
     if (robotname == 'EDScorbot'){
         for (let DOF = 0; DOF < DH_Edscorbot.length; DOF++) {
-            TM = generateDHmatrix(DOF, coordinates[DOF]*polarity[DOF]*Math.PI/180, DH_Edscorbot);
+            TM = generateDHmatrix(DOF, coordinates[DOF]*polarity_edscorbot[DOF]*Math.PI/180, DH_Edscorbot);
             I_matrix = matrixMultiplication(I_matrix,TM);
             x_n[DOF+2]= I_matrix[0][3];
             y_n[DOF+2]= I_matrix[1][3];
@@ -148,7 +147,7 @@ function robotPointTo3D_FullJoints(coordinates: number[], robotname: string) {
     } 
     else if (robotname == 'RbtAnno'){
         for (let DOF = 0; DOF < DH_Robotanno.length; DOF++) {
-            TM = generateDHmatrix(DOF, coordinates[DOF]*Math.PI/180, DH_Robotanno);
+            TM = generateDHmatrix(DOF, coordinates[DOF]*polarity_rbtanno[DOF]*Math.PI/180, DH_Robotanno);
             I_matrix = matrixMultiplication(I_matrix,TM);
             x_n[DOF]= I_matrix[0][3];
             y_n[DOF]= I_matrix[1][3];

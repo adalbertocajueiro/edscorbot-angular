@@ -23,7 +23,7 @@ const DH_Robotanno =
 [
     [Math.PI/2,     0,          35.6,   369     ],
     [0,             Math.PI/2,  241.5,  0       ],
-    [-Math.PI/2,    -Math.PI,   0,      0       ],
+    [Math.PI/2,     0,          0,      0       ],
     [-Math.PI/2,    0,          0,      288.2   ],
     [Math.PI/2,     Math.PI/2,  0,      0       ],
     [0,             0,          0,      136     ]
